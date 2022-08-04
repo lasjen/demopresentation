@@ -1,0 +1,625 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>HVL: Dat152</title>
+		<meta name="description" content="Page for dat152 presentations">
+		<meta name="author" content="Lasse Jenssen">
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/white.css">
+		<link rel="stylesheet" href="dist/theme/robot-lung.css">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/zenburn.css">
+
+	</head>
+	<body>
+
+		<div class="reveal">
+			<div class="slides">
+				<section data-background="black">
+					<p style="color: #cb4b16; font-size: 50px; margin-top: 0px"><b>WebServices: SOAP vs REST</b></p>
+					<p style="font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
+					<p style="font-size: 18px"><a href="index.html">Home</a></p>
+				</section>
+
+				<section>
+					<h3>Before WebServices</h3>
+					<p>And before most of you where born.</p>
+					<img src="images/history-ws-technology.png" alt="History of distributed technology" style="width:700px;" /></br>
+					<small>
+					<p><a href="https://www.soa4u.co.uk/2019/02/a-brief-look-at-evolution-of-interface.html">Source: https://www.soa4u.co.uk/2019/02/a-brief-look-at-evolution-of-interface.html)</a></p>
+					</small>
+				</section>
+
+				<section data-visibility="hidden">
+					<section style="text-align: left;">
+						<h4>Web of Services (Used by W3C)</h4>
+
+						<blockquote> Often known as "Web Services".</blockquote><br>
+
+						Based on technologies such as: <br><br>
+						<ul>
+							<li>HTTP, XML, SOAP, WSDL, SPARQL and others.</li>
+						</ul>
+
+					</section>
+					<section style="text-align: left;">
+						<h4>Any Service which are:</h4></br>
+
+						<ul>
+							<li>Available over the Internet or private (intranet) networks</li>
+							<li>Uses a standardized XML messaging system</li>
+							<li>Not tied to any one operating system or programming language</li>
+							<li>Self-describing via a common XML grammar
+							<li>Discoverable via a simple find mechanism
+						</ul>
+					</section>
+				</section>
+				<!-- --------------------------------------------------------
+				-- SOAP Section
+				------------------------------------------------------------- -->
+				<section>
+					<section style="text-align: left;">
+						<p style="font-size: 50px"><b>SOAP: Simple Object Access Protocol</b></p>
+						<p>Came as an improvement over CORBA, DCOM, and Java RMI.</p>
+						<p>Is an Application Communication Protocol.</p>
+						<p>Is based on XML.</p>
+						<p>Is platform (and language) independent.</p>
+
+					</section>
+					<section style="text-align: left;">
+						<p style="font-size: 50px"><b>SOAP: Continued ...</b></p>
+						<p>Is NOT tied to any transport protocol: SMTP, <b>HTTP(S)</b>, FTP, MQ.</p>
+						<p>Is a format for sending and receiving messages.
+						<ul style="list-style-type:circle">
+							<li>Request</li>
+							<li>Response</li>
+						</ul></p>
+						<p>Is a <a href="https://www.w3.org/">W3C</a> recommendation.</p>
+					</section>
+
+					<section>
+						<p style="font-size: 50px; margin-bottom: 0px"><b>SOAP: Continued ...</b></p>
+						<p style="font-style: italic; margin-top: 0px">Skeleton SOAP Message</p>
+						<br>
+						<pre>
+						<code lang="xml" data-trim data-line-numbers">
+							<?xml version="1.0"?>
+							<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope/"
+										   soap:encodingStyle="http://www.w3.org/2003/05/soap-encoding">
+    							<soap:Header> ... </soap:Header>
+								<soap:Body>
+									...
+									<soap:Fault> ... </soap:Fault>
+								</soap:Body>
+							</soap:Envelope>
+
+						</code>
+						</pre>
+					</section>
+					<section style="text-align: left;">
+
+						<p style="font-size: 50px; margin-bottom: 0px"><b>WSDL</b></p>
+						<p style="font-style: italic; margin-top: 0px">Web Services Description Language</p>
+						<br>
+						<p>Is used to describe web services (a kind of an interface).</p>
+						<p>Is written in XML.</p>
+						<p>Is a W3C recommendation.</p>
+					</section>
+					<section>
+						<p style="font-style: italic; margin-bottom: 0px">Discoverable via a</p>
+						<p style="font-size: 50px; margin-top: 0px"><b>simple find mechanism</b></p>
+
+						<p></p><a href="https://www.w3schools.com/xml/tempconvert.asmx" target="_blank">https://www.w3schools.com/xml/tempconvert.asmx</a></p>
+						<p></p><a href="https://www.w3schools.com/xml/tempconvert.asmx?wsdl" target="_blank">https://www.w3schools.com/xml/tempconvert.asmx?wsdl</a></p>
+					</section>
+					<section>
+						<img src="images/soapui-supported-by-smartbear-logo-vector.png"/>
+						<p>Testing tool for SOAP and REST (OpenSource Edition).</p>
+						Download: <a href="https://www.soapui.org/downloads/soapui/">https://www.soapui.org/downloads/soapui/</a>
+					</section>
+				</section>
+				<!-- --------------------------------------------------------
+				-- Rest Section - Introduction
+				------------------------------------------------------------- -->
+				<section>
+					<section>
+						<p style="font-size: 50px"><b>REST: REpresentational State Transfer</b></p>
+						<p>A term coined by <a href="https://en.wikipedia.org/wiki/Roy_Fielding">Roy Fielding</a> in 2000.</p>
+						<p>An <span style="color: red">architecture style</span> for designing loosely coupled applications over the network, that is often used in the development of web services.</p>
+						<p>A REST API consists of an assembly of <span style="color: red">interlinked resources</span>.</p>
+						<p>This set of resources is known as the REST API’s<br> <span style="color: red">resource model</span>.</p>
+					</section>
+
+					<section>
+						<img src="images/history-soap-vs-rest.png" alt="SOAP vs REST popularity">
+					</section>
+
+					<section style="text-align: left;">
+						<table>
+							<thead><tr>
+								<th>SOAP</th>
+								<th>REST</th>
+							</tr></thead>
+							<tbody>
+							<tr>
+								<td>A protocol</td>
+								<td>A architectural style</td>
+							</tr>
+							<tr>
+								<td>Server and Client tightly coupled</td>
+								<td>no contract</td>
+							</tr>
+							<tr>
+								<td>XML only</td>
+								<td>XML, Json, text, etc.</td>
+							</tr>
+							<tr>
+								<td>JAX-WS</td>
+								<td>JAX-RS</td>
+							</tr>
+							</tbody>
+						</table>
+
+					</section>
+
+					<section>
+						<p style="font-size: 50px">JAX-RS</p>
+						<p>A specification, a set of interfaces and annotations offered by Java EE.</p>
+						<p style="font-size: 50px">Jersey, RESTEasy and Apache CXF</p>
+						<p>Most popular implementations of the JAX-RS specification.</p>
+					</section>
+
+					<section>
+						<pre>
+							<code lang="java" data-trim data-line-numbers>
+								@Path("/greetings")
+								public class JaxRsController {
+
+									@GET
+									@Path("/{name}")
+									@Produces(MediaType.TEXT_PLAIN)
+									public Response greeting(@PathParam("name") String name) {
+
+										String greeting = "Hello " + name;
+										return Response.ok(greeting).build();
+									}
+								}
+							</code>
+						</pre>
+					</section>
+
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">We will be using</p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Spring Boot and Spring MVC</b></p><br>
+						<p>Spring MVC is a module of <span style="color: #dc322f">Spring Framework</span> for creating web applications. </p>
+						<p><span style="color: #dc322f">Spring MVC</span> adds REST capability to Spring Framework.</p><br>
+						<small><p style="font-style: italic">Note! Spring MVC is not implementing JAX-RS.</p></small>
+					</section>
+
+					<section>
+						<pre>
+							<code lang="java" data-trim data-line-numbers>
+								@RestController
+								@RequestMapping("/greetings")
+								public class SpringRestController {
+
+									@RequestMapping(method = RequestMethod.GET,
+													value = "/{name}",
+													produces = MediaType.TEXT_PLAIN_VALUE)
+									public ResponseEntity< ? > greeting(@PathVariable String name) {
+
+										String greeting = "Hello " + name;
+										return new ResponseEntity<>(greeting, HttpStatus.OK);
+									}
+								}
+							</code>
+						</pre>
+					</section>
+
+				</section>
+				<!-- --------------------------------------------------------
+					-- REST Architectual Constraints
+					------------------------------------------------------------- -->
+				<section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">Six architectual constraints for a truly</p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>RESTFul WebService (API)</b></p><br>
+					</section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">First architectual constraints </p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Client - Server Architecture</b></p><br>
+
+						<p>Enforces <span style="color: #dc322f">Separation of concerns</span>.</p>
+						<p>Separating the user interface concerns from the data storage concerns.</p>
+					</section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">Second architectual constraints </p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Statelessness</b></p><br>
+
+						<p>No session information is retained by the server.</p>
+						<p>The client application must entirely keep the session state.</p>
+					</section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">Third architectual constraints </p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Cacheability</b></p><br>
+
+						<p>A response should implicitly or explicitly label itself as cacheable or non-cacheable.</p>
+					</section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">Fourth architectual constraints </p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Layered System</b></p><br>
+
+						<p>A client cannot ordinarily tell whether it is connected directly to the end server or to an intermediary along the way (for instance proxy or load balancer).</p>
+					</section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">Fifth architectual constraints </p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Code on demand (optional)</b></p><br>
+
+						<p>Servers can temporarily extend or customize the functionality of a client by transferring executable code: for example, compiled components such as Java applets, or client-side scripts such as JavaScript.</p>
+					</section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">Sixth architectual constraints </p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Uniform Interface</b></p><br>
+						<ul style="list-style-type:bullet;line-height: 1.6" >
+							<li>Identification of Resources (<span style="color:red">URI</span>)</li>
+							<li>Manipulation of resources through <span style="color:red">representations</span> (Usually JSON objects).</li>
+							<li><span style="color:red">Self-descriptive</span> messages. For instance:</li>
+						<ul style="list-style-type:circle">
+							<li>Request type and protocol: <code>GET / HTTP/1.1</code></li>
+							<li>Protocol and response status: <code>HTTP/1.1 200 OK</code></li>
+							<li>Media type: <code>Content-Type: text/html</code></li>
+						</ul>
+
+							<li><span style="color:red">Hypermedia</span> as the engine of application state.</li>
+						</ul>
+					</section>
+				</section>
+				<!-- --------------------------------------------------------
+					-- REST Archetypes
+					------------------------------------------------------------- -->
+				<section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">Four different  </p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>REST Resource Archetypes</b></p><br>
+						<ul style="list-style-type:disc;line-height: 1.6" >
+							<li>Document</li>
+							<li>Collection</li>
+							<li>Store</li>
+							<li>Controller</li>
+						</ul>
+					</section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">1st REST Resource Archetype  </p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Document</b></p><br>
+
+						<p>A document resource can be compared to an object instance or database record.</p>
+						<p>Examples:</p>
+						<ul style="list-style-type:disc;line-height: 1.6" >
+							<li>http://api.soccer.restapi.org # Called docroot</li>
+							<li>http://api.soccer.restapi.org/leagues/premier-league</li>
+							<li>http://api.example.com/book-management/books/{id}</li>
+							<li>http://api.example.com/author-management/authors/{id}</li>
+						</ul>
+
+					</section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">2nd REST Resource Archetype  </p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Collection</b></p><br>
+
+						<p>A <span style="color: red">server managed</span> collection of resources. </p>
+						<p>Clients may add new resources, however the collection is in charge whether to create a new resource or not and the collection also determines the URIs of each contained resource.</p>
+						<p>Examples:</p>
+						<small>
+						<ul style="list-style-type:disc;line-height: 1.6" >
+							<li>http://api.example.com/book-management/books</li>
+							<li>http://api.example.com/book-management/books/rest-api-design-rulebook-oreilly</li>
+							<li>http://api.example.com/author-management/authors</li>
+							<li>http://api.example.com/author-management/authors/mark-masse</li>
+						</ul>
+						</small>
+					</section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">3rd REST Resource Archetype  </p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Store</b></p><br>
+
+						<p>A a <span style="color: red">client managed</span> resource repository.</p>
+						<p>On their own stores do not create new resources..</p>
+						<p>Examples:</p>
+						<small>
+						<ul style="list-style-type:disc;line-height: 1.6" >
+							<li>http://mymusic.com/playlists</li>
+							<li>http://mymusic.com/playlists/5/songs</li>
+							<li>http://mymusic.com/playlists/5/songs/3</li>
+						</ul>
+						</small>
+					</section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">4th REST Resource Archetype  </p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Controller</b></p><br>
+
+						<p>A controller resource models a <span style="color: red">procedural concept</span>.</p>
+						<p>A REST API relies on controller resources to perform application specific actions that cannot be logically mapped to one of the standard CRUD operations.</p>
+						<p>Examples:</p>
+						<span style="font-size: 22px">
+						<ul style="list-style-type:disc;line-height: 1.6" >
+							<li>http://api.hvl.no/students/1/send-sms?text=hello</li>
+							<li>http://api.hvl.no/semesters/h2022/courses/1/students/send-sms?text=REST tomorrow</li>
+						</ul>
+						</span>
+					</section>
+				</section>
+				<!-- --------------------------------------------------------
+					-- REST URI Path Design
+					------------------------------------------------------------- -->
+				<section>
+					<section>
+						<p style="font-style: italic; margin-bottom: 0px">Resource Identification</p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>URI Path Design</b></p><br>
+						<small>Source: REST API Design Rulebook, Mark Masse, O'Reilly</small>
+					</section>
+					<section style="text-align: left;">
+						<table>
+							<thead><tr>
+								<th>HTTP Method</th>
+								<th>URL Design</th>
+								<th>Description</th>
+							</tr></thead>
+							<tbody>
+							<tr>
+								<td>GET</td>
+								<td>api.hvl.no/students</td>
+								<td>Get list of collection/store</td>
+							</tr>
+							<tr>
+								<td>POST</td>
+								<td>api.hvl.no/students</td>
+								<td>Create a document (blank)</td>
+							</tr>
+							<tr style="color:lightgrey">
+								<td>PUT</td>
+								<td>api.hvl.no/students</td>
+								<td>Update/replace entire collection (not often desirable)</td>
+							</tr>
+							<tr style="color:lightgrey">
+								<td>DELETE</td>
+								<td>api.hvl.no/students</td>
+								<td>Delete the entire collection (not often desirable)</td>
+							</tr>
+							</tbody>
+						</table>
+					</section>
+					<section style="text-align: left;">
+						<table>
+							<thead><tr>
+								<th>HTTP Method</th>
+								<th>URL Design</th>
+								<th>Description</th>
+							</tr></thead>
+							<tbody>
+							<tr>
+								<td>GET</td>
+								<td>api.hvl.no/students/{id}</td>
+								<td>Get one document</td>
+							</tr>
+							<tr style="color:lightgrey">
+								<td>POST</td>
+								<td>api.hvl.no/students/{id}</td>
+								<td>N/A</td>
+							</tr>
+							<tr>
+								<td>PUT</td>
+								<td>api.hvl.no/students/{id}</td>
+								<td>Update one resource</td>
+							</tr>
+							<tr>
+								<td>DELETE</td>
+								<td>api.hvl.no/students/{id}</td>
+								<td>Delete the one resource</td>
+							</tr>
+							</tbody>
+						</table>
+					</section>
+					<section style="text-align: left;font-size: 22px">
+						<table>
+							<thead><tr>
+								<th>HTTP Method</th>
+								<th>/students</th>
+								<th>/students/{id}</th>
+							</tr></thead>
+							<tbody>
+							<tr>
+								<td>GET</td>
+								<td>200 (OK). Can use pagination, sorting, and/or filtering.</td>
+								<td>200 (OK). Single student. <br>404 (Not found), if iD not found or invalid</td>
+							</tr>
+							<tr>
+								<td>POST</td>
+								<td>201 (Created). 'Location' header with link to /customers/{id} containing new ID</td>
+								<td>404 (Not found)</td>
+							</tr>
+							<tr>
+								<td>PUT</td>
+								<td>404 (Not found)</td>
+								<td>200 (OK) or 204 (No content). <br>404 (Not found), if id not found or invalid</td>
+							</tr>
+							<tr>
+								<td>DELETE</td>
+								<td>404 (Not found)</td>
+								<td>200 (OK). <br>404 (Not found), if id not found or invalid</td>
+							</tr>
+							</tbody>
+						</table>
+					</section>
+				</section>
+				<!-- --------------------------------------------------------
+					-- REST Naming rules
+					------------------------------------------------------------- -->
+				<section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">We'll look at some rules regarding</p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Resource Names</b></p><br>
+						<small>Source: REST API Design Rulebook, Mark Masse, O'Reilly</small>
+					</section>
+					<section style="text-align: left;">
+						<p>Rule: A singular noun should be used for document names.</p>
+						<code>api.hvl.no/teachers/lasse-jenssen</code><br><br>
+						<p>Rule: A plural noun should be used for collection names.</p>
+						<p>Rule: A plural noun should be used for store names</p>
+						<code>api.hvl.no/teachers</code><br>
+						<code>api.hvl.no/students</code>
+					</section>
+					<section style="text-align: left;">
+						<p>Rule: A verb or verb phrase should be used for controller names</p>
+						<code>api.hvl.no/students/4/register</code><br>
+						<code>api.bitbucket.hvl.no/qa/runTestSuite</code><br><br>
+						<p>Rule: CRUD function names should NOT be used in URIs</p>
+						<code>Anti-patterns:</code><br>
+						<code>api.hvl.no/deleteStudent?id=123</code><br>
+						<code>api.hvl.no/deleteStudent/123</code>
+					</section>
+				</section>
+				<!-- --------------------------------------------------------
+					-- URI Format
+					------------------------------------------------------------- -->
+				<section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">We'll look at some rules regarding</p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>URI Format</b></p>
+						<p>URI = scheme "://" authority "/" path [ "?" query ] [ "#" fragment ]</p><br>
+						<small>Source: REST API Design Rulebook, Mark Masse, O'Reilly</small>
+					</section>
+					<section style="text-align: left;">
+						<p>Rule: Forward slash separator (/) must be used to indicate a hierarchical relationship.</p>
+						<code>api.hvl.no/semesters/h2022/students/4/courses</code><br><br>
+						<p>Rule: A trailing forward slash (/) should not be included in URIs.</p>
+						<code>Anti-pattern:</code>
+						<code>api.hvl.no/students/</code>
+					</section>
+					<section style="text-align: left;">
+						<p>Rule: Hyphens (-) should be used to improve the readability of URIs.</p>
+						<p>Rule: Underscores (_) should not be used in URIs</p>
+						<p>Rule: Lowercase letters should be preferred in URI paths</p>
+						<code>api.hvl.no/teachers/lasse-jenssen</code><br><br>
+					</section>
+					<section style="text-align: left;">
+						<p>Rule: File extensions should not be included in URIs.</p>
+						<code style="font-size: 24px">Anti-pattern:</code><br>
+						<code style="font-size: 24px">api.register.hvl.no/teachers/lasse-jenssen/cv.json</code><br><br>
+						<p>Rule: Consistent subdomain names should be used for your APIs.</p>
+						<code style="font-size: 24px">api.register.hvl.no</code>
+						<p>Rule: Consistent subdomain names should be used for your client developer portal</p>
+						<code style="font-size: 24px">developer.register.hvl.no</code>
+					</section>
+				</section>
+				<!-- --------------------------------------------------------
+					-- REST URI Query Design Rules
+					------------------------------------------------------------- -->
+				<section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">We'll look at some rules regarding</p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>URI Query Design</b></p>
+						<p>URI = scheme "://" authority "/" path [ "?" query ] [ "#" fragment ]</p><br>
+						<small>Source: REST API Design Rulebook, Mark Masse, O'Reilly</small>
+					</section>
+					<section style="text-align: left;">
+						<p>Rule: The query component of a URI may be used to filter collections or stores.</p>
+						<code>api.hvl.no/students?registered=2021</code><br><br>
+						<p>Rule: The query component of a URI should be used to paginate collection or store result.</p>
+						<code>api.hvl.no/students?pageSize=25&pageStartIndex=50</code>
+					</section>
+					<section style="text-align: left;">
+						<p>Rule: GET and POST must not be used to tunnel other request methods.</p>
+						<p>Rule: GET must be used to retrieve a representation of a resource.</p>
+						<p>Rule: HEAD should be used to retrieve response headers</p>
+						<ul style="list-style-type:disc;line-height: 1.6;font-size: 22px">
+							<li>HEAD returns the same response as GET, except that the API returns an empty body.</li>
+							<li>Clients can use this method to check whether a resource exists or to read its metadata.</li>
+						</ul>
+					</section>
+					<section style="text-align: left;">
+						<p>Rule: PUT must be used to both insert and update a stored resource.</p>
+						<p>Rule: PUT must be used to update mutable resources.</p>
+						<p>Rule: POST must be used to create a new resource in a collection.</p>
+						<p>Rule: POST must be used to execute controllers</p>
+						<ul style="list-style-type:disc;line-height: 1.6;font-size: 22px">
+							<li>May include both headers and a body as inputs to a controller resource’s function..</li>
+						</ul>
+						<p>Rule: DELETE must be used to remove a resource from its parent.</p>
+					</section>
+				</section>
+				<!-- --------------------------------------------------------
+					-- Response Status Codes
+					------------------------------------------------------------- -->
+				<section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">We'll look at some rules regarding</p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Response Status Codes</b></p>
+						<p style="font-size: 24px">Part of an HTTP repsonse message:<br>
+							<code>Status-Line = [HTTP-Version] [Status-Code] [Reason-Phrase] CRLF</code></p><br>
+						<small>Source: REST API Design Rulebook, Mark Masse, O'Reilly</small>
+					</section>
+					<section style="text-align: left;">
+						<p>Rule: <span style="color: red">200 (“OK”)</span> should be used to indicate nonspecific success.</p>
+						<p>Rule: <span style="color: red">200 (“OK”)</span> must NOT be used to communicate errors in the response body.</p>
+						<p>Rule: <span style="color: red">201 (“Created”)</span> must be used to indicate successful resource creation</p>
+						<p>Rule: <span style="color: red">204 (“No Content”)</span> should be used when the response body is intentionally empty</p>
+					</section>
+					<section style="text-align: left;">
+						<p>Rule: <span style="color: red">401 (“Unauthorized”)</span> must be used when there is a problem with the client’s credentials.</p>
+						<p>Rule: <span style="color: red">403 (“Forbidden”)</span> should be used to forbid access regardless of authorization state.</p>
+						<p>Rule: <span style="color: red">404 (“Not Found”)</span> must be used when a client’s URI cannot be mapped to a resource.</p><br>
+						<p>Rule: <span style="color: red">500 (“Internal Server Error”)</span> should be used to indicate API malfunction.</p>
+					</section>
+				</section>
+				<!-- --------------------------------------------------------
+					-- HTTP Headers
+					------------------------------------------------------------- -->
+				<section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">We'll look at some rules regarding</p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>HTTP Headers</b></p>
+						<small>Source: REST API Design Rulebook, Mark Masse, O'Reilly</small>
+					</section>
+					<section style="text-align: left;">
+						<p>Rule: <span style="color: red">Content-Type</span> must be used.</p>
+						<p>Rule: <span style="color: red">Content-Length</span> should be used.</p>
+						<p>Rule: <span style="color: red">Last-Modified</span> should be used in responses.</p>
+						<p>Some rules about <span style="color: red">caching</span>, but we'll skip these for now.</p>
+					</section>
+				</section>
+				<!-- --------------------------------------------------------
+					-- Next
+					------------------------------------------------------------- -->
+				<section data-background="black">
+					<p style="font-style: italic; margin-bottom: 0px">Next</p>
+					<p style="font-size: 50px; margin-top: 0px" ><a href="ws-02-the-spring-framework.html"><b>Web Services: Spring Framework</b></a></p>
+					<p style="font-size: 18px"><a href="index.html">Home</a></p>
+				</section>
+
+			</div>
+	  </div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+				margin: 0.2,
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+			});
+		</script>
+	</body>
+</html>
