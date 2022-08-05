@@ -1,13 +1,54 @@
 <!doctype html>
 <html>
-	<head>
-   </head>
-   <body>
-      <h1>DAT152 - Advanced Webapplications</h1>
-      <ul style="list-style-type: upper-roman ">
-         <li><a href="ws-01-soap-vs-rest.html">Web Services - SOAP vs REST</a></li>
-         <li><a href="ws-02-the-spring-framework.html">Web Services - The Spring Framework</a></li>
-         <li><a href="ws-03-rest-store.html">Buiding a RESTFull Store WebService</a></li>
-      </ul>
-   </body>
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+   <title>HVL: Dat152</title>
+   <meta name="description" content="Page for dat152 presentations">
+   <meta name="author" content="Lasse Jenssen">
+
+   <link rel="stylesheet" href="dist/reset.css">
+   <link rel="stylesheet" href="dist/reveal.css">
+   <link rel="stylesheet" href="dist/theme/white.css">
+   <link rel="stylesheet" href="dist/theme/robot-lung.css">
+
+   <!-- Theme used for syntax highlighted code -->
+   <link rel="stylesheet" href="plugin/highlight/zenburn.css">
+
+</head>
+<body>
+
+<div class="reveal">
+   <div class="slides">
+      <section data-background="black" style="text-align: left;">
+         <p style="color: #cb4b16;font-style: italic; margin-bottom: 0px">Advanced Webapplications</p>
+         <p style="color: #cb4b16; font-size: 50px; margin-top: 0px" ><b>DAT152</b></p>
+         <ul style="list-style-type: upper-roman ">
+            <li><a href="ws-01-soap-vs-rest.html">Web Services - SOAP vs REST</a></li>
+            <li><a href="ws-02-the-spring-framework.html">Web Services - The Spring Framework</a></li>
+            <li><a href="ws-03-rest-store.html">Buiding a RESTFull Store WebService</a></li>
+         </ul>
+      </section>
+   </div>
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/markdown/markdown.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script>
+   // More info about initialization & config:
+   // - https://revealjs.com/initialization/
+   // - https://revealjs.com/config/
+   Reveal.initialize({
+      hash: true,
+      margin: 0.2,
+
+      // Learn about plugins: https://revealjs.com/plugins/
+      plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+   });
+</script>
+</body>
 </html>
+

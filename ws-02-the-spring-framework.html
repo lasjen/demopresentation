@@ -507,6 +507,112 @@
 					</section>
 				</section>
 				<!-- -------------------------------------------------------------
+					 -- Demo: Embedded Server vs External Server
+					 ------------------------------------------------------------- -->
+				<section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">Spring Boot & Spring Web</p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>External vs Embedded Server</b></p>
+					</section>
+					<section>
+						<p style="font-style: italic; margin-bottom: 0px">In the beginning</p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>External Web Servers</b></p>
+						<pre>
+							<code lang="shell">
+								$ pwd
+								/Users/lassejenssen/apps/apache-tomcat-9.0.64
+								$ tree -d -L 2
+								.
+								├── bin
+								├── conf
+								├── lib
+								├── logs
+								├── temp
+								├── webapps
+								│   ├── ROOT
+								│   ├── docs
+								│   ├── examples
+								│   ├── host-manager
+								│   └── manager
+								└── work
+							</code>
+						</pre>
+					</section>
+					<section>
+						<img class="stretch" src="images/tomcat-server.png" alt="Tomcat Server" style="border: none;">
+					</section>
+					<section>
+						<img class="stretch" src="images/tomcat-server-deploy.png" alt="Tomcat Server Deploy" style="border: none;">
+					</section>
+					<section>
+						<img class="stretch" src="images/eclipse-run-on-server-tomcat.png" alt="Eclipse Run On Server" style="border: none;">
+					</section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">External Web Servers</p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Pros</b></p>
+						<span style="font-size: 26px">
+						<ul>
+							<li>Potentially more flexible application architecture.</li>
+							<li>Really easy to switch servers later.</li>
+							<li>Application errors can’t harm the server.</li>
+							<li>Easy to deploy app updates without restarting the server.</li>
+							<li>Performance and correctness: servers like nginx are highly optimized and tested for complete HTTP correctness, which your app then gets for free.</li>
+						</ul>
+						</span>
+					</section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">External Web Servers</p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Cons</b></p>
+						<span style="font-size: 26px">
+						<ul>
+							<li>Extra performance overhead: there could be anything from an extra layer of method abstraction up to CGI-level overhead for your app and the server to communicate.</li>
+							<li>Deployment complexity: you have to maintain the web server and the application, deploy them individually, ad hoc version testing, etc.</li>
+							<li>Trickier development environment.</li>
+						</ul>
+						</span>
+					</section>
+					<section>
+						<p style="font-style: italic; margin-bottom: 0px">Spring Boot Default</p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Embedded Web Server</b></p>
+						<pre>
+							<code lang="shell" data-trim data-line-numbers style="line-height: 1.4;">
+								# mvn spring-boot:run
+							</code>
+							<p></p>
+							<code lang="shell" data-trim data-line-numbers style="line-height: 1.4;">
+								# mvn package
+								# java -cp target/demo-01-several-controllers-0.0.1-SNAPSHOT.jar no.hvl.dat152.Demo01JettyWebApp
+							</code>
+						</pre>
+					</section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">Embedded Web Servers</p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Pros</b></p>
+						<span style="font-size: 26px">
+						<ul>
+							<li>More self-contained applications. This helps a lot during development.</li>
+							<li>As a dependency of your application, you can test against server versions just like any other dependency.</li>
+							<li>More control over how the web server behaves (custom filters, headers, caching).</li>
+							<li>Single object to be deployed.</li>
+							<li>Easy to integrate with Docker, Kubernetes, OpenShift etc.</li>
+						</ul>
+						</span>
+					</section>
+					<section style="text-align: left;">
+						<p style="font-style: italic; margin-bottom: 0px">Embedded Web Servers</p>
+						<p style="font-size: 50px; margin-top: 0px" ><b>Cons</b></p>
+						<span style="font-size: 24px">
+						<ul>
+							<li>Your application has to be designed around the API of whatever server you are using, making it harder to change servers later. <br><small>(Java doesn’t really have this problem, as you can still use the servlet API when embedding)</small></li>
+							<li>Dependency bloat, as you have to include all the dependencies of the web server.</li>
+							<li>More effort to deploy hotfixes to security exploits in the server.</li>
+							<li>You can’t group multiple applications behind one server without a proxy.<br><small>(Not really an issue if deploying to virtual platform)</small></li>
+							<li>A single uncaught exception is enough to take down the entire application server.</li>
+						</ul>
+						</span>
+					</section>
+				</section>
+				<!-- -------------------------------------------------------------
 					 -- Demo: Testing WebServices
 					 ------------------------------------------------------------- -->
 				<section>
@@ -628,7 +734,7 @@ class DemoApplicationTests {
 					------------------------------------------------------------- -->
 				<section data-background="black">
 					<p style="font-style: italic; margin-bottom: 0px">Next</p>
-					<p style="font-size: 50px; margin-top: 0px" ><a href="ws-03.html"><b>To come ...</b></a></p>
+					<p style="font-size: 50px; margin-top: 0px" ><a href="ws-03-rest-store.html"><b>Building a RESTFull Store WebService</b></a></p>
 					<p style="font-size: 18px"><a href="index.html">Home</a></p>
 				</section>
 
