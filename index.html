@@ -21,14 +21,29 @@
 
 <div class="reveal">
    <div class="slides">
-      <section data-background="black" style="text-align: left;">
+      <section style="text-align: left;">
          <p style="color: #cb4b16;font-style: italic; margin-bottom: 0px">Advanced Webapplications</p>
-         <p style="color: #cb4b16; font-size: 50px; margin-top: 0px" ><b>DAT152</b></p>
+         <p style="color: #cb4b16; font-size: 50px; margin-top: 0px" ><b>DAT152</b></p><br>
+      </section>
+      <section style="text-align: left;">
+         <p style="margin-bottom: 18px; font-size: 40px;">Performance and Scalability</p>
+         <span style="font-size: 30px">
+         <ul style="list-style-type: upper-roman ">
+            <li><a href="perf-01-performance-intro.html">Introduction to performance</a></li>
+            <li><a href="perf-02-performance-java.html">Java Performance</a></li>
+            <li><a href="perf-03-performance-database.html">Database Performance</a></li>
+         </ul>
+         </span>
+      </section>
+      <section style="text-align: left;">
+         <p style="margin-bottom: 18px; font-size: 40px;">REST Web Services</p>
+         <span style="font-size: 30px">
          <ul style="list-style-type: upper-roman ">
             <li><a href="ws-01-soap-vs-rest.html">Web Services - SOAP vs REST</a></li>
             <li><a href="ws-02-the-spring-framework.html">Web Services - The Spring Framework</a></li>
             <li><a href="ws-03-rest-store.html">Buiding a RESTFull Store WebService</a></li>
          </ul>
+         </span>
       </section>
    </div>
 </div>
@@ -43,7 +58,7 @@
    // - https://revealjs.com/config/
    Reveal.initialize({
       hash: true,
-      margin: 0.2,
+      transition: 'fade',
 
       // Learn about plugins: https://revealjs.com/plugins/
       plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]

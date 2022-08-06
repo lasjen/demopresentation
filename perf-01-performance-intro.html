@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>HVL: Dat152</title>
+    <meta name="description" content="Page for dat152 presentations">
+    <meta name="author" content="Lasse Jenssen">
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/white.css">
+    <link rel="stylesheet" href="dist/theme/robot-lung.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/zenburn.css">
+
+</head>
+<body>
+
+<div class="reveal">
+    <div class="slides">
+        <section data-background="black" >
+            <p style="color: #cb4b16; font-size: 50px; margin-top: 0px"><b>An introduction to performance</b></p>
+            <p style="font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p><br>
+            <p style="font-size: 22px">Source:<br> <a href="https://queue.acm.org/detail.cfm?id=1854041">Thinking Clearly About Performance</a></p>
+            <p style="font-style: italic; font-size: 18px">by Cary Millsap, Method R Corporation</p>
+            <p style="font-size: 18px"><a href="index.html">Home</a></p>
+            <p> TO BE UPDATED! </p>
+        </section>
+        <!-- --------------------------------------------------------
+            -- Response Time vs Throughput
+            ------------------------------------------------------------- -->
+        <section>
+            <section>
+                <p style="font-style: italic; font-size: 50px; ">What do we mean by <span style="color: #cb4b16;"> performance</span>?</p>
+            </section>
+            <section>
+                <p style="font-size: 50px; ">We mean ...</p>
+                <br>
+                <p style="font-style: italic; font-size: 50px; color: #cb4b16">
+                    <span class="fragment" style="margin-right: 100px">Response Time</span>
+                    <span class="fragment">
+                        <span style="font-style: normal; color: black">and</span>
+                    <span style="margin-left: 100px">Throughput</span>
+                    </span>
+                </p>
+            </section>
+            <section style="text-align: left;">
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Response Time</b></p>
+                <p style="font-size: 40px; font-style: italic">The <span style="color: #cb4b16">time</span> it takes to execute a
+                    <span style="color: #cb4b16">task</span>.</p>
+                <br>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Throughput</b></p>
+                <p style="font-size: 40px; font-style: italic">The number of <span style="color: #cb4b16">tasks</span> executed in a period of
+                    <span style="color: #cb4b16">time</span>.</p>
+                <p style="font-size: 26px; margin-top: 16px">(Task = A business-oriented unit of work)</p>
+            </section>
+            <section>
+                <p style="font-size: 40px; margin-top: 0px"><b>Response Time</b> = Time / Tasks</p>
+                <br>
+                <p style="font-size: 40px; margin-top: 0px"><b>Throughput</b> = Tasks / Time</p>
+            </section>
+            <section>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo</b></p>
+                <p style="font-size: 36px;"><a href="https://www.google.com/search?q=performance">https://www.google.com/search?q=performance</a></p>
+            </section>
+            <section>
+                <p style="font-size: 50px; color: #cb4b16; ">Response Time
+                     <span style="color: black;"> versus</span> Throughput
+                </p>
+                <p style="font-size: 30px;">"Throughput and response time<br> have a generally reciprocal type of relationship, but not exactly. <br>The real relationship is subtly more complex."</p>
+                <p style="text-align: right; font-style: italic; font-size: 22px">Cary Millsap</p>
+            </section>
+            <section>
+                <p style="font-size: 30px; color: #cb4b16;">Example:</p>
+                <p>A benchmark shows that your system can handle <br>1000 tasks per second.</p>
+                <br>
+                <p style="font-size: 30px; color: #cb4b16;">Question:</p>
+                What, then, will be the users average response time?</p>
+                <aside class="notes">0,001 sec (1 ms)?<br>
+                    What about parallel processing? <br>
+                    1000 independent processing lines.
+                </aside>
+            </section>
+            <section>
+                <p style="font-size: 50px; color: #cb4b16; ">Response Time
+                    <span style="color: black;"> versus</span> Throughput
+                </p>
+                <p style="font-size: 30px;">"You cannot derive response time exclusively from a throughput measurement, however; you have to measure it separately."</p>
+                <p style="text-align: right; font-style: italic; font-size: 22px">Cary Millsap</p>
+            </section>
+            <section>
+                <p style="font-size: 30px; color: #cb4b16;">Example:</p>
+                <p>You are asked to develop a feature which handle <br>100-tasks per second on a single CPU-computer.</p>
+                <br>
+                <p style="font-size: 30px; color: #cb4b16;">Question:</p>
+                You finish the code, and find that the new task executes in 1 ms.<br>
+                Have you reached the clients request?</p>
+                <aside class="notes">If evry execution came sequentially: YES.<br>
+                    But what if 100 are executed at once? <br>
+                    Concurrency issues: CPU schedulers, serialization issues (locks, latches, memory access etc).<br>
+                    You migh or you might not!
+                </aside>
+            </section>
+            <section>
+                <p style="font-size: 50px; color: #cb4b16; ">Response Time
+                    <span style="color: black;"> versus</span> Throughput
+                </p>
+                <p style="font-size: 30px;">"You cannot derive throughput exclusively from a response time measurement. You have to measure it separately."</p>
+                <p style="text-align: right; font-style: italic; font-size: 22px">Cary Millsap</p>
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+            -- SLA and specification
+            ------------------------------------------------------------- -->
+        <section>
+            <section>
+                <img class="stretch" src="images/three-little-pigs.png" alt="Tree little pigs">
+            </section>
+
+            <section data-auto-animate>
+                <p>When we build a cabin up in the mountains,<br>
+                    we need to know how much snow the roof need to carry.</p><br>
+                <p data-id="req" class="fragment">When we develop a feature, we need to know <br>
+                    <span style="color: #cb4b16">the minimum performance requirements</span>.</p>
+            </section>
+            <section data-auto-animate>
+                <p data-id="req">When we develop a feature, we need to know <br>
+                    <span style="color: #cb4b16">the minimum performance requirements</span>.</p><br>
+                <p data-id="sla" style="font-size: 50px; color: #cb4b16; ">Service Level Agreement (SLA)</p>
+            </section>
+            <section data-auto-animate>
+                <p data-id="sla" style="font-size: 50px; color: #cb4b16; ">Service Level Agreement (SLA)</p>
+                <div data-id="box" style="alignment: left; height: 100px; width: 200px; background: salmon;">Business Analysis</div>
+                <div data-id="box" style="alignment: right; height: 100px; width: 200px; background: salmon;">Business Analysis</div>
+            </section>
+        </section>
+    </div>
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/markdown/markdown.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+        hash: true,
+        transition: 'fade',
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+    });
+</script>
+</body>
+</html>
+
