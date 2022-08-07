@@ -1,0 +1,403 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>HVL: Dat152</title>
+    <meta name="description" content="Page for dat152 presentations">
+    <meta name="author" content="Lasse Jenssen">
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/white.css">
+    <link rel="stylesheet" href="dist/theme/robot-lung.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/zenburn.css">
+
+</head>
+<body>
+
+<div class="reveal">
+    <div class="slides">
+        <section data-background="black" >
+            <p style="color: #cb4b16; font-size: 50px; margin-top: 0px"><b>An introduction to performance</b></p>
+            <p style="font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p><br>
+            <p style="font-size: 18px"><a href="index.html">Home</a></p>
+        </section>
+        <!-- --------------------------------------------------------
+            -- Sources
+            ------------------------------------------------------------- -->
+        <section style="text-align: left;">
+            <p style="font-size: 50px; ">Sources</p>
+            <span style="font-size: 24px">
+                <ul>
+                    <li><a href="https://queue.acm.org/detail.cfm?id=1854041">"Thinking Clearly About Performance"</a>,
+                        by Cary Millsap, Method R Corporation<br>
+                        Note! Until paragraph about "Queing Delay".</li>
+                    <li><a href="https://medium.com/analysts-corner/why-non-functional-requirements-could-be-magical-on-your-project-and-should-not-be-overlooked-73caed73d861">
+                        "Why non-functional requirements could be magical ..."</a>, by Maria Montgomery</li>
+                    <li><a href="https://www.blueprintsys.com/blog/non-functional-requirements#:~:text=Hard%20to%20Measure%20%E2%80%93Non%2Dfunctional,to%20assess%20these%20variable%20attributes.">
+                        "All requirements are not the same ..."</a>, by blueprintsys.com</li>
+                </ul>
+            </span>
+        </section>
+        <!-- --------------------------------------------------------
+            -- Response Time vs Throughput
+            ------------------------------------------------------------- -->
+        <section>
+            <section>
+                <p style="font-style: italic; font-size: 50px; ">What do we mean by <span style="color: #cb4b16;"> performance</span>?</p>
+            </section>
+            <section>
+                <p style="font-size: 50px; ">We mean ...</p>
+                <br>
+                <p style="font-style: italic; font-size: 50px; color: #cb4b16">
+                    <span class="fragment" style="margin-right: 100px">Response Time</span>
+                    <span class="fragment">
+                        <span style="font-style: normal; color: black">and</span>
+                    <span style="margin-left: 100px">Throughput</span>
+                    </span>
+                </p>
+            </section>
+            <section style="text-align: left;">
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Response Time</b></p>
+                <p style="font-size: 40px; font-style: italic">The <span style="color: #cb4b16">time</span> it takes to execute a
+                    <span style="color: #cb4b16">task</span>.</p>
+                <br>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Throughput</b></p>
+                <p style="font-size: 40px; font-style: italic">The number of <span style="color: #cb4b16">tasks</span> executed in a period of
+                    <span style="color: #cb4b16">time</span>.</p>
+                <p style="font-size: 26px; margin-top: 16px">(Task = A business-oriented unit of work)</p>
+            </section>
+            <section>
+                <p style="font-size: 40px; margin-top: 0px"><b>Response Time</b> = Time / Tasks</p>
+                <br>
+                <p style="font-size: 40px; margin-top: 0px"><b>Throughput</b> = Tasks / Time</p>
+            </section>
+            <section>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo</b></p>
+                <p style="font-size: 36px;"><a href="https://www.google.com/search?q=performance">https://www.google.com/search?q=performance</a></p>
+            </section>
+            <section>
+                <p style="font-size: 50px; color: #cb4b16; ">Response Time
+                     <span style="color: black;"> versus</span> Throughput
+                </p>
+                <p style="font-size: 30px;">"Throughput and response time<br> have a generally reciprocal type of relationship, but not exactly. <br>The real relationship is subtly more complex."</p>
+                <p style="text-align: right; font-style: italic; font-size: 22px">Cary Millsap</p>
+            </section>
+            <section>
+                <p style="font-size: 30px; color: #cb4b16;">Example:</p>
+                <p>A benchmark shows that your system can handle <br>1000 tasks per second.</p>
+                <br>
+                <p style="font-size: 30px; color: #cb4b16;">Question:</p>
+                What, then, will be the users average response time?</p>
+                <aside class="notes">0,001 sec (1 ms)?<br>
+                    What about parallel processing? <br>
+                    1000 independent processing lines.
+                </aside>
+            </section>
+            <section>
+                <p style="font-size: 50px; color: #cb4b16; ">Response Time
+                    <span style="color: black;"> versus</span> Throughput
+                </p>
+                <p style="font-size: 30px;">"You cannot derive response time exclusively from a throughput measurement, however; you have to measure it separately."</p>
+                <p style="text-align: right; font-style: italic; font-size: 22px">Cary Millsap</p>
+            </section>
+            <section>
+                <p style="font-size: 30px; color: #cb4b16;">Example:</p>
+                <p>You are asked to develop a feature which handle <br>100-tasks per second on a single CPU-computer.</p>
+                <br>
+                <p style="font-size: 30px; color: #cb4b16;">Question:</p>
+                You finish the code, and find that the new task executes in 1 ms.<br>
+                Have you reached the clients request?</p>
+                <aside class="notes">If evry execution came sequentially: YES.<br>
+                    But what if 100 are executed at once? <br>
+                    Concurrency issues: CPU schedulers, serialization issues (locks, latches, memory access etc).<br>
+                    You migh or you might not!
+                </aside>
+            </section>
+            <section>
+                <p style="font-size: 50px; color: #cb4b16; ">Response Time
+                    <span style="color: black;"> versus</span> Throughput
+                </p>
+                <p style="font-size: 30px;">"You cannot derive throughput exclusively from a response time measurement. You have to measure it separately."</p>
+                <p style="text-align: right; font-style: italic; font-size: 22px">Cary Millsap</p>
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+            -- SLA and specification
+            ------------------------------------------------------------- -->
+        <section>
+            <section>
+                <img class="stretch" src="images/three-little-pigs.png" alt="Tree little pigs">
+            </section>
+
+            <section data-auto-animate>
+                <p>When we build a cabin up in the mountains,<br>
+                    we need to know how much snow the roof need to carry.</p><br>
+                <p data-id="req" class="fragment">When we develop a feature, we need to know <br>
+                    <span style="color: #cb4b16">the minimum performance requirements</span>.</p>
+            </section>
+            <section data-auto-animate>
+                <p data-id="req">When we develop a feature, we need to know <br>
+                    <span style="color: #cb4b16">the minimum performance requirements</span>.</p><br>
+                <p data-id="sla" style="font-size: 50px; color: #cb4b16; ">Service Level Agreement (SLA)</p>
+            </section>
+            <section data-auto-animate>
+                <p data-id="sla" style="font-size: 50px; color: #cb4b16; ">Service Level Agreement (SLA)</p>
+                <p>Business Analysis -> Business Requirements -> SLA</p>
+            </section>
+            <section>
+                <p>A <span style="color: #cb4b16;">SLA</span> should cover requirements towards ...</p>
+                <ul>
+                    <li>Response Times</li>
+                    <li>Throughput</li>
+                    <li>Scalability</li>
+                    <li>Uptime and availability</li>
+                    <li>Disaster recovery</li>
+                    <li>etc.</li>
+                </ul>
+            </section>
+            <section style="text-align: left;">
+                <p style="font-style: italic; margin-bottom: 0px">These are</p>
+                <p style="font-size: 50px; margin-top: 0px; color: #cb4b16;" ><b>Non-Functional Requirements (NFR)</b></p><br>
+                <p>If project fails, ignoring the non-functional requirements are most often the cause.<br> And when they fail on these requirements, they fail <b>BIG</b>.</p>
+            </section>
+            <section style="text-align: left;">
+                <p style="font-size: 50px; margin-bottom: 0px; color: #cb4b16;" ><b>Non-Functional Requirements</b></p>
+                <p style="font-style: italic; margin-bottom: 0px">is not only about performance requirements.</p><br>
+                <ul style="list-style-type: square; font-size: 26px">
+                    <li><b>Performance</b>: Response Times, Throughput, Scalability.</li>
+                    <li><b>Reliability</b>: Uptime, DR, Consistency.</li>
+                    <li><b>Usability:</b>: User friendliness, Universal Design.</li>
+                    <li><b>Compatibility</b>: With other components.</li>
+                    <li><b>Compliance</b>: Regulatory, financial, or legal constraints</li>
+                    <li><b>Security</b>: Who has access to components and data.</li>
+                    <li><b>Operating</b>: Resource availability and skills, monitoring.</li>
+                    <li><b>Lifecycle</b>: Ease of maintenance, future enhancements, market changes.</li>
+                    <li><b>Economic</b>: Cost of project, consider long-term costs.</li>
+                </ul>
+                <aside class="notes">Reliability and consistency: Story about Chess and MySQL.</aside>
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+           -- Why do projects fail
+           ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;">
+                <p style="font-size: 50px; margin-bottom: 0px"><b>Why</b></p>
+                <p style="font-style: italic; margin-top: 0px">is <span style="color: #cb4b16;"> non-functional requirements</span> so hard to fullfill?</p>
+                <ul style="list-style-type: square; font-size: 26px ">
+                    <li>Difficult to model: lack a consistent method of representation.</li>
+                    <li>Casually-Stated: not an integrated part of project model.</li>
+                    <li>Hard to measure (or maybe not for performance requirements).</li>
+                    <li>Hard to test: Do we have a production-like test environment?</li>
+                </ul>
+                <aside class="notes">Casually-stated: If integrated part of project modell, often just an excel sheet to check off "done"</aside>
+            </section>
+            <section style="text-align: left;">
+                <p style="font-size: 50px; margin-bottom: 0px"><b>Why</b></p>
+                <p style="font-style: italic; margin-top: 0px">is <span style="color: #cb4b16;"> performance requirements</span> so hard to fullfill?</p>
+                <ul style="list-style-type: square; font-size: 26px ">
+                    <li>All from last slide.</li>
+                    <li>Time is a cost.</li>
+                    <li>Focus on functionality: Clients want to see "visual" results.</li>
+                    <li>Human factors</li>
+                </ul>
+                <aside class="notes"></aside>
+            </section>
+            <section>
+                <img class="stretch" src="images/chocolate.png" alt="Chocolate">
+                <aside class="notes">Smoking?<br>If I asked you to put your hand on a glowing hot stove?<br>
+                When do you feel the pain?</aside>
+            </section>
+            <section style="text-align: left;">
+                <p style="font-style: italic; margin-bottom: 0px">Human Factor</p>
+                <p style="font-size: 50px; margin-top: 0px; color: #cb4b16;" >When do we feel the pain?</p>
+                <p style="font-size: 30px;">Design -> Development -> Test -> Production -> <b>Future issues</b></p>
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+           -- Performance measurements - Response Times
+           ------------------------------------------------------------- -->
+        <section>
+            <section>
+                <p style="font-size: 50px; color: #cb4b16; ">Measuring Response Times</p>
+                <p style="font-size: 30px;">"Our users feel the variance, not the mean."</p>
+                <p style="text-align: right; font-style: italic; font-size: 22px">Cary Millsap</p>
+            </section>
+            <section>
+                <p style="font-size: 30px;">Two lists of response times (with avarage 1 sec)</p>
+                <table style="font-size: 26px">
+                    <thead><tr><th></th><th>List1</th><th>List2</th></tr></thead>
+                    <tbody>
+                    <tr><td>1</td><td>.924</td><td>.796</td></tr>
+                    <tr><td>2</td><td>.928</td><td>.798</td></tr>
+                    <tr><td>3</td><td>.954</td><td>.802</td></tr>
+                    <tr><td>4</td><td>.957</td><td>.823</td></tr>
+                    <tr><td>5</td><td>.961</td><td>.919</td></tr>
+                    <tr><td>6</td><td>.965</td><td>.977</td></tr>
+                    <tr><td>7</td><td>.972</td><td>1.076</td></tr>
+                    <tr><td>8</td><td>.979</td><td>1.216</td></tr>
+                    <tr><td>9</td><td>.987</td><td>1.273</td></tr>
+                    <tr><td>10</td><td>1.373</td><td>1.320</td></tr>
+                    </tbody>
+                </table>
+                <aside class="notes">List1: 90 % under 1 sec<br>
+                List2: 60 % under 1 sec.
+                </aside>
+            </section>
+            <section style="text-align: left;">
+                <p><b>Alternative 1</b>: All requests < 1 sec <span class="fragment" style="color: #cb4b16 ">(not good)</span></p>
+                <p class="fragment"><b>Alternative 2</b>: Average < 1 sec  <span class="fragment" style="color: #cb4b16 ">(not good)</span></p><br>
+                <p class="fragment" style="font-style: italic">We need a better alternative for how to specify requirements.</p><br>
+                <p class="fragment"><span style="color: #cb4b16 "><b>Alternative 2:</b> 90th percentile < 1 sec<br></span>
+                (read: < 1 sec for 90% of the executions)</p>
+                <aside class="notes">List1: 90th percentile response time is 0.987 sec<br>
+                    List2: 90th percentile response time is 1.273 sec
+                </aside>
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+           -- Analyzing Response Time and instrumentation
+           ------------------------------------------------------------- -->
+        <section>
+            <section>
+                <p style="font-size: 26px; margin-bottom: 0px">Response Time equals</p>
+                <p style="font-size: 50px; font-style: italic; margin-top: 0px; color: #cb4b16;">Service Time (CPU) + Wait Time</p>
+                <img src="images/performance-code-path.png" class="stretch"/>
+                <aside class="notes">Chatty Code - no use of tuning SQLs if the network latency kills your application.<br>
+                How do we know where time is spent? Database? Probably not.</aside>
+            </section>
+            <section data-auto-animate>
+                <p data-id="instr" style="font-size: 50px; color: #cb4b16; ">Instrumentation</p>
+                <p style="font-style: italic; font-size: 30px;">"Performance is a feature." Cary Millsap</p>
+            </section>
+            <section data-auto-animate>
+                <p data-id="instr" style="font-size: 50px; color: #cb4b16; ">Instrumentation</p>
+                <span style="font-size: 26px; text-align: left">
+                    <p>When issues occures, it is important to fix them ASAP.</p>
+                    <p>Instrumentation is supposed to give us insight into what is going on in our application.</p>
+                    <p>Valuable both during development (debug) and testing, and in production.</p>
+                </span>
+            </section>
+            <section data-auto-animate>
+                <p data-id="instr" style="font-size: 50px; color: #cb4b16; ">Instrumentation</p>
+                <span style="font-size: 26px; text-align: left">
+                    <p>Might include:</p>
+                    <ul>
+                        <li>Third party tools (Examples: DataDog, JavaMelody, AWS X-Ray etc).</li>
+                        <li>Coding new functionality.</li>
+                        <li style="list-style-type: none"> <br></li>
+                        <li>Logging</li>
+                        <li>Measures (timings, sizes(how much data was fetched), etc)</li>
+                        <li>Parsing logs</li>
+                        <li>Alerts</li>
+                    </ul>
+                </span>
+            </section>
+            <section style="text-align: left;">
+                <p data-id="instr" style="font-size: 50px; color: #cb4b16; ">Distributed Systems</p>
+                <span style="font-size: 26px;">
+                    <p>We want to follow executions through distributed systems. How?</p>
+                    <span class="fragment">
+                        <p>We need to introduce a <span style="color: #cb4b16">Experience ID</span>.</p>
+                        <p>The Experience ID needs to be <span style="color: #cb4b16">propagated to every service</span> in use.</p>
+                        <p>Then we <span style="color: #cb4b16">need a way to collect all data</span> for a given Experience.</p>
+                    </span>
+                </span>
+            </section>
+            <section>
+                <p data-id="instr" style="font-size: 50px; color: #cb4b16; ">Profiling</p>
+                <span style="font-size: 22px">
+                <p>Use collected data to create a profile showing time distribution.</p>
+                    <table>
+                        <thead><tr><th></th><th>Function Call</th><th>R (sec)</th><th>Calls</th></tr></thead>
+                        <tbody>
+                        <tr><td>1</td><td>DB:fetch()</td><td>.7963</td><td>1013</td></tr>
+                         <tr><td>2</td><td>APP:await_db_netio()</td><td>.3384</td><td>1013</td></tr>
+                         <tr><td>3</td><td>DB:execute()</td><td>.1932</td><td>89</td></tr>
+                         <tr><td>4</td><td>DB:bind()</td><td>.1032</td><td>89</td></tr>
+                         <tr><td>5</td><td>Other</td><td>.0539</td><td>214</td></tr>
+                         <tr><td>6</td><td>APP:render_graph()</td><td>.0493</td><td>7</td></tr>
+                         <tr><td>7</td><td>APP:tabularize()</td><td>.0232</td><td>4</td></tr>
+                         <tr><td>8</td><td>APP:read()</td><td>.0091</td><td>2</td></tr>
+                        </tbody>
+                    </table>
+                </span>
+                <aside class="notes">Total time about 1,5 sec.<br>
+                    A profile shows where your code has spent your time and—sometimes even more importantly—where it has not.<br>
+                    Over 50 % spend on DB:fetch().
+                </aside>
+            </section>
+            <section>
+                <p data-id="instr" style="font-size: 50px; color: #cb4b16; ">Amdahl's Law</p>
+                <p style="font-style: italic">"The overall performance improvement gained by optimizing a single part of a system
+                    is limited by the fraction of time that the improved part is actually used."</p>
+                <aside class="notes">Not always you'll start optimizing from the top.<br>
+                    Also must consider cost of fixing the single part of the system.</aside>
+            </section>
+            <section>
+                <p data-id="instr" style="font-size: 50px; color: #cb4b16; ">Profiling</p>
+                <span style="font-size: 22px">
+                <p>Use collected data to create a profile showing time distribution.</p>
+                    <table>
+                        <thead><tr><th></th><th>Potential improvment (%)<br>and cost of investment </th><th>R (sec)</th><th>R (%)</th></tr></thead>
+                        <tbody>
+                        <tr><td>1</td><td>35% super expensive</td><td>.7963</td><td>50,1%</td></tr>
+                         <tr><td>2</td><td>14% super cheap</td><td>.3384</td><td>21,5%</td></tr>
+                         <tr><td>3</td><td>Impossible to improve</td><td>.1932</td><td>12,0%</td></tr>
+                         <tr><td>4</td><td>4,0% super cheap</td><td>.1032</td><td>6,5%</td></tr>
+                         <tr><td>5</td><td>0,1% super expensive</td><td>.0539</td><td>3,4%</td></tr>
+                         <tr><td>6</td><td>1,6% cheap</td><td>.0493</td><td>3,1%</td></tr>
+                         <tr><td>7</td><td>Impossible to improve</td><td>.0232</td><td>1,5%</td></tr>
+                         <tr><td>8</td><td>0,0% cheap</td><td>.0091</td><td>0,5%</td></tr>
+                        </tbody>
+                    </table>
+                </span>
+                <aside class="notes">Is choosing 2 and 4 enough?
+                </aside>
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+          -- Analyzing Response Time and instrumentation
+          ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;">
+                <p data-id="instr" style="font-size: 50px; color: #cb4b16; ">Load</p>
+                <span style="font-size: 26px">
+                    <p>Competition for a resource induced by concurrent task executions.</p>
+                    <p>One measure of load is <span style="color: #cb4b16 ">utilization</span>, which is resource usage divided by resource capacity for a specified time interval.</p>
+                    <p>As utilization for a resource goes up, so does the response time a user will experience when requesting service from that resource.</p>
+                </span>
+                <aside class="notes">
+                    The reason that the performance testing done by software developers doesn't catch all the performance problems that show up later in production.<br>
+                    Example: CPU load on a computer. Load avg: 4 => On average 4 threads want to use CPU on each core.<br>
+                    Example: Highway. The car does not really go slower => QUEUING.
+                </aside>
+            </section>
+        </section>
+    </div>
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/markdown/markdown.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+        hash: true,
+        transition: 'fade',
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+    });
+</script>
+</body>
+</html>
+
