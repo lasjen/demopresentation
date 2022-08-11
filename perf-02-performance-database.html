@@ -1,0 +1,475 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>HVL: Dat152</title>
+    <meta name="description" content="Page for dat152 presentations">
+    <meta name="author" content="Lasse Jenssen">
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/white.css">
+    <link rel="stylesheet" href="dist/theme/robot-lung.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/zenburn.css">
+
+    <!-- Plugin for large code -->
+    <link rel="stylesheet" href="plugin/fullscreen-code/reveal.js-fullscreen-code.css">
+
+</head>
+<body>
+
+<div class="reveal">
+    <div class="slides">
+        <!-- --------------------------------------------------------
+            -- Header Slide
+            ------------------------------------------------------------- -->
+        <section data-background="black" style="text-align: left;">
+            <p style="color: #cb4b16; font-size: 50px; margin-top: 0px"><b>Database Performance</b></p>
+            <p style="font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
+            <p style="font-size: 18px"><a href="index.html">Home</a></p>
+            <p> TO BE UPDATED! </p>
+        </section>
+        <!-- --------------------------------------------------------
+            -- Sources
+            ------------------------------------------------------------- -->
+        <section style="text-align: left;">
+            <p style="font-size: 50px; ">Sources</p>
+            <span style="font-size: 24px">
+                <ul>
+                    <li>Today we'll look at some sample code.</li>
+                    <li>The code was actually run in production for a Norwegian Bank.</li>
+                    <li>The code is "anonymized":<br>
+                        Instead of querying accounts, we'll be querying "Hamsters".</li>
+                </ul>
+            </span>
+        </section>
+        <!-- --------------------------------------------------------
+            -- Introduction
+            ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;">
+                <p style="color: #cb4b16; font-size: 50px; margin-top: 0px"><b>Database Performance</b></p>
+                <p style="font-size: 40px; font-style: italic">"Doesn't the DBA take care of this?"</p>
+                <aside class="notes">Story about: When I worked as an Oracle DBA - DNB project.</aside>
+            </section>
+            <section data-background="images/performance-dialog.png" data-background-size="70%">
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+           -- An example
+           ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left; font-size: 30px">
+                <pre>
+                <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
+                    public List< Hamster > getHamsters(List< Long > hamsterIds) throws Exception {
+                        List< Hamster > hamsters = new ArrayList<>();
+                        for (Long hamsterId : hamsterIds) {
+                            String sql = "select * from hamster where id = ";
+                            JdbcCursorItemReader< Hamster > itemReader = new JdbcCursorItemReader<>();
+                            itemReader.setDataSource(this.dataSource);
+                            itemReader.setSql(sql + hamsterId);
+                            itemReader.setRowMapper(new HamsterRowMapper());
+                            ExecutionContext executionContext = new ExecutionContext();
+                            itemReader.open(executionContext);
+
+                            Hamster hamster = itemReader.read();
+                            hamsters.add(hamster);
+                            itemReader.close();
+                        }
+                        return hamsters;
+                    }
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="bash" data-trim data-line-numbers>
+/\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.6.1)
+
+2021-12-13 13:00:34.158  INFO 36410 --- [           main] c.tietoevry.hamster.HamsterApplication   : Starting HamsterApplication using Java 11....
+2021-12-13 13:00:34.160  INFO 36410 --- [           main] c.tietoevry.hamster.HamsterApplication   : No active profile set, falling back to ...
+2021-12-13 13:00:34.692  INFO 36410 --- [           main] c.tietoevry.hamster.HamsterApplication   : Started HamsterApplication in 0.751 sec ...
+2021-12-13 13:00:34.704  INFO 36410 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-12-13 13:00:35.059  INFO 36410 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+com.tietoevry.hamster.dao.WorseHamsterDaoImpl     : 10.257853952, Count: 5000
+2021-12-13 13:00:44.965  INFO 36410 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2021-12-13 13:00:44.986  INFO 36410 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
+PARSING IN CURSOR #139940598829784 len=49 dep=0 uid=112 oct=3 lid=112 tim=44724503924 hv=2439730243 ad='869704b0' sqlid='bbbkck68qqp23'
+select /* WorseDao */ * from hamster where id = 1
+END OF STMT
+PARSE #139940598829784:c=1475,e=2172,p=0,cr=0,cu=0,mis=1,r=0,dep=0,og=1,plh=3304116072,tim=44724503916
+EXEC #139940598829784:c=79,e=63,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=1,plh=3304116072,tim=44724504072
+WAIT #139940598829784: nam='SQL*Net message to client' ela= 9 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44724504138
+FETCH #139940598829784:c=90,e=91,p=0,cr=4,cu=0,mis=0,r=1,dep=0,og=1,plh=3304116072,tim=44724504262
+STAT #139940598829784 id=1 cnt=1 pid=0 pos=1 obj=3516861 op='TABLE ACCESS BY INDEX ROWID HAMSTER (cr=4 pr=0 pw=0 str=1 time=90 us cost=3 size=51 card=1)'
+STAT #139940598829784 id=2 cnt=1 pid=1 pos=1 obj=3516862 op='INDEX UNIQUE SCAN BIG_TABLE_PK (cr=3 pr=0 pw=0 str=1 time=54 us cost=2 size=0 card=1)'
+WAIT #139940598829784: nam='SQL*Net message from client' ela= 44439 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44724548931
+CLOSE #139940598829784:c=13,e=13,dep=0,type=0,tim=44724549014
+=====================
+PARSING IN CURSOR #139940598829784 len=49 dep=0 uid=112 oct=3 lid=112 tim=44724550148 hv=685173995 ad='65fe8578' sqlid='2sbfgpsnddv7b'
+select /* WorseDao */ * from hamster where id = 2
+END OF STMT
+PARSE #139940598829784:c=611,e=1054,p=0,cr=0,cu=0,mis=1,r=0,dep=0,og=1,plh=3304116072,tim=44724550140
+EXEC #139940598829784:c=53,e=42,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=1,plh=3304116072,tim=44724550256
+WAIT #139940598829784: nam='SQL*Net message to client' ela= 9 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44724550319
+FETCH #139940598829784:c=74,e=73,p=0,cr=4,cu=0,mis=0,r=1,dep=0,og=1,plh=3304116072,tim=44724550427
+STAT #139940598829784 id=1 cnt=1 pid=0 pos=1 obj=3516861 op='TABLE ACCESS BY INDEX ROWID HAMSTER (cr=4 pr=0 pw=0 str=1 time=54 us cost=3 size=51 card=1)'
+STAT #139940598829784 id=2 cnt=1 pid=1 pos=1 obj=3516862 op='INDEX UNIQUE SCAN BIG_TABLE_PK (cr=3 pr=0 pw=0 str=1 time=24 us cost=2 size=0 card=1)'
+WAIT #139940598829784: nam='SQL*Net message from client' ela= 1329 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44724551903
+CLOSE #139940598829784:c=14,e=14,dep=0,type=0,tim=44724551968
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left;">
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px"><b>PreparedStatement</b></p>
+                <p style="font-style: italic; margin-top: 0px">Missing bind variables causes <span style="color: #cb4b16">hard parsing</span></p>
+                <span style="font-size: 26px">
+                    <ul>
+                        <li>Soft parse vs hard parse</li>
+                        <li>Hard parse:</li>
+                        <ul style="list-style-type: circle; font-size: 22px">
+                            <li>CPU intensive</li>
+                            <li>Contention towards internal structures</li>
+                        </ul>
+                        <li>PreparedStatement to avoid SQL Injection</li>
+                    </ul><br>
+                    <pre>
+                    <code lang="java" data-trim style="font-size: 20px">
+                        String sql = "select * from hamster where id = ?";
+
+                        ...
+
+                        itemReader.setPreparedStatementSetter(ps -> ps.setLong(1, hamsterId));
+                    </code></pre>
+                </span>
+            </section>
+            <section style="text-align: left; font-size: 30px">
+                <pre>
+                <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
+public List< Hamster > getHamsters(List< Long > hamsterIds) throws Exception {
+   List< Hamster > hamsters = new ArrayList<>();
+   for (Long hamsterId : hamsterIds) {
+      String sql = "select * from hamster where id = ?";
+      JdbcCursorItemReader< Hamster > itemReader = new JdbcCursorItemReader<>();
+      itemReader.setDataSource(this.dataSource);
+      itemReader.setSql(sql);
+
+      itemReader.setPreparedStatementSetter(ps -> ps.setLong(1, hamsterId));
+
+      itemReader.setRowMapper(new HamsterRowMapper());
+      ExecutionContext executionContext = new ExecutionContext();
+      itemReader.open(executionContext);
+
+      Hamster hamster = itemReader.read();
+      hamsters.add(hamster);
+      itemReader.close();
+   }
+   return hamsters;
+}
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="bash" data-trim data-line-numbers>
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.6.1)
+
+2021-12-13 13:08:59.465  INFO 36592 --- [           main] c.tietoevry.hamster.HamsterApplication   : Starting HamsterApplication using Java ...
+2021-12-13 13:08:59.467  INFO 36592 --- [           main] c.tietoevry.hamster.HamsterApplication   : No active profile set, falling back to ...
+2021-12-13 13:09:00.021  INFO 36592 --- [           main] c.tietoevry.hamster.HamsterApplication   : Started HamsterApplication in 0.768 sec ...
+2021-12-13 13:09:00.033  INFO 36592 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-12-13 13:09:00.264  INFO 36592 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+com.tietoevry.hamster.dao.WorseHamsterDaoImpl     : 5.831844564, Count: 5000
+com.tietoevry.hamster.dao.BetterHamsterDaoImpl    : 5.203327186, Count: 5000
+2021-12-13 13:09:11.071  INFO 36592 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2021-12-13 13:09:11.094  INFO 36592 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
+PARSING IN CURSOR #139940598829784 len=52 dep=0 uid=112 oct=3 lid=112 tim=44730739200 hv=717000298 ad='848dd3c0' sqlid='bux41hnpbt3ma'
+select /* BetterDao */ * from hamster where id = :1
+END OF STMT
+PARSE #139940598829784:c=59,e=61,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=1,plh=3304116072,tim=44730739193
+BINDS #139940598829784:
+
+ Bind#0
+  oacdty=02 mxl=22(22) mxlc=00 mal=00 scl=00 pre=00
+  oacflg=03 fl2=1000000 frm=01 csi=873 siz=24 off=0
+  kxsbbbfp=7f4675aea1d8  bln=22  avl=02  flg=05
+  value=2
+EXEC #139940598829784:c=70,e=69,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=1,plh=3304116072,tim=44730739323
+WAIT #139940598829784: nam='SQL*Net message to client' ela= 7 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44730739364
+FETCH #139940598829784:c=42,e=42,p=0,cr=4,cu=0,mis=0,r=1,dep=0,og=1,plh=3304116072,tim=44730739433
+STAT #139940598829784 id=1 cnt=1 pid=0 pos=1 obj=3516861 op='TABLE ACCESS BY INDEX ROWID HAMSTER (cr=4 pr=0 pw=0 str=1 time=35 us cost=3 size=51 card=1)'
+STAT #139940598829784 id=2 cnt=1 pid=1 pos=1 obj=3516862 op='INDEX UNIQUE SCAN BIG_TABLE_PK (cr=3 pr=0 pw=0 str=1 time=14 us cost=2 size=0 card=1)'
+WAIT #139940598829784: nam='SQL*Net message from client' ela= 1243 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44730740882
+CLOSE #139940598829784:c=13,e=34,dep=0,type=0,tim=44730741026
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
+SQL> select (case when sql_text like 'select * from hamster where id =%'
+                  then 'select * from hamster where id ='
+                  else 'other'
+             end) queries, count(*)
+     from v$sql
+     group by (case when sql_text like 'select * from hamster where id =%'
+                    then 'select * from hamster where id ='
+                    else 'other'
+               end);
+
+QUERIES                            COUNT(*)
+-------------------------------- ----------
+other                                   250
+select * from hamster where id =       5001
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left;">
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px"><b>Chatty Code</b></p>
+                <p style="font-style: italic; margin-top: 0px">Loops might generate row-by-row processing (slow-by-slow)</span></p>
+                <pre>
+                    <code lang="java" data-trim style="font-size: 18px">
+  for (Long hamsterId : hamsterIds) {
+      String sql = "select * from hamster where id = ?";
+      JdbcCursorItemReader< Hamster > itemReader = new JdbcCursorItemReader<>();
+      itemReader.setDataSource(this.dataSource);
+      itemReader.setSql(sql);
+
+      itemReader.setPreparedStatementSetter(ps -> ps.setLong(1, hamsterId));
+
+      itemReader.setRowMapper(new HamsterRowMapper());
+      ExecutionContext executionContext = new ExecutionContext();
+      itemReader.open(executionContext);
+
+      Hamster hamster = itemReader.read();
+      hamsters.add(hamster);
+      itemReader.close();
+   }
+                    </code></pre>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
+CREATE GLOBAL TEMPORARY TABLE hamsterids (
+      id  NUMBER
+) ON COMMIT DELETE ROWS;
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left; font-size: 30px">
+                <pre>
+                <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
+@Transactional
+public List< Hamster > getHamsters(List< Long > hamsterIds) throws Exception {
+
+   List< Hamster > hamsters = new ArrayList<>();
+   JdbcTemplate template = new JdbcTemplate(dataSource);
+
+   final String INSERT_EMP_QUERY = "insert into hamsterids (id) values (?)";
+   List< Object[] > idList = new ArrayList< Object[] >();
+   for(Long id : hamsterIds) {
+       idList.add(new Object[] {id});
+   }
+   template.batchUpdate(INSERT_EMP_QUERY, idList);
+
+   final String SELECT_QUERY =
+      "select * from hamster where id in (select id from hamsterids)";
+
+   hamsters = template.query(SELECT_QUERY, new HamsterRowMapper());
+
+   return hamsters;
+}
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="bash" data-trim data-line-numbers>
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.6.1)
+
+2021-12-13 13:23:30.354  INFO 36814 --- [           main] c.tietoevry.hamster.HamsterApplication   : Starting HamsterApplication using Java 11...
+2021-12-13 13:23:30.356  INFO 36814 --- [           main] c.tietoevry.hamster.HamsterApplication   : No active profile set, falling back to def...
+2021-12-13 13:23:30.880  INFO 36814 --- [           main] c.tietoevry.hamster.HamsterApplication   : Started HamsterApplication in 0.731 sec ...
+2021-12-13 13:23:30.891  INFO 36814 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-12-13 13:23:31.108  INFO 36814 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+com.tietoevry.hamster.dao.WorseHamsterDaoImpl     : 5.7151248, Count: 5000
+com.tietoevry.hamster.dao.BetterHamsterDaoImpl    : 5.274748113, Count: 5000
+com.tietoevry.hamster.dao.BestHamsterDaoImpl      : 0.464441673, Count: 5000
+2021-12-13 13:23:42.350  INFO 36814 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2021-12-13 13:23:42.385  INFO 36814 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left;">
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px"><b>Can we do any better?</b></p>
+                <p style="font-style: italic; margin-top: 0px">How do JDBC run a SELECT query (with PreparedStatement)?</span></p>
+                <ul>
+                    <li>Parse</li>
+                    <li>Bind</li>
+                    <li>Execute</li>
+                    <li>Fetch <span class="fragment" style="color: #cb4b16">(default FetchSize = 10)</span></li>
+                </ul>
+            </section>
+            <section style="text-align: left; font-size: 30px">
+                <pre>
+                <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
+@Transactional
+public List< Hamster > getHamsters(List< Long > hamsterIds) throws Exception {
+
+   List< Hamster > hamsters = new ArrayList<>();
+   JdbcTemplate template = new JdbcTemplate(dataSource);
+
+   final String INSERT_EMP_QUERY = "insert into hamsterids (id) values (?)";
+   List< Object[] > idList = new ArrayList< Object[] >();
+   for(Long id : hamsterIds) {
+       idList.add(new Object[] {id});
+   }
+   template.batchUpdate(INSERT_EMP_QUERY, idList);
+
+   final String SELECT_QUERY =
+      "select * from hamster where id in (select id from hamsterids)";
+
+   template.setFetchSize(1000);   # Getting 1000 rows at every fetch
+
+   hamsters = template.query(SELECT_QUERY, new HamsterRowMapper());
+
+   return hamsters;
+}
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="bash" data-trim data-line-numbers>
+PARSING IN CURSOR #139940598828144 len=75 dep=0 uid=112 oct=3 lid=112 tim=44734438409 hv=3198350253 ad='7f1b1b08' sqlid='d1u0mw2za5wxd'
+select /* BestDao */ * from hamster where id in (select id from hamsterids)
+END OF STMT
+PARSE #139940598828144:c=5068,e=6229,p=0,cr=8,cu=0,mis=1,r=0,dep=0,og=1,plh=788792483,tim=44734438401
+EXEC #139940598828144:c=205,e=206,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=1,plh=788792483,tim=44734438666
+WAIT #139940598828144: nam='SQL*Net message to client' ela= 7 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44734438711
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 111 driver id=1413697536 #bytes=8110 p3=0 obj#=-1 tim=44734453888
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 50 driver id=1413697536 #bytes=8092 p3=0 obj#=-1 tim=44734467396
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 150 driver id=1413697536 #bytes=8103 p3=0 obj#=-1 tim=44734480829
+FETCH #139940598828144:c=52404,e=52664,p=0,cr=1033,cu=0,mis=0,r=1000,dep=0,og=1,plh=788792483,tim=44734491405
+WAIT #139940598828144: nam='PGA memory operation' ela= 168 p1=0 p2=0 p3=0 obj#=-1 tim=44734491640
+WAIT #139940598828144: nam='SQL*Net message from client' ela= 2205 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44734493892
+WAIT #139940598828144: nam='SQL*Net message to client' ela= 9 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44734494067
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 54 driver id=1413697536 #bytes=8119 p3=0 obj#=-1 tim=44734508154
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 51 driver id=1413697536 #bytes=8085 p3=0 obj#=-1 tim=44734523200
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 53 driver id=1413697536 #bytes=8099 p3=0 obj#=-1 tim=44734538356
+FETCH #139940598828144:c=51208,e=52143,p=0,cr=1026,cu=0,mis=0,r=1000,dep=0,og=1,plh=788792483,tim=44734546087
+WAIT #139940598828144: nam='SQL*Net message from client' ela= 1615 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44734547772
+WAIT #139940598828144: nam='SQL*Net message to client' ela= 7 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44734547869
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 135 driver id=1413697536 #bytes=8121 p3=0 obj#=-1 tim=44734563157
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 113 driver id=1413697536 #bytes=8091 p3=0 obj#=-1 tim=44734575521
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 112 driver id=1413697536 #bytes=8097 p3=0 obj#=-1 tim=44734589518
+FETCH #139940598828144:c=52256,e=53688,p=0,cr=1026,cu=0,mis=0,r=1000,dep=0,og=1,plh=788792483,tim=44734601501
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="bash" data-trim data-line-numbers>
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.6.1)
+
+2021-12-13 13:23:30.354  INFO 36814 --- [           main] c.tietoevry.hamster.HamsterApplication   : Starting HamsterApplication using Java 11...
+2021-12-13 13:23:30.356  INFO 36814 --- [           main] c.tietoevry.hamster.HamsterApplication   : No active profile set, falling back to def...
+2021-12-13 13:23:30.880  INFO 36814 --- [           main] c.tietoevry.hamster.HamsterApplication   : Started HamsterApplication in 0.731 sec ...
+2021-12-13 13:23:30.891  INFO 36814 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-12-13 13:23:31.108  INFO 36814 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+com.tietoevry.hamster.dao.WorseHamsterDaoImpl     : 5.669287764, Count: 5000
+com.tietoevry.hamster.dao.BetterHamsterDaoImpl    : 5.053222255, Count: 5000
+com.tietoevry.hamster.dao.BestHamsterDaoImpl      : 0.454341871, Count: 5000
+com.tietoevry.hamster.dao.BestHamsterDaoImpl      : 0.051736636, Count: 5000
+2021-12-13 13:23:42.350  INFO 36814 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2021-12-13 13:23:42.385  INFO 36814 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left;">
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px"><b>Summary</b></p>
+                <p style="font-style: italic; margin-top: 0px">Quote from Andrew Holdsworth (Database Expert):</p><br>
+                <quote style="font-size: 40px">
+                    "Good performance is rarely an accident – <br>Most people get the systems they deserve."
+                </quote>
+            </section>
+        </section>
+
+
+        <!-- --------------------------------------------------------
+					-- Next
+					------------------------------------------------------------- -->
+        <section data-background="black">
+            <p style="font-style: italic; margin-bottom: 0px">Next</p>
+            <p style="font-size: 50px; margin-top: 0px" ><a href="perf-03-performance-java.html"><b>Java Performance</b></a></p>
+            <p style="font-size: 18px"><a href="index.html">Home</a></p>
+        </section>
+    </div>
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/markdown/markdown.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+        hash: true,
+        transition: 'fade',
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ],
+
+        dependencies: [
+            // ...
+            { src: 'plugin/fullscreen-code/jquery-3.1.1.min.js' },
+            { src: 'plugin/fullscreen-code/reveal.js-fullscreen-code.js' }
+        ]
+    });
+</script>
+</body>
+</html>
+

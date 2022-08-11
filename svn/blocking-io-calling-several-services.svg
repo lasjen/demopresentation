@@ -1,0 +1,40 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+ <g>
+  <title>Layer 1</title>
+  <path stroke="null" id="svg_8" d="m87,50.5l181,0l0,57l-181,0l0,-57z" opacity="undefined" fill="#007fff"/>
+  <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" stroke-width="0" id="svg_9" y="86.75" x="128" fill="#000000">Service A</text>
+  <line transform="rotate(90 173.5 267.5)" stroke="#559E84" id="svg_16" y2="268" x2="330" y1="267" x1="17" stroke-dasharray="5,5" stroke-width="5" fill="none"/>
+  <line stroke="#559E84" id="svg_17" y2="268" x2="705" y1="267" x1="392" stroke-dasharray="5,5" stroke-width="5" fill="none" transform="rotate(90 548.5 267.5)"/>
+  <g transform="rotate(180 359.306 288.26)" stroke="null" id="svg_27">
+   <line stroke="#C48157" id="svg_25" y2="288.00012" x2="533.93205" y1="289.00012" x1="182.00006" stroke-width="5" fill="none"/>
+   <path stroke="#C48157" id="svg_26" d="m527.50409,288.26009l-11.41294,-13.00001l20.52084,13.00001l-20.52084,12.99999l11.41294,-12.99999z" stroke-width="5" fill="none"/>
+  </g>
+  <text xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_37" y="267" x="566" fill="#000000">40ms</text>
+  <g stroke="null" id="svg_38">
+   <line stroke="#C48157" id="svg_18" y2="141" x2="376.11094" y1="142" x1="179" stroke-width="5" fill="#559E84"/>
+   <path stroke="#C48157" id="svg_23" d="m372.51075,141.25997l-6.39219,-13l11.49336,13l-11.49336,13l6.39219,-13z" stroke-width="5" fill="#559E84"/>
+  </g>
+  <path stroke="null" id="svg_1" d="m524,50.5l181,0l0,57l-181,0l0,-57z" opacity="undefined" fill="#007fff"/>
+  <text style="cursor: move;" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" stroke-width="0" id="svg_11" y="86.75" x="565" fill="#000000">Service C</text>
+  <path stroke="null" id="svg_2" d="m305,50.5l181,0l0,57l-181,0l0,-57z" opacity="undefined" fill="#007fff"/>
+  <text style="cursor: move;" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" stroke-width="0" id="svg_3" y="86.75" x="346" fill="#000000">Service B</text>
+  <line transform="rotate(90 383.5 267.5)" stroke="#559E84" id="svg_4" y2="268" x2="540" y1="267" x1="227" stroke-dasharray="5,5" stroke-width="5" fill="none"/>
+  <g stroke="null" id="svg_7">
+   <line stroke="#C48157" id="svg_5" y2="242" x2="535.88665" y1="243" x1="178" stroke-width="5" fill="#559E84"/>
+   <path stroke="#C48157" id="svg_6" d="m529.34994,242.25997l-11.60605,-13l20.86805,13l-20.86805,13l11.60605,-13z" stroke-width="5" fill="#559E84"/>
+  </g>
+  <g transform="rotate(180 278.306 194.26)" stroke="null" id="svg_13">
+   <line stroke="#C48157" id="svg_10" y2="194" x2="376.11094" y1="195" x1="179" stroke-width="5" fill="#559E84"/>
+   <path stroke="#C48157" id="svg_12" d="m372.51075,194.25997l-6.39219,-13l11.49336,13l-11.49336,13l6.39219,-13z" stroke-width="5" fill="#559E84"/>
+  </g>
+  <text xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_14" y="176" x="395" fill="#000000">30ms</text>
+  <path stroke="null" id="svg_19" d="m255.06999,364.00945c0,-9.4132 -34.02637,-17.04412 -76,-17.04412l0,-13.6353l0,0c41.97363,0 76,7.63091 76,17.04412l0,13.6353c0,7.77209 -23.4446,14.55988 -57,16.5029l0,6.81765l-19,-13.09408l19,-14.17652l0,6.81765l0,0c22.62666,-1.31019 41.30767,-4.882 50.65516,-9.68525" fill="#C48157"/>
+  <g id="svg_28">
+   <path transform="rotate(-90 294.325 360.345)" id="svg_21" d="m272.65834,331.34495l54.16669,0c-5.98309,0 -10.83334,12.98374 -10.83334,28.99999c0,16.01625 4.85025,28.99999 10.83334,28.99999l-54.16669,0l0,0c-5.98309,0 -10.83334,-12.98374 -10.83334,-28.99999c0,-16.01625 4.85025,-28.99999 10.83334,-28.99999z" stroke="null" fill="#C48157"/>
+   <ellipse stroke="#C48157" ry="9.5" rx="28" id="svg_22" cy="327.5" cx="294" fill="none"/>
+  </g>
+  <text xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" stroke-width="0" id="svg_29" y="369" x="277" stroke="#C48157" fill="#000000">DB</text>
+  <text style="cursor: move;" xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_31" y="316" x="322" fill="#000000">20ms</text>
+ </g>
+
+</svg>
