@@ -21,7 +21,27 @@
 
 </head>
 <body>
+<!-- --------------------------------------------------------
+     -- Column definitions
+     ------------------------------------------------------------- -->
+<style>
+    .item-left { grid-area: left; }
+    .item-right { grid-area: right; }
+    .item-left-top { grid-area: left-top; }
+    .item-right-top { grid-area: right-top; }
+    .item-left-bottom { grid-area: left-bottom; }
+    .item-right-bottom { grid-area: right-bottom; }
 
+    .grid-container {
+        display: grid;
+        grid-template-areas:
+            'left right-top'
+            'left right-bottom';
+
+        grid-gap: 10px;
+        padding: 10px;
+    }
+</style>
 <div class="reveal">
     <div class="slides">
         <!-- --------------------------------------------------------
@@ -31,14 +51,14 @@
             <p style="color: #cb4b16; font-size: 50px; margin-top: 0px"><b>Database Performance</b></p>
             <p style="font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
             <p style="font-size: 18px"><a href="index.html">Home</a></p>
-            <p> TO BE UPDATED! </p>
         </section>
         <!-- --------------------------------------------------------
             -- Sources
             ------------------------------------------------------------- -->
-        <section style="text-align: left;">
-            <p style="font-size: 50px; ">Sources</p>
-            <span style="font-size: 24px">
+        <section>
+            <section style="text-align: left;">
+                <p style="font-size: 50px; ">Note</p>
+                <span style="font-size: 24px">
                 <ul>
                     <li>Today we'll look at some sample code.</li>
                     <li>The code was actually run in production for a Norwegian Bank.</li>
@@ -46,17 +66,28 @@
                         Instead of querying accounts, we'll be querying "Hamsters".</li>
                 </ul>
             </span>
+            </section>
+            <section style="text-align: left;">
+                <p style="font-size: 50px; ">Sources</p>
+                <span style="font-size: 24px">
+                <ul>
+                    <li><a href="https://docs.oracle.com/database/121/TGSQL/tgsql_optop.htm#TGSQL228">Oracle Optimizer Access Paths</a></li>
+                    <li><a href="https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing">About Pool Sizing</a></li>
+                </ul>
+            </span>
+            </section>
         </section>
         <!-- --------------------------------------------------------
             -- Introduction
             ------------------------------------------------------------- -->
         <section>
             <section style="text-align: left;">
-                <p style="color: #cb4b16; font-size: 50px; margin-top: 0px"><b>Database Performance</b></p>
+                <p style="color: #cb4b16; font-size: 50px; margin-top: 0px">Database Performance</p>
                 <p style="font-size: 40px; font-style: italic">"Doesn't the DBA take care of this?"</p>
                 <aside class="notes">Story about: When I worked as an Oracle DBA - DNB project.</aside>
             </section>
             <section data-background="images/performance-dialog.png" data-background-size="70%">
+                <aside class="notes">Teams dialog which came in while I was creating this presentation.</aside>
             </section>
         </section>
         <!-- --------------------------------------------------------
@@ -85,11 +116,13 @@
                     }
                 </code>
                 </pre>
+                <aside class="notes">A procedure which takes a list of hamster IDs, and finds the corresponding Hamsters in the DB.<br>
+                Seems to work just fine. Anyone want to take a go on what's wrong with this code?</aside>
             </section>
             <section style="text-align: left; font-size: 30px; width: 100% !important;">
                 <pre>
                 <code class="fullscreen-box" lang="bash" data-trim data-line-numbers>
-/\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
 ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
   '  |____| .__|_| |_|_| |_\__, | / / / /
@@ -138,7 +171,7 @@ CLOSE #139940598829784:c=14,e=14,dep=0,type=0,tim=44724551968
                 </pre>
             </section>
             <section style="text-align: left;">
-                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px"><b>PreparedStatement</b></p>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">PreparedStatement</p>
                 <p style="font-style: italic; margin-top: 0px">Missing bind variables causes <span style="color: #cb4b16">hard parsing</span></p>
                 <span style="font-size: 26px">
                     <ul>
@@ -208,6 +241,7 @@ com.tietoevry.hamster.dao.BetterHamsterDaoImpl    : 5.203327186, Count: 5000
 2021-12-13 13:09:11.094  INFO 36592 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
                 </code>
                 </pre>
+                <aside class="notes">Wait a second? Why did WorseHamsterDaoImpl take only 5,8 sec this time?</aside>
             </section>
             <section style="text-align: left; font-size: 30px; width: 100% !important;">
                 <pre>
@@ -253,8 +287,8 @@ select * from hamster where id =       5001
                 </code>
                 </pre>
             </section>
-            <section style="text-align: left;">
-                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px"><b>Chatty Code</b></p>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Chatty Code</p>
                 <p style="font-style: italic; margin-top: 0px">Loops might generate row-by-row processing (slow-by-slow)</span></p>
                 <pre>
                     <code lang="java" data-trim style="font-size: 18px">
@@ -276,9 +310,34 @@ select * from hamster where id =       5001
    }
                     </code></pre>
             </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Chatty Code</p>
+                <p style="font-style: italic; margin-top: 0px">Loops might generate row-by-row processing (slow-by-slow)</span></p>
+                <span>
+                    <ul>
+                        <li>Expected: Linear Performance: O(n)</li>
+                        <li>For every iteration:
+                            <ul style="list-style-type: circle">
+                                <li>Network Latency</li>
+                                <li>Soft parse (CPU)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </span>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Chatty Code</p>
+                <p style="font-style: italic; margin-top: 0px">Loops might generate row-by-row processing (slow-by-slow)</span></p>
+                <span>
+                    <ul>
+                        <li>Context Switching</li>
+                        <li>When load increases - contention could give O(n2) - eventually <span style="color: #cb4b16;">coherence delays</span></li>
+                    </ul>
+                </span>
+            </section>
             <section style="text-align: left; font-size: 30px; width: 100% !important;">
                 <pre>
-                <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
+                <code class="fullscreen-box" lang="sql" data-trim data-line-numbers>
 CREATE GLOBAL TEMPORARY TABLE hamsterids (
       id  NUMBER
 ) ON COMMIT DELETE ROWS;
@@ -336,7 +395,7 @@ com.tietoevry.hamster.dao.BestHamsterDaoImpl      : 0.464441673, Count: 5000
                 </pre>
             </section>
             <section style="text-align: left;">
-                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px"><b>Can we do any better?</b></p>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Can we do any better?</p>
                 <p style="font-style: italic; margin-top: 0px">How do JDBC run a SELECT query (with PreparedStatement)?</span></p>
                 <ul>
                     <li>Parse</li>
@@ -372,6 +431,7 @@ public List< Hamster > getHamsters(List< Long > hamsterIds) throws Exception {
 }
                 </code>
                 </pre>
+                <aside class="notes">Line 17</aside>
             </section>
             <section style="text-align: left; font-size: 30px; width: 100% !important;">
                 <pre>
@@ -427,19 +487,270 @@ com.tietoevry.hamster.dao.BestHamsterDaoImpl      : 0.051736636, Count: 5000
                 </code>
                 </pre>
             </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">PreparedStatement</p>
+                <p style="font-style: italic; margin-top: 0px">Should you always use PreparedStatement?</p><br>
+                <pre>
+                <code class="fullscreen-box" lang="sql" data-trim data-line-numbers>
+                    select status, count(*) cnt
+                    from order detail group by status order by 2 desc;
+
+                    STATUS CNT
+                    ------ -------
+                    C      1175234                  => Completed
+                    S         1035                  => Sent
+                    R          732                  => Ready (to be sent)
+                    N           91                  => New
+                </code>
+                </pre>
+                <aside class="notes">What happens if first search is on 'C'? What about 'S'?</aside>
+            </section>
             <section style="text-align: left;">
-                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px"><b>Summary</b></p>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px"><b>Demo Summary</b></p>
                 <p style="font-style: italic; margin-top: 0px">Quote from Andrew Holdsworth (Database Expert):</p><br>
                 <quote style="font-size: 40px">
                     "Good performance is rarely an accident – <br>Most people get the systems they deserve."
                 </quote>
             </section>
         </section>
-
-
         <!-- --------------------------------------------------------
-					-- Next
-					------------------------------------------------------------- -->
+             -- Execution Plans
+             ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">SQL Performance</p>
+                <p style="font-style: italic; margin-top: 0px">Databases need to choose a strategy for getting data</p>
+                <span>
+                        <ul>
+                            <li>Database generates an <span style="color: #cb4b16">execution plan</span>.</li>
+                            <li>The execution plan defines <span style="color: #cb4b16">ACCESS PATH</span>s.</li>
+                            <li>This is a developer responsibility.</li>
+                        </ul>
+                    </span>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">SQL Performance</p>
+                <p style="font-style: italic; margin-top: 0px">Some simple Access Methods:</p>
+                <span>
+                    <ul>
+                        <li>Table Scan</li>
+                        <li>Index Scan (Unique Index)</li>
+                        <li>Index Scan (Nonunique Index)</li>
+                    </ul>
+                </span>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Access Paths</p>
+                <p style="font-style: italic; margin-top: 0px">Full Table Scan</p>
+                <span>
+                    <ul>
+                        <li>If no search column.</li>
+                        <li>If no proper index for search column(s)</li>
+                        <li>If possible index exists, but <span style="color: #cb4b16">optimizer</span> suggest TABLE SCAN will be cheaper.</li>
+                    </ul>
+                </span>
+                <pre>
+                <code class="fullscreen-box" lang="sql" data-trim data-line-numbers>
+                    select * from employees;
+                    select * from employees where last_name like 'smith%'; # No or "inefficient" index
+                </code>
+                </pre>
+                <p>Remember! Table Scans are not evil! It depends.</p>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Access Paths</p>
+                <p style="font-style: italic; margin-top: 0px">Index Scan (Unique B-Tree Index)</p>
+                <span>
+                    <ul>
+                        <li>Equality search (0 or 1 row)</li>
+                        <li>like, <, <=, >, >=, <>, between ( 0 to MANY rows) = RANGE SCAN</li>
+                    </ul>
+                </span>
+                <pre>
+                <code class="fullscreen-box" lang="sql" data-trim data-line-numbers>
+                    select * from employees where id = 1;
+                    select * from employees where email like '%@gmail.com';
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Access Paths</p>
+                <p style="font-style: italic; margin-top: 0px">Index Scan (Nonunique B-Tree Index)</p>
+                <span>
+                    <ul>
+                        <li>=, like, <, <=, >, >=, <>, between ( 0 to MANY rows) = RANGE SCAN</li>
+                    </ul>
+                </span>
+                <pre>
+                <code class="fullscreen-box" lang="sql" data-trim data-line-numbers>
+                    select * from employees where last_name like 'smith%';
+                    select * from members where age > 18;
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">SQL Performance</p>
+                <p style="font-style: italic; margin-top: 0px">Queries accessing more than one table: JOINS</p>
+                <span style="font-size: 26px">
+                    <ul>
+                        <li>Join order</li>
+                        <li>Join Type:</li>
+                        <ul style="list-style-type: circle; font-size: 22px">
+                            <li>Nested Loop</li>
+                            <li>Hash Joins</li>
+                        </ul>
+                    </ul>
+                    </span>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Database Independence</p>
+                <p style="font-style: italic; margin-top: 0px">This is a myth</p>
+                <span style="font-size: 26px">
+                    <ul>
+                        <li>There is really know such thing.<br>
+                            Database are implemented differently, and behaves differently.</li>
+                        <li>If your application is database independant, you most probably have bugs.</li>
+                    </ul>
+                    </span>
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+             -- Performance Testing
+             ------------------------------------------------------------- -->
+        <section style="text-align: left;">
+            <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Performance Testing</p>
+            <p style="font-style: italic; margin-top: 0px">How do we test performance?</p>
+            <span>
+                <ul style="font-size: 26px">
+                    <li>Unit tests.
+                        <ul style="list-style-type: circle">
+                            <li>Gives an indication on response times</li>
+                            <li>Execution plans</li>
+                        </ul>
+                    </li>
+                </ul>
+            </span>
+        </section>
+        <!-- --------------------------------------------------------
+             -- Connection Pools
+             ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
+                <p style="font-style: italic; margin-top: 0px">Why do we use connection pools?</p>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
+                <p style="font-style: italic; margin-top: 0px">Why do we use connection pools?</p>
+                <span style="font-size: 26px">
+                <ul>
+                    <li>Creating a new connection requires resources.</li>
+                    <ul style="list-style-type: circle">
+                        <li>OS spoons a new process (fork).</li>
+                        <li>A network socket needs to be opened.</li>
+                        <li>The user is authenticated.</li>
+                    </ul>
+                    <li>Connection pool keeps a pool of - already created - connections ready for use.</li>
+                </ul>
+                </span>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
+                <p style="font-style: italic; margin-top: 0px">Standard Configuration Settings (the wrong way)</p>
+                <p style="font-size: 22px">Note! Parameter examples below is from HikariCP</p>
+                <span style="font-size: 26px">
+                <ul>
+                    <li>maximumPoolSize (Typical: 20)</li>
+                    <li>minimumIdle (Typical: 5)</li>
+                </ul>
+                </span>
+                <p style="font-size: 22px">Note! These typical settings might be VERY wrong!</p>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
+                <p style="font-style: italic; margin-top: 0px">Standard Configuration Settings (the wrong way)</p>
+                <span style="font-size: 26px">
+                    <p>Example:</p>
+                    <ul>
+                        <li>maximumPoolSize = 20</li>
+                        <li>minimumIdle = 5</li>
+                        <li>Number of Application Servers = 12</li>
+                        <li>Cores on the database server = 8</li>
+                    </ul>
+                    <p><b>Question:<br> What happens when the load peeks?</b></p>
+                </span>
+                <aside class="notes"></aside>
+            </section>
+            <section data-auto-animate>
+                <span style="font-size: 22px">
+                <div class="grid-container">
+                    <div class="item-left" style="text-align: left;"><p>Example:</p>
+                            <ul>
+                                <li>maximumPoolSize = 20</li>
+                                <li>minimumIdle = 5</li>
+                                <li>Number of Application Servers = 12</li>
+                                <li>Cores on the database server = 8</li>
+                            </ul>
+                            <p><b>Question:<br> What happens when the load peeks?</b></p>
+                    </div>
+                    <div class="item-right-top" style="text-align: left;">
+                        <p style="color: #cb4b16">Low loads (default):</p>
+                        <ul>
+                            <li>12 servers * 5 minimumIdle = 60 connections</li>
+                            <li>Cores on the database server = 8</li>
+                        </ul>
+                    </div>
+                </div>
+                </span>
+            </section>
+            <section data-auto-animate>
+                <span style="font-size: 22px">
+                <div class="grid-container">
+                    <div class="item-left" style="text-align: left;"><p>Example:</p>
+                            <ul>
+                                <li>maximumPoolSize = 20</li>
+                                <li>minimumIdle = 5</li>
+                                <li>Number of Application Servers = 12</li>
+                                <li>Cores on the database server = 8</li>
+                            </ul>
+                            <p><b>Question:<br> What happens when the load peeks?</b></p>
+                    </div>
+                    <div class="item-right-top" style="text-align: left;">
+                        <p style="color: #cb4b16">Low loads (default):</p>
+                        <ul>
+                            <li>12 servers * 5 minimumIdle = 60 connections</li>
+                            <li>Cores on the database server = 8</li>
+                        </ul>
+                    </div>
+                     <div class="item-right-bottom" style="text-align: left;">
+                        <p style="color: #cb4b16">High loads:</p>
+                        <ul>
+                            <li>12 servers * 20 max = 240 connections</li>
+                            <li>Cores on the database server = 8</li>
+                        </ul>
+                    </div>
+                </div>
+                </span>
+                <aside class="notes">What does the logs on the application server tell you during peak times?<br>
+                    The logs indicates that the application is waiting for database connections.
+                    So we turn up maximumPoolSize.
+                </aside>
+            </section>
+            <section>
+                <img class="stretch" src="images/cpu-costs.png">
+                <p style="font-size: 18px">Source: <a href="http://ithare.com/infographics-operation-costs-in-cpu-clock-cycles/">http://ithare.com/infographics-operation-costs-in-cpu-clock-cycles/</a></p>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
+                <p style="font-style: italic; margin-top: 0px">Sizing</p>
+                <span style="font-size: 26px">
+                    <p style="alignment: center">"The question is not how big but rather <span style="color: #cb4b16 ">how small</span>"</p>
+                </span>
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+			 -- Next
+			 ------------------------------------------------------------- -->
         <section data-background="black">
             <p style="font-style: italic; margin-bottom: 0px">Next</p>
             <p style="font-size: 50px; margin-top: 0px" ><a href="perf-03-performance-java.html"><b>Java Performance</b></a></p>
