@@ -72,7 +72,7 @@
                 <span style="font-size: 24px">
                 <ul>
                     <li><a href="https://docs.oracle.com/database/121/TGSQL/tgsql_optop.htm#TGSQL228">Oracle Optimizer Access Paths</a></li>
-                    <li><a href="https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing">About Pool Sizing</a></li>
+                    <li><a href="https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing">About Pool Sizing (article + video)</a></li>
                 </ul>
             </span>
             </section>
@@ -81,7 +81,7 @@
             -- Introduction
             ------------------------------------------------------------- -->
         <section>
-            <section style="text-align: left;">
+            <section style="text-align: left;" data-auto-animate>
                 <p style="color: #cb4b16; font-size: 50px; margin-top: 0px">Database Performance</p>
                 <p style="font-size: 40px; font-style: italic">"Doesn't the DBA take care of this?"</p>
                 <aside class="notes">Story about: When I worked as an Oracle DBA - DNB project.</aside>
@@ -94,6 +94,12 @@
            -- An example
            ------------------------------------------------------------- -->
         <section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Database Performance</p>
+                <p style="font-style: italic; margin-top: 0px">Avoiding the big mistakes</p>
+                <p class="r-fit-text" style="margin-bottom: 0px"><b>Example Code</b></p>
+                <p class="r-fit-text" style="margin-top: 0px">from production</p>
+            </section>
             <section style="text-align: left; font-size: 30px">
                 <pre>
                 <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
@@ -602,34 +608,62 @@ com.tietoevry.hamster.dao.BestHamsterDaoImpl      : 0.051736636, Count: 5000
                     </ul>
                     </span>
             </section>
-            <section style="text-align: left;" data-auto-animate>
-                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Database Independence</p>
-                <p style="font-style: italic; margin-top: 0px">This is a myth</p>
-                <span style="font-size: 26px">
-                    <ul>
-                        <li>There is really know such thing.<br>
-                            Database are implemented differently, and behaves differently.</li>
-                        <li>If your application is database independant, you most probably have bugs.</li>
-                    </ul>
-                    </span>
-            </section>
+
         </section>
         <!-- --------------------------------------------------------
              -- Performance Testing
              ------------------------------------------------------------- -->
-        <section style="text-align: left;">
-            <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Performance Testing</p>
-            <p style="font-style: italic; margin-top: 0px">How do we test performance?</p>
-            <span>
-                <ul style="font-size: 26px">
-                    <li>Unit tests.
+        <section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Performance Testing</p>
+                <p style="font-style: italic; margin-top: 0px">How do we test performance?</p>
+            </section>
+            <section>
+                <p style="font-size: 40px; margin-top: 0px">Software Development Life Cycle (SDLC)</p>
+                <p style="font-style: italic; margin-top: 0px">Traditional</p>
+                <img class="r-stretch" style="border: none" src="svn/development-cycle-old-school.svg" />
+            </section>
+            <section>
+                <p style="font-size: 40px">"If TESTING is just a phase,<br> then you are most probably doing it wrong."</p>
+                <p style="text-align: right; font-style: italic; font-size: 22px">Cary Millsap</p>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Performance Testing</p>
+                <p style="font-style: italic; margin-top: 0px">How do we test performance?</p>
+                <span>
+                    <ul style="font-size: 26px">
+                        <li>Unit testing
+                            <ul style="list-style-type: circle">
+                                <li>Gives an indication on response times</li>
+                                <li>Execution plans</li>
+                            </ul>
+                        </li>
+                        <li>Load testing</li>
                         <ul style="list-style-type: circle">
-                            <li>Gives an indication on response times</li>
-                            <li>Execution plans</li>
-                        </ul>
-                    </li>
-                </ul>
-            </span>
+                                <li>Data amounts</li>
+                                <li>Queuing and Coherency</li>
+                            </ul>
+                    </ul>
+                </span>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Performance Testing</p>
+                <p style="font-style: italic; margin-top: 0px">How do we test performance?</p>
+                <span>
+                    <ul style="font-size: 26px">
+                        <li>Test system must be "production-like"
+                            <ul style="list-style-type: circle">
+                                <li>Amounts of data</li>
+                                <li>Number of concurrent users</li>
+                                <li>Random vs deterministic arrivals</li>
+                            </ul>
+                        </li>
+                        <li>Test as early as possible.</li>
+                        <li>Use POCs for expected bottlenecks (FAQs)</li>
+                        <li>Load testing: Try to break your system</li>
+                    </ul>
+                </span>
+            </section>
         </section>
         <!-- --------------------------------------------------------
              -- Connection Pools
@@ -653,6 +687,10 @@ com.tietoevry.hamster.dao.BestHamsterDaoImpl      : 0.051736636, Count: 5000
                     <li>Connection pool keeps a pool of - already created - connections ready for use.</li>
                 </ul>
                 </span>
+            </section>
+            <section>
+                <img class="stretch" src="images/cp-postgres.png" style="border: none" alt="Connection Pool picture"/>
+                <aside class="notes">Application Server: Client + Connection pool</aside>
             </section>
             <section style="text-align: left;" data-auto-animate>
                 <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
@@ -746,6 +784,53 @@ com.tietoevry.hamster.dao.BestHamsterDaoImpl      : 0.051736636, Count: 5000
                 <span style="font-size: 26px">
                     <p style="alignment: center">"The question is not how big but rather <span style="color: #cb4b16 ">how small</span>"</p>
                 </span>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
+                <p style="font-style: italic; margin-top: 0px">Sizing</p>
+                <p style="text-align: left; font-size: 26px">General Rule: </p>
+                <p style="text-align: center; font-size: 30px; color: #cb4b16">minimumConnections = maximumConnections </p>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
+                <p style="font-style: italic; margin-top: 0px">Sizing</p>
+                <p style="text-align: left; font-size: 26px">General Rule: </p>
+                <p style="text-align: center; font-size: 30px; color: #cb4b16">minimumConnections = maximumConnections </p>
+            </section>
+            <section>
+                <img class="stretch" src="images/cp-postgres.png" style="border: none" alt="Connection Pool picture"/>
+                <p style="font-size: 23px">idle -> <span style="color: #cb4b16"><b>A</b></span> -> idle -> Query (S) -> idle -> Fetch -> idle -> Fetch -> Query (I) -> idle -> <span style="color: #cb4b16"><b>R</b></span> -> idle </p>
+                <p style="font-style: italic; font-size: 18px">(A = Aquire Connection, R = Releasing Connection)</p>
+                <aside class="notes">
+                    Between A and R, no other can use the connection.<br>
+                    During idle time the database is not busy. The application is running on CPU.
+                </aside>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
+                <p style="font-style: italic; margin-top: 0px">Sizing</p>
+                <p style="text-align: left; ">Assume:</p>
+                <ul>
+                    <li>On average 50 % idle during allocation.</li>
+                    <li>Available cores on database server = 8</li>
+                </ul>
+                <p style="text-align: center; color: #cb4b16">How many connections could database handle?</p>
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+             -- Database Independence
+             ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Database Independence</p>
+                <p style="font-style: italic; margin-top: 0px">This is a myth</p>
+                <span style="font-size: 26px">
+                        <ul>
+                            <li>There is really know such thing.<br>
+                                Database are implemented differently, and behaves differently.</li>
+                            <li>If your application is database independant, you most probably have bugs.</li>
+                        </ul>
+                        </span>
             </section>
         </section>
         <!-- --------------------------------------------------------
