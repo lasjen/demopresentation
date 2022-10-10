@@ -1,0 +1,979 @@
+<!doctype html>
+<html>
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+   <title>HVL: Dat152</title>
+   <meta name="description" content="Page for dat152 presentations">
+   <meta name="author" content="Lasse Jenssen">
+
+   <link rel="stylesheet" href="dist/reset.css">
+   <link rel="stylesheet" href="dist/reveal.css">
+   <link rel="stylesheet" href="dist/theme/white.css">
+   <link rel="stylesheet" href="dist/theme/robot-lung.css">
+
+   <!-- Theme used for syntax highlighted code -->
+   <link rel="stylesheet" href="plugin/highlight/zenburn.css">
+
+</head>
+<body>
+<!-- --------------------------------------------------------
+     -- Column definitions
+     ------------------------------------------------------------- -->
+<style>
+   .item-top { grid-area: top; }
+   .item-main-left { grid-area: main-left; }
+   .item-main-right { grid-area: main-right; }
+
+   .grid-container {
+         display: grid;
+         grid-template-areas:
+            'top top'
+            'main-left main-right';
+
+         grid-gap: 10px;
+         padding: 10px;
+   }
+</style>
+
+   <div class="reveal">
+      <div class="slides">
+         <!-- --------------------------------------------------------
+            -- Web Development: FrontController
+            ---------------------------------------------------------- -->
+         <section>
+            <section data-background="white">
+               <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Web Development: FrontController</b></p>
+               <p style="font-size: 24px;font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
+               <p style="font-size: 15px;">(Based on material from Atle Geitung, 2021)</p>
+               <p style="font-size: 18px"><a href="index.html">Home</a></p>
+            </section>
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Agenda: Back to Web Development</b></p>
+               <span style="font-size: 26px">
+                  <ul>
+                     <li>Backend Web Developement.</li>
+                     <li>More about MVC.</li>
+                     <li>More about the design pattern "FrontController".</li>
+                     <li>Design pattern: Command , Application Controller.</li>
+                     <li>FrontController with FlowManager.</li>
+                     <li>Pure J2EE Servlets (later we'll take a look at Frameworks that build on J2EE).</li>
+                  </ul>
+               </span>
+            </section>
+            <section>         
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Syllabus for this lecture</b></p>
+                  <span style="font-size: 24px">
+                     <p>Web-tier Archecture (Chapters to - and including - 4.4.2.1.4 Example)</p>
+                     <p>Link: <a href="http://fitxers.oriolrius.cat/1797/web-tier5.html">http://fitxers.oriolrius.cat/1797/web-tier5.html</a>                     </p>
+                  </span>   
+            </section>
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- DEMO: Several Controllers
+            ---------------------------------------------------------- -->
+         <section>
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: demo-01-several-controllers</b></p>
+               <span style="font-size: 28px">
+                  <p>Smal demo applications keeping track of Inventory (Items).</p>
+                  <p style="font-style:italic;">Code: demo-01-several-controllers.zip (see course overview)</p>
+               </span>
+            </section>
+
+            <section style="text-align: center;">
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Model: Item</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+package no.hvl.dat152.model;
+
+import java.io.Serializable;
+
+public class Item implements Serializable {
+
+   private static final long serialVersionUID = 1L;
+
+   private String id;
+   private String name;
+   private Double price;
+   private String description;
+
+   public Item() {
+   }
+
+   public Item(final String id) {
+         this.id = id;
+   }
+
+   public Item(final String id, final String name, final Double price, final String description) {
+      ...
+   }
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: center;">
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Repository: interface ItemDAO</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+package no.hvl.dat152.repositories;
+
+import java.util.List;
+import no.hvl.dat152.model.Item;
+
+public interface ItemDAO {
+
+   default void init() {
+      createItem(new Item("9991", "Item01", 1D, "Item01 Description"));
+      createItem(new Item("9992", "Item02", 2D, "Item02 Description"));
+      createItem(new Item("9993", "Item03", 3D, "Item03 Description"));
+   }
+
+   List< Item > findAllItems();
+   Item findItem(String id);
+   void createItem(Item item);
+   void updateItem(String id, Item itemdata);
+   String getNextId();
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: center;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Repository: ItemDAOMemorySingleton</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+package no.hvl.dat152.repositories;
+
+import java.util.*;
+import no.hvl.dat152.model.Item;
+
+public final class ItemDAOMemorySingleton implements ItemDAO {
+
+   private final List< Item > items = new ArrayList< >();
+   private static final Integer FIRST_INDEX = 10000;
+   private Integer nextId = FIRST_INDEX;
+
+   // Singleton-things
+   private static ItemDAOMemorySingleton instance;
+
+   private ItemDAOMemorySingleton() {}
+
+   public static synchronized ItemDAOMemorySingleton getInstance() {
+      if (instance == null) {
+         instance = new ItemDAOMemorySingleton();
+         instance.init();
+      }
+      return instance;
+   }
+   ...
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: center;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Repository: ItemDAOMemorySingleton</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+   ...
+
+   @Override
+   public List< Item > findAllItems() {
+      return items;
+   }
+
+   @Override
+   public Item findItem(final String id) {
+      final int index = items.indexOf(new Item(id));
+      return index >= 0 ? items.get(index) : null;
+   }
+
+   @Override
+   public synchronized void createItem(final Item item) {
+      final int index = items.indexOf(item);
+      if (index == -1) {
+         items.add(item);
+      }
+   }
+
+   ...
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: center;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Repository: ItemDAOMemorySingleton</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+   ...
+
+   @Override
+   public synchronized void updateItem(final String id, final Item itemdata) {
+      final int index = items.indexOf(new Item(id));
+      if (index >= 0) {
+         items.get(index).setName(itemdata.getName());
+         items.get(index).setPrice(itemdata.getPrice());
+         items.get(index).setDescription(itemdata.getDescription());
+      }
+   }
+
+   @Override
+   public synchronized String getNextId() {
+      nextId++;
+      return nextId.toString();
+   }
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: center;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Mapping: src/main/webapp/WEB-INF/web.xml</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+< ?xml version="1.0" encoding="UTF-8"? >
+< web-app >
+< servlet >
+   < servlet-name >ViewItemController< /servlet-name >
+   < servlet-class >no.hvl.dat152.controller.ViewItemController< /servlet-class >
+< /servlet >
+< servlet >
+   < servlet-name >ViewShoppinglistController< /servlet-name >
+   < servlet-class >no.hvl.dat152.controller.ViewShoppinglistController< /servlet-class >
+< /servlet >
+...
+< servlet-mapping >
+   < servlet-name >ViewItemController< /servlet-name >
+   < url-pattern >/viewitem< /url-pattern >
+< /servlet-mapping >
+< servlet-mapping >
+   < servlet-name >ViewShoppinglistController< /servlet-name >
+   < url-pattern >/viewshoppinglist< /url-pattern >
+< /servlet-mapping >
+...
+< /web-app >
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: center;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Controller: ViewShoppinglistController</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+package no.hvl.dat152.controller;
+...
+import no.hvl.dat152.model.Item;
+import no.hvl.dat152.repositories.ItemDAOMemorySingleton;
+
+public class ViewShoppinglistController extends HttpServlet {
+
+   private static final long serialVersionUID = 1L;
+
+   @Override
+   protected final void doGet(final HttpServletRequest req, 
+                              final HttpServletResponse resp)
+         throws ServletException, IOException {
+
+      final List< Item > items = 
+            ItemDAOMemorySingleton.getInstance().findAllItems();
+      req.getSession().setAttribute("items", items);
+      req.getRequestDispatcher("shoppinglist.jsp").forward(req, resp);
+   }
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: center;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>View: src/main/webapp/shoppinglist.jsp</b></p>
+               <img class="stretch" src="images/demo01-shopinglist-jsp.png" alt="shoppinglist.jsp" style="border:none;" /></br>
+               <aside class="notes">
+                  <ul>
+                     <li>Using JSTL tag library</li>
+                     <li>Include with myHeader.html</li>
+                     <li>for-each: receiving "items" from request</li>
+                     <li>Link to "createitem" -> web.xml (mapping to Controller)</li>
+                     <li>Link to "viewitem?id=?" -> web.xml (mapping to Controller)</li>
+                  </ul>
+               </aside>
+            </section>
+
+            <section style="text-align: center;">
+               <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px"><b>Demo: demo-01-several-controllers</b></p>
+               <p style="font-size: 36px; font-style: italic; margin-top: 0px">Let's run the code.</p>
+               <aside class="notes">
+                  <ul>
+                     <li>Show trick with editing Server.xml (to set context-path).</li>
+                  </ul>
+               </aside>
+            </section>
+         </section>
+         <!-- --------------------------------------------------------
+            -- Recap
+            ------------------------------------------------------------- -->
+         <section>   
+            <section style="text-align: left;">
+               <div class="grid-container">
+                  <div class="item-top">
+                     <p style="color: #cb4b16; font-size: 36px; margin-top: 0px">MVC: Model 1 vs Model 2</p>
+                  </div>
+                  <div class="item-main-left">
+                     <span style="font-size: 24px;">
+                        <p style="font-style:bold">Model 1</p>
+                        <ul>
+                           <li>Decentralized and page-centric architecture</li>
+                           <li>No controller</li>
+                           <li>Map directly to the next JSP</li>
+                        </ul>
+                     </span>
+                  </div>
+                  <div class="item-main-right">
+                     <span style="font-size: 24px;">
+                        <p style="font-style:bold">Model 2</p>
+                        <ul>
+                           <li>Centralized architecture</li>
+                           <li>Requests goes through Controller (Servlet)</li>
+                           <li>Controller determines next view (JSP)</li>
+                        </ul>
+                     </span>
+                  </div>
+               </div>
+            </section>
+            
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px">Web MVC: Model 1</p>
+               <img class="stretch" src="images/web-mvc-model1.png" alt="Web MVC Model 1" style="border:none;" />
+            </section>
+            
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px">Web MVC: Model 2</p>
+               <img class="stretch" src="images/web-mvc-model2.png" alt="Web MVC Model 1" style="border:none;" />
+            </section>
+
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px">Recap: How we have done web development so far</p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>Used MVC in a special way: One controller per application (or page)</li>
+                     <li>Used <span style="font-style:italic">web.xml</span> for static dispatching av requests.</li>
+                     <li>Our earlier architecture is most simular to Model 1: decentralized.</li>
+                     <li>A little similar to Model 2: used controller Servlets and made the MVC for each use case.</li>
+                  </ul>
+               </span>
+            </section>
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px">Issues with this method:</p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>Hard to find a good location for key tasks</li>
+                     <ul>
+                        <li>General controller logic</li>
+                        <li>Checking headers and cookies</li>
+                        <li>Authentication and authorization</li>
+                        <li>Logging</li>
+                     </ul>
+                     <li>End up writing a lot of code which is bundled to and dependant on the Servlet API.</li>
+                  </ul>
+               </span>
+            </section>
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- Simple FrontController
+            ------------------------------------------------------------- -->
+         <section>
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Design Pattern: FrontController</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>A design pattern dealing with centralization of processing of requests and selections of views in a single component (the frontcontroller).</li>
+                     <li>The application gets a single access point where all requests go through.</li>
+                     <li>The wanted command is provided either as part of the URL, or as parameters in the request.<br>
+                           Examples:
+                        <ul>
+                           <li>http://mittdomene/minapp/front?cmd=visansatte</li>
+                           <li>http://mittdomene/minapp/front/visansatte</li>
+                        </ul>
+                     </li>
+                  </ul>
+               </span>
+            </section>
+            
+            <section>
+               <img class="stretch" src="images/frontcontroller-simple.png" alt="FrontController Image" style="border:none;" />
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px">Implementing the FrontController</p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>The FrontController should be able to process many types of requests.</li>
+                     <li>First we'll look at a "simple" Front Controller</li>
+                     <li>It can, for example look like this:</li>
+                  </ul>
+               </span>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+if (cmd.equals ("/viewshoppinglist")) {
+... Doing all the work here
+} else if (cmd.equals("/viewitem")) {
+... Doing all the work here
+} else if ... etc. ...                       
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px">Demo: demo-02-front-controller</p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>Same functionallity as "demo-01".</li>
+                     <li>One Controller: FrontController with if-then-else.</li>
+                     <li style="font-style:italic">Code: demo-02-front-controller.zip (see course overview).</li>
+                  </ul>
+               </span>
+               <aside class="notes">
+                  <ul>
+                     <li>Links to JSP files must use ../*.jsp</li>
+                     <li>Show doPost just calls doGet: Createitem and createitemsave</li>
+                  </ul>
+               </aside>
+            </section>
+
+            <section>
+               <img class="stretch" src="images/demo02-web-xml.png" alt="Demo02: web.xml" style="border:none;" />
+               <aside class="notes">
+                  <ul>
+                     <li>welcome-file and servlet-mapping (only one controller)</li>
+                     <li>/do/*    -> if not, hit itself</li>
+                  </ul>
+               </aside>
+            </section>
+
+            <section>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+@Override
+protected final void doGet(final HttpServletRequest req, final HttpServletResponse resp)
+      throws ServletException, IOException {
+
+   final String cmd = req.getPathInfo();
+   //System.out.println("Command: " + cmd);
+
+   if (cmd.equals("/viewshoppinglist")) {
+      viewShoppinglist(req, resp);
+   } else if (cmd.equals("/viewitem")) {
+      viewItem(req, resp);
+   } else if (cmd.equals("/updateitem")) {
+      updateItemForm(req, resp);
+   } else if (cmd.equals("/updateitemsave")) {
+      updateItemSave(req, resp);
+   } else if (cmd.equals("/createitem")) {
+      createItemForm(req, resp);
+   } else if (cmd.equals("/createitemsave")) {
+      createItemSave(req, resp);
+   } else {
+      viewShoppinglist(req, resp);
+   }
+}                      
+                  </code>
+               </pre>
+            </section>
+
+            <section>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+@Override
+protected final void doPost(final HttpServletRequest req,  
+                           final HttpServletResponse resp)
+      throws ServletException, IOException {
+   doGet(req, resp);
+}                     
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px">Demo: demo-02-front-controller</p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li style="font-style:italic">Let's have a look in Eclipse.</li>
+                  </ul>
+               </span>
+               <aside class="notes">
+                  <ul>
+                     <li>Show "pom.xml": build - finalName</li>
+                     <li>One controller</li>
+                     <li>Links to JSP files must use ../filename.jsp</li>
+                  </ul>
+               </aside>
+            </section>
+            
+         </section>
+         
+         <!-- --------------------------------------------------------
+            -- Command Pattern
+            ------------------------------------------------------------- -->
+         <section>
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Design Pattern: Command</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>A better solution than if-elseif-else is to use a Command design pattern.</li>
+                     <li><b>Purpose</b>: 
+                        <ul>
+                           <li>Encapsulate a command (for instance "createItem") with associated data and business logic as an object ...</li>
+                           <li>.. , and use polymorphism instead of if-elseif-else to perform the right command.</li>
+                        </ul>
+                     <li>Let us: <b>Decouple</b> objects that produce the commands from their consumers</li>
+                  </ul>
+               </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Design Pattern: Command</b></p>
+               <img class="stretch" src="images/command-pattern-1.png" alt="Command Pattern 1" style="border:none;" />
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Design Pattern: Application Controller</b></p>
+               <img class="stretch" src="images/applicatonController-1.png" alt="ApplicationController" style="border:none;" />
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Design Pattern: Application Controller</b></p>
+               <img class="stretch" src="images/frontController-2.png" alt="Command Pattern 1" style="border:none;" />
+            </section>
+            <!--
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Design Pattern: Application Controller</b></p>
+               <img class="stretch" src="images/command-pattern-2.png" alt="Command Pattern 1" style="border:none;" />
+            </section>
+            -->
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px">Demo: demo-03-command-pattern</p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>Same functionallity as "demo-01".</li>
+                     <li>Applicaton Logic moved out of FrontController.</li>
+                     <li style="font-style:italic">Code: demo-03-command-pattern.zip (see course overview).</li>
+                  </ul>
+               </span>
+               <aside class="notes">
+                  <ul>
+                     <li>Also quickly look at Application Controller pattern</li>
+                  </ul>
+               </aside>
+            </section>
+
+            <section>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+public class FrontController extends HttpServlet {
+
+   private static final long serialVersionUID = 1L;
+
+   @Override
+   protected final void doGet(final HttpServletRequest req, 
+                              final HttpServletResponse resp)
+            throws ServletException, IOException {
+
+      String cmd = req.getPathInfo();
+      if (cmd == null || cmd.length() == 1) {
+         return;
+      }
+      cmd = cmd.substring(1);
+
+      final Action action = ActionMapper.mapToAction(cmd);
+      action.execute(req, resp);
+   }
+
+   @Override
+   protected final void doPost(final HttpServletRequest req, final HttpServletResponse resp)
+            throws ServletException, IOException {
+      doGet(req, resp);
+   }
+}                   
+                  </code>
+               </pre>
+            </section>
+
+            <section>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+public interface Action {
+
+   void execute(HttpServletRequest req, HttpServletResponse resp) 
+                                 throws ServletException, IOException;
+
+}                    
+                  </code>
+               </pre>
+            </section>
+
+            <section>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+package no.hvl.dat152.action;
+
+import java.io.IOException;
+...
+
+public class ViewShoppingListAction implements Action {
+
+   @Override
+   public final void execute(final HttpServletRequest req, 
+                              final HttpServletResponse resp)
+         throws ServletException, IOException {
+
+      final List< Item > items = 
+                  ItemDAOMemorySingleton.getInstance().findAllItems();
+      req.getSession().setAttribute("items", items);
+
+      req.getRequestDispatcher("/shoppinglist.jsp").forward(req, resp);
+   }
+}                  
+                  </code>
+               </pre>
+            </section>
+            
+            <section>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+package no.hvl.dat152.action.mapper;
+
+import no.hvl.dat152.action.Action;
+
+public class ActionMapperType {
+   private String name;
+   private Action action;
+
+   ActionMapperType(String name, Action action) {
+      this.name=name;
+      this.action=action;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public Action getAction() {
+      return action;
+   }
+}                    
+                  </code>
+               </pre>
+            </section>
+
+            <section>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+public class ActionMapper {
+
+   private static List< ActionMapperType > actionMapperTypeList = 
+      new ArrayList< >(Arrays.asList(
+         new ActionMapperType("viewshoppinglist", new ViewShoppingListAction()),
+         new ActionMapperType("viewitem", new ViewItemAction()),
+         new ActionMapperType("updateitem", new UpdateItemFormAction()),
+         new ActionMapperType("updateitemsave", new UpdateItemSaveAction()),
+         new ActionMapperType("createitem", new CreateItemFormAction()),
+         new ActionMapperType("createitemsave", new CreateItemSaveAction()) 
+      ));
+
+   private static Map< String, ActionMapperType > mapActionType =
+         actionMapperTypeList.stream().collect(
+            Collectors.toMap(ActionMapperType::getName, Function.identity()));
+
+   public static Action mapToAction(String name) {
+      try {
+         return (Action) mapActionType.get(name).getAction();
+      } catch (Exception e) {
+         String x = "";
+      }
+      return null;
+   }
+}   	
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px">Demo: demo-03-command-pattern</p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li style="font-style:italic">Let's have a look in Eclipse.</li>
+                  </ul>
+               </span>
+               <aside class="notes">
+                  <ul>
+                     <li>Everything about "view" and "commands" moved out of FrontController.</li>
+                  </ul>
+               </aside>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px">Demo: demo-03-command-pattern</p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>So ... now we have centraliced the dispatching of commands.</li>
+                     <li>But the page flow is still decentralized<br> (every action determines what the next page is).</li>
+                     <li>Next: How to use a FlowManager to keep track of the page flow.</li>
+                  </ul>
+               </span>
+               <aside class="notes">
+                  <ul>
+                     <li>Everything about "view" and "commands" moved out of FrontController.</li>
+                  </ul>
+               </aside>
+            </section>
+
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- FrontController with excplicit Flow
+            ---------------------------------------------------------- -->
+         <section>
+
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: demo-04-front-controller-flow</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>Same functionallity as "demo-01".</li>
+                     <li>FlowManager: Centralized Page Flow</li>
+                     <li style="font-style:italic">Code: demo-04-front-controller-flow.zip (see course overview).</li>
+                  </ul>
+               </span>
+            </section>
+
+            <section>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+public class ViewShoppingListAction implements Action {
+
+   @Override
+   public final void execute(final HttpServletRequest req, 
+                           final HttpServletResponse resp)
+         throws ServletException, IOException {
+
+      final List< Item > items = ItemDAOMemorySingleton.getInstance()
+                                                         .findAllItems();
+      req.getSession().setAttribute("items", items);
+
+      req.getRequestDispatcher("/shoppinglist.jsp").forward(req, resp);
+   }
+}                    
+                  </code>
+               </pre>
+               <aside class="notes">
+                  <ul>
+                     <li>We want to move the page flow out of the business logic, and centralized.</li>
+                  </ul>
+               </aside>
+            </section>
+
+            <section>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+public class ViewShoppingListAction implements Action {
+
+   @Override
+   public final int execute(final HttpServletRequest req, 
+                           final HttpServletResponse resp)
+         throws ServletException, IOException {
+
+      final List< Item > items = ItemDAOMemorySingleton.getInstance()
+                                                         .findAllItems();
+      req.getSession().setAttribute("items", items);
+
+      return Action.SUCCESS;
+   }
+}                    
+                  </code>
+               </pre>
+               <aside class="notes">
+                  <ul>
+                     <li>Return value changed from "void" to "int"</li>
+                     <li>Instead of forwarding, we now return a status value (SUCCESS).</li>
+                  </ul>
+               </aside>
+            </section>
+            
+            <section>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px">doGet(): from last FrontController</p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+@Override
+protected final void doGet(final HttpServletRequest req, 
+                     final HttpServletResponse resp)
+                  throws ServletException, IOException {
+
+   String cmd = req.getPathInfo();
+
+   if (cmd == null || cmd.length() == 1) {
+      return;
+   }
+   cmd = cmd.substring(1);
+
+   final Action action = ActionMapper.mapToAction(cmd);
+   action.execute(req, resp);
+}
+                  </code>
+               </pre>
+               <aside class="notes">
+                  <ul>
+                     <li>Let's make this a little simpler.</li>
+                     <li></li>
+                  </ul>
+               </aside>
+            </section>
+
+            <section>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px">doGet(): New FrontController</p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+@Override
+protected final void doGet(final HttpServletRequest req, 
+                     final HttpServletResponse resp)
+                  throws ServletException, IOException {
+
+   final String cmd = getCommand(req);
+   final Action action = ActionMapper.mapToAction(cmd);
+
+   final int result = action.execute(req, resp);
+
+   if (result == Action.SUCCESS) {
+      final String nextPage = flowManager.getNextPage(cmd);
+      req.getRequestDispatcher(nextPage).forward(req, resp);
+   } else {
+      // ...
+   }
+}
+                  </code>
+               </pre>
+               <aside class="notes">
+                  <ul>
+                     <li>We'll look at the getCommand in a second.</li>
+                     <li>We initialize the FlowManager in an init()-method of the FrontController Servlet</li>
+                     <li>Now the page flow is centralized.</li>
+                  </ul>
+               </aside>
+            </section>
+
+            <section>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+private String getCommand(final HttpServletRequest req) {
+
+   String cmd = req.getPathInfo();
+
+   if (cmd == null || cmd.length() <= 1) {
+      cmd = "";
+   } else {
+      cmd = cmd.substring(1);
+   }
+
+   return cmd;
+}
+                  </code>
+               </pre>
+            </section>
+            
+            <section>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+public class FlowManager {
+
+   private final Map< String, String > pages;
+
+   public FlowManager() {
+      pages = new HashMap< >();
+      pages.put("viewshoppinglist", "../shoppinglist.jsp");
+      pages.put("viewitem", "../item.jsp");
+      pages.put("updateitem", "../updateitemform.jsp");
+      pages.put("updateitemsave", "../item.jsp");
+      pages.put("createitem", "../createitemform.jsp");
+      pages.put("createitemsave", "../shoppinglist.jsp");
+   }
+
+   public final String getNextPage(final String cmd) {
+      return pages.get(cmd);
+   }
+}
+                  </code>
+               </pre>
+               <aside class="notes">
+                  <ul>
+                     <li>Could have used a property file instead of mapping views inside code.</li>
+                  </ul>
+               </aside>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px">Demo: demo-04-front-controller-flow</p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li style="font-style:italic">Let's have a look in Eclipse.</li>
+                  </ul>
+               </span>
+               <aside class="notes">
+                  <ul>
+                     <li>Show how the flow is centralized.</li>
+                  </ul>
+               </aside>
+            </section>
+         </section>
+            
+         <!-- --------------------------------------------------------
+            -- Summary
+            ------------------------------------------------------------- -->
+         <section>
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 36px; margin-bottop: 0px"><b>Summary: Web Development: FrontController</b></p>
+               <p style="color: #cb4b16; font-size: 24px; margin-top: 0px"><b>Where are we now?</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>Moved towards pure MVC - Model 2.</li>
+                     <li>FrontController Pattern: Centralized control and common logic.</li>
+                     <li>Command Pattern: Business logic in regular classes.</li>
+                     <li>FlowManager: Centralized controll of page flow.</li>
+                  </ul>
+               </span>
+            </section>
+        
+         <!-- --------------------------------------------------------
+            -- Next
+            ------------------------------------------------------------- -->
+            <section>
+               <p style="font-style: italic; margin-bottom: 0px">Next</p>
+               <p style="font-size: 40px; margin-top: 0px" ><a href="web-02-web-frameworks.html"><b>Web Development: Frameworks</b></a></p>
+               <p style="font-size: 18px"><a href="index.html">Home</a></p>
+            </section>
+         </section>  
+
+      </div>
+   </div>
+
+   <script src="dist/reveal.js"></script>
+   <script src="plugin/notes/notes.js"></script>
+   <script src="plugin/markdown/markdown.js"></script>
+   <script src="plugin/highlight/highlight.js"></script>
+   <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+         hash: true,
+         margin: 0.2,
+         transition: 'fade',
+
+         // Learn about plugins: https://revealjs.com/plugins/
+         plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+      });
+   </script>
+</body>
+</html>

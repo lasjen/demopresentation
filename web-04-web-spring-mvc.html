@@ -1,0 +1,373 @@
+<!doctype html>
+<html>
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+   <title>HVL: Dat152</title>
+   <meta name="description" content="Page for dat152 presentations">
+   <meta name="author" content="Lasse Jenssen">
+
+   <link rel="stylesheet" href="dist/reset.css">
+   <link rel="stylesheet" href="dist/reveal.css">
+   <link rel="stylesheet" href="dist/theme/white.css">
+   <link rel="stylesheet" href="dist/theme/robot-lung.css">
+
+   <!-- Theme used for syntax highlighted code -->
+   <link rel="stylesheet" href="plugin/highlight/zenburn.css">
+
+</head>
+<body>
+<!-- --------------------------------------------------------
+     -- Column definitions
+     ------------------------------------------------------------- -->
+<style>
+   .item-top { grid-area: top; }
+   .item-main-left { grid-area: main-left; }
+   .item-main-right { grid-area: main-right; }
+
+   .grid-container {
+         display: grid;
+         grid-template-areas:
+            'top top'
+            'main-left main-right';
+
+         grid-gap: 10px;
+         padding: 10px;
+   }
+</style>
+
+   <div class="reveal">
+      <div class="slides">
+         <!-- --------------------------------------------------------
+            -- INTRO: Web Development: Spring MWC
+            ---------------------------------------------------------- -->
+         <section>
+            <section data-background="white">
+               <img src="images/hvl-logo.png" alt="HVL logo" style="border: none; box-shadow: none;"><br><br>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Web Development: Spring MVC (Action-based)</b></p>
+               <p style="font-size: 24px;font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
+               <p style="font-size: 18px"><a href="index.html">Home</a></p>
+            </section>
+
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Agenda: Using Spring Web MVC</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>Rewrite our Shopping List Application to use Spring Web MVC and Thymeleaf.</li>
+                     <li>Action Based Web Framework.</li>
+                     <li>Introduction to Spring Web MVC.</li>
+                     <li>Introduction to Thymeleaf.</li>
+                  </ul>
+               </span>
+            </section>
+
+            <section>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Sources</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>https://www.baeldung.com/spring-controllers#Overview.</li>
+                     <li>To be updated</li>
+                  </ul>
+               </span>
+            </section>
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- Action based Web Framworks (MVC)
+            ---------------------------------------------------------- -->  
+         <section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Web Frameworks: Spring Web MVC (Action based)</b></p>
+               <span style="font-size: 24px">
+                  <p><b>Some background:</b></p>
+                  <ul>
+                     <li>The Spring Framework (previous lecture)</li>
+                     <li>Spring Boot (previous lecture)</li>
+                     <li>Spring Web MVC <br>
+                        (<a href="https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc ">https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc)</a></li>
+                     
+                  </ul>
+               </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Web Frameworks: Spring Web MVC (Action based)</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>A module of the Spring framework dealing with the Model-View-Controller or MVC pattern.</li>
+                     <li>Combines all the advantages of the MVC pattern with the convenience of Spring.</li>
+                     <li>Spring implements MVC with the front controller pattern using its <b>DispatcherServlet</b>.</li>
+                  </ul>
+               </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Maven Dependencies</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Web Frameworks: Spring Web MVC (Action based)</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+                  <dependency>
+                     <groupId>org.springframework</groupId>
+                     <artifactId>spring-web</artifactId>             
+                     <version>${org.springframework.version}</version>
+                  </dependency>
+
+                  <dependency>
+                     <groupId>org.springframework</groupId>
+                     <artifactId>spring-webmvc</artifactId>
+                     <version>${org.springframework.version}</version>
+                  </dependency>
+               </code>
+               </pre>
+            </section>
+            
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Spring Boot: Maven Dependencies</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Web Frameworks: Spring Web MVC (Action based)</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+                  <parent>
+                     <groupId>org.springframework.boot</groupId>
+                     <artifactId>spring-boot-starter-parent</artifactId>
+                     <version>2.7.1</version>
+                     <relativePath/> <!-- lookup parent from repository -->
+                  </parent>
+                  ...
+                  <dependencies>
+                     ...
+                     <dependency>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-web</artifactId>
+                     </dependency>
+                     ...
+                  </dependencies>
+               </code>
+               </pre>
+            </section>
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- Thymeleaf
+            ---------------------------------------------------------- -->  
+         <section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Introduction to Thymeleaf</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>More to come</li>      
+                  </ul>
+               </span>
+            </section>
+
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- Demo: demo-05-spring-web
+            ---------------------------------------------------------- -->     
+         <section>
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: demo-05-spring-web</b></p>
+               <span style="font-size: 28px">
+                  <ul>
+                     <li>Smal demo applications keeping track of Inventory (Items).</li>
+                     <li>Based on Spring Boot.</li>
+                     <li>Run by: <b style="font-style: italic">mvn install clean spring-boot:run</b> </li>
+                     <li><span style="font-style:italic;">Code: demo-05-spring-web.zip (see course overview)</span></li>
+                  </ul>
+               </span>
+            </section>
+
+            <section>
+               <pre><code>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   
+   <parent>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-parent</artifactId>
+      <version>2.7.4</version>
+      <relativePath /> <!-- lookup parent from repository -->
+   </parent>
+   
+   <groupId>no.hvl.dat152</groupId>
+   <artifactId>demo-05-spring-web</artifactId>
+   <version>0.0.1-SNAPSHOT</version>
+   <name>demo-05-spring-web</name>
+   <description>Demo application with ShoppingList (Items example)</description>
+
+   <properties>
+      <java.version>11</java.version>
+   </properties>
+   ...
+</project>
+               </code></pre>
+            </section>
+
+            <section>
+               <pre><code>
+   ...
+   <dependencies>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-web</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-thymeleaf</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-test</artifactId>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
+   ...
+               </code></pre>
+            </section>
+         
+            <section>
+               <pre><code>
+   ...
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+         </plugin>
+      </plugins>
+   </build>
+   ...
+               </code></pre>
+            </section>
+
+            <section data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px"><b>Project: demo-05-spring-web</b></p>
+               <pre><code lang="text">
+|-- pom.xml
+|-- src
+      |-- main
+      |   |-- java
+      |   |    |-- no
+      |   |        |-- hvl
+      |   |             |-- dat152
+      |   |               |-- Demo05SpringWebApplication.java
+      |   |               |-- controller
+      |   |               |   |-- ItemController.java
+      |   |               |-- model
+      |   |               |   |-- Item.java
+      |   |               |-- repositories
+      |   |                   |-- ItemDAO.java
+      |   |                   |-- ItemDAOMemorySingleton.java
+      |   |-- resources
+      |   |   |-- application.properties
+      |   |   |-- static
+      |   |   |   |-- bootstrap.min.css
+      |   |   |-- templates
+      |   |       |-- createitem.html
+      |   |       |-- fragments
+      |   |       |   |-- general.html
+      |   |       |-- index.html
+      |   |       |-- shoppinglist.html
+      |   |       |-- viewitem.html
+      |-- test
+               </code></pre>
+            </section>
+
+            <section data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px"><b>Project: demo-05-spring-web</b></p>
+               <p style="font-size: 30px; margin-top: 0px">src/main/java/no/hvl/dat152/controller/ItemController.java</p>
+               <pre><code lang="java">
+@Controller
+public class ItemController {
+   
+   @RequestMapping(value = "/", method = RequestMethod.GET)
+   public String viewShoppingDefault() {
+      return "index";
+   }
+
+   ...
+}
+               </code></pre>
+               <aside class="notes">
+                  <ul>
+                     <li>Annotations: Found by spring and automatically autowired and interpreted.</li>
+                     <l>RequestMapping</l>
+                     <li>HTML Template: Return name of template to be redirected to.</li>
+                  </ul>
+               </aside>
+            </section>
+
+            <section style="text-align: center;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px"><b>Project: demo-05-spring-web</b></p>
+               <p style="font-size: 30px; margin-bottom: 0px">src/main/resources/templates/index.html</p>
+               <p style="font-size: 24px; font-style:italic; margin-top: 0px">See project: demo-05-spring-web.zip</p>
+               <aside class="notes">
+                  <ul>
+                     <li></li>
+                  </ul>
+               </aside>
+            </section>
+
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- Summary
+            ------------------------------------------------------------- -->
+         <section>
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px"><b>Summary: Web Development: Frameworks</b></p>
+               <p style="color: #cb4b16; font-size: 24px; margin-top: 0px"><b>Where are we now?</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>Component Based</li>
+                     <li>FrontController Pattern: Centralized control and common logic.</li>
+                     <li>Command Pattern: Business logic in regular classes.</li>
+                     <li>FlowManager: Centralized controll of page flow.</li>
+                  </ul>
+               </span>
+               <aside class="notes">
+                  <ul>
+                     <li>Show how the flow is centralized.</li>
+                  </ul>
+               </aside>
+            </section>
+         </section>  
+         <!-- --------------------------------------------------------
+            -- Next
+            ------------------------------------------------------------- -->
+         <section data-background="black">
+            <p style="font-style: italic; margin-bottom: 0px">Next</p>
+            <p style="font-size: 50px; margin-top: 0px" ><a href="web-02-web-frameworks.html"><b>Web Services: Spring Framework</b></a></p>
+            <p style="font-size: 18px"><a href="index.html">Home</a></p>
+         </section>
+
+      </div>
+   </div>
+
+   <script src="dist/reveal.js"></script>
+   <script src="plugin/notes/notes.js"></script>
+   <script src="plugin/markdown/markdown.js"></script>
+   <script src="plugin/highlight/highlight.js"></script>
+   <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+         hash: true,
+         margin: 0.2,
+         transition: 'fade',
+
+         // Learn about plugins: https://revealjs.com/plugins/
+         plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+      });
+   </script>
+</body>
+</html>

@@ -20,7 +20,7 @@
 <div class="reveal">
     <div class="slides">
 
-        <section data-background="black">
+        <section data-background="white">
             <p style="color: #cb4b16; font-size: 50px; margin-top: 0px"><b>Building a RESTFull Store WebService</b></p>
             <p style="font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
             <p style="font-size: 18px"><a href="index.html">Home</a></p>
@@ -43,22 +43,22 @@
             </span>
         </section>
         <section style="text-align: left;">
-						<pre>
-							<code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
-								package com.example.demo;
+            <pre>
+                <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+                package com.example.demo;
 
-								import org.springframework.web.bind.annotation.RequestMapping;
-								import org.springframework.web.bind.annotation.RestController;
+                import org.springframework.web.bind.annotation.RequestMapping;
+                import org.springframework.web.bind.annotation.RestController;
 
-								@RestController
-								public class HelloController {
-									@RequestMapping("/hello")
-									public String hello(String name) {
-										return "Hello to " + name;
-									}
-								}
-							</code>
-						</pre>
+                @RestController
+                public class HelloController {
+                    @RequestMapping("/hello")
+                    public String hello(String name) {
+                        return "Hello to " + name;
+                    }
+                }
+                </code>
+            </pre>
         </section>
         <section data-background="images/spring-web-dispatcherservlet.png" data-background-size="contain">
         </section>

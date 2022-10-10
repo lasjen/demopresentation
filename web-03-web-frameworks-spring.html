@@ -1,0 +1,631 @@
+<!doctype html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+      <title>HVL: Dat152</title>
+      <meta name="description" content="Page for dat152 presentations">
+      <meta name="author" content="Lasse Jenssen">
+
+      <link rel="stylesheet" href="dist/reset.css">
+      <link rel="stylesheet" href="dist/reveal.css">
+      <link rel="stylesheet" href="dist/theme/white.css">
+      <link rel="stylesheet" href="dist/theme/robot-lung.css">
+
+      <!-- Theme used for syntax highlighted code -->
+      <link rel="stylesheet" href="plugin/highlight/zenburn.css">
+   </head>
+   <body>
+         <div class="reveal">
+         <div class="slides">
+
+            <!-- --------------------------------------------------------
+               -- The Spring Framework
+               ------------------------------------------------------------- -->
+            <section>
+               <section>
+                  <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Web Frameworks: Spring </b></p>
+                  <p style="font-size: 24px;font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
+                  <p style="font-size: 18px"><a href="index.html">Home</a></p>
+               </section>
+
+               <section style="text-align: left;">
+                  <span style="font-size: 24px">
+                     <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Agenda: The Spring Framwork</b></p>
+                     <ul>
+                        <li>History</li>
+                        <li>The IoC Container</li>
+                        <li>IoC - Inversion of Controll</li>
+                        <li>Dependency Injection</li>
+                        <li>Spring Boot</li>
+                        <li>Spring Initializer</li>
+                     </ul>
+                  </span>
+               </section>
+            </section>
+            <!-- --------------------------------------------------------
+               -- The Spring Framework - Introduction
+               ------------------------------------------------------------- -->
+            <section>
+               <section style="text-align: left;" data-auto-animate>
+                  <p style="font-style: italic; margin-bottom: 0px">The Spring Framework</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>History</b></p>
+						<span style="font-size: 24px">
+							<ul>
+								<li>2002: Book "Expert One-on-One J2EE Design and Development", Rod Johnsen</li>
+								<li>2003: 0.9 version of the Framwork released</li>
+								<li>2004 March: First production release (1.0)</li>
+								<li>Latest version (Per 5th of May 2022): 5.3</li>
+							</ul>
+						</span>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+                  <p style="font-style: italic; margin-bottom: 0px">The Spring Framework</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Introduction</b></p>
+						<span style="font-size: 24px">
+							<ul>
+								<li>A response to the complexity of the early J2EE specifications.</li>
+								<li>A complementary to Java EE.</li>
+								<li>Integrates with carefully selected individual specifications from the EE umbrella: Servlet API, WebSocket API, JSON Binding API, JPA etc.</li>
+								<li>Very much integrated with Maven (or Gradle).</li>
+							</ul>
+						</span>
+               </section>
+
+               <section>
+                  <img src="images/spring-framework-overview.png"/>
+               </section>
+
+               <section style="text-align: left;">
+                  <p style="font-style: italic; margin-bottom: 0px">The Spring Framework</p>
+                  <img src="images/spring-logo.png" alt="Spring-logo" width="30%" style="float: right; border: none">
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Design Philosophy</b></p>
+						<span style="font-size: 24px">
+							<ul>
+								<li>Provide choice at every level.</li>
+								<li>Accommodate diverse perspectives.</li>
+								<li>Maintain strong backward compatibility.</li>
+								<li>Care about API design.</li>
+								<li>Set high standards for code quality.</li>
+							</ul>
+						</span>
+               </section>
+
+					<section>
+						<span style="font-size: 40px">
+							<a href="http://spring.io/projects">http://spring.io/projects</a>
+						</span>
+					</section>
+
+            </section>
+
+            <!-- -------------------------------------------------------------
+                -- The Spring Framework - IOC container
+                ------------------------------------------------------------- -->
+            <section>
+               <section style="text-align: left;">
+                  <p style="font-style: italic; margin-bottom: 0px">The Spring Framework</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>The IoC Container</b></p>
+
+                  <ul style="font-size: 24px">
+							<li>The core of Spring Framework.</li>
+							<li>Responsible to instantiate, configure and assemble the objects.</li>
+							<li>Components are called "Beans" (can be any POJOs).</li>
+							<li>Two types of IoC Containers: BeanFactory and <b>ApplicationContext</b></li>
+							<li>Tasks:
+								<ul style="list-style-type: circle">
+									<li>to instantiate the application class.</li>
+									<li>to configure the objects.</li>
+									<li>to assemble the dependencies between the objects.</li>
+								</ul>
+							</li>
+                  </ul>
+						<aside class="notes">
+							<ul>
+								<li>Inversion of Control: Controlling of Java objects and their lifecycle is not done by the developers.</li>
+								<li>ApplicationContext the default.</li>
+								<li>BeanFactory: leightweight</li>
+							</ul>
+						</aside>
+               </section>
+
+               <section>
+                  <pre>
+                  <code data-trim data-noescape >
+public class App {
+
+	public static void main( String[] args ) {
+
+		ApplicationContext context =
+							new ClassPathXmlApplicationContext("spring-config.xml");
+		
+		SequenceGenerator sequence = context.getBean("sequenceGenerator");
+		System.out.println("Next:" + sequence.getNext());
+
+	}
+}
+                  </code>
+                  </pre>
+               </section>
+
+               <section>
+						<p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px">Bean initialization <b>by propery</b></p>
+						<p style="font-style:italic;font-size: 24px; margin-top: 0px">src/main/resources/spring-config.xml</p>
+                  <pre><code lang="xml" data-trim data-line-numbers>
+                     # File: 
+                     <beans
+                           xmlns="http://www.springframework.org/schema/beans"
+                           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                           xsi:schemaLocation="http://www.springframework.org/schema/beans"
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+                        ...
+                        <bean name="sequenceGenerator"
+                             class="no.hvl.dat152.sequence.FirstSequenceGenerator">
+                           <property name="prefix" value="30"></property>
+                           <property name="suffix" value="A"></property>
+                           <property name="initial" value="1000"></property>
+                        </bean>
+                     </beans>
+                  </code></pre>
+               </section>
+
+               <section>
+						<p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px">Bean initialization <b>by constructor</b></p>
+						<p style="font-style:italic;font-size: 24px; margin-top: 0px">src/main/resources/spring-config.xml</p>
+                  <pre>
+                  <code lang="xml" data-trim data-line-numbers>
+                     # File: spring-config.xml
+                     <beans
+                           xmlns="http://www.springframework.org/schema/beans"
+                           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                           xsi:schemaLocation="http://www.springframework.org/schema/beans"
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+                        ...
+                        <bean name="sequenceGenerator"
+                             class="no.hvl.dat152.sequence.FirstSequenceGenerator">
+                           <constructor-arg value="30"></constructor-arg>
+                           <constructor-arg value="A"></constructor-arg>
+                           <constructor-arg value="1000"></constructor-arg>
+                        </bean>
+                     </beans>
+                  </code>
+                  </pre>
+               </section>
+            </section>
+
+            <!-- -------------------------------------------------------------
+                -- The Spring Framework - Dependency Injection
+                ------------------------------------------------------------- -->
+            <section>
+               <section data-auto-animate>
+                  <p style="font-style: italic; margin-bottom: 0px">The Spring Framework</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Dependency Injection (DI)</b></p>
+                  <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+                     public class DateSequenceGenerator {
+
+                        private PrefixGenerator prefix;
+                        private String suffix;
+                        private int initial;
+                        private int counter;
+
+                        public DateSequenceGenerator() {}
+
+                        public void setPrefix(PrefixGenerator generator) {
+                          this.prefix = generator;
+                        }
+                        ...
+                     }
+                  </code>
+                  </pre>
+						<aside class="notes">
+							<ul>
+								<li>The DateSequenceGenerator does not instanciate a instance of an PrefixGenerator.</li>
+								<li>Actually it doesn't know of any implementations. It doesn't have to - because of DI.</li>
+								<li>The DateSequenceGenerator does not know how the PrefixGenerator is implemented.</li>
+								<li>The dependence is injected (DI).</li>
+								<li>This is way of programming (techique) is called Inversion of Controll.</li>
+							</ul>
+						</aside>
+               </section>
+
+               <section data-transition="fade" data-auto-animate="">
+                  <p style="font-style: italic; margin-bottom: 0px">The Spring Framework</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Dependency Injection (DI)</b></p>
+                  <pre>
+                     <code lang="xml" data-trim data-line-numbers style="line-height: 1.4">
+                        <bean id="datePrefixGenerator"
+                             class="no.hvl.dat152.prefix.DatePrefixGenerator">
+                            <property name="pattern" value="yyyyMMdd"></property>
+                        </bean>
+
+                        <bean name="dateSequenceGenerator"
+                             class="no.hvl.dat152.sequence.DateSequenceGenerator">
+                            <property name="suffix" value="A"></property>
+                            <property name="initial" value="1000"></property>
+                            <property name="datePrefixGenerator">
+                                <ref bean="datePrefixGenerator"></ref>
+                            </property>
+                        </bean>
+                     </code>
+                  </pre>
+						<aside class="notes">
+							<ul>
+								<li>First: Initializing a DatePrefixGenerator (implenting PrefixGenarator).</li>
+								<li>Second: The DatePrefixGenerator is injected into the DateSequenceGenerator.</li>
+								<li>Here the dependency is injected (by property).</li>
+							</ul>
+						</aside>
+               </section>
+
+               <section data-transition="fade">
+                  <p style="font-style: italic; margin-bottom: 0px">The Spring Framework</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Dependency Injection: Autowiring</b></p>
+                  <pre>
+                     <code lang="xml" data-trim data-line-numbers style="line-height: 1.4">
+                        <bean id="datePrefixGenerator"
+                             class="no.hvl.dat152.prefix.DatePrefixGenerator">
+                            <property name="pattern" value="yyyyMMdd"></property>
+                        </bean>
+
+                        <bean name="dateSequenceGenerator"
+                             class="no.hvl.dat152.sequence.DateSequenceGenerator">
+                            <property name="suffix" value="A"></property>
+                            <property name="initial" value="1000"></property>
+
+
+
+                        </bean>
+                     </code>
+                  </pre>
+						<aside class="notes">
+							<ul>
+								<li>The injection by property is removed.</li>
+								<li>We'll let the dependency be "Autowired" by the IoC container instead.</li>
+							</ul>
+						</aside>
+               </section>
+
+               <section>
+                  <p style="font-style: italic; margin-bottom: 0px">The Spring Framework</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Dependency Injection (DI)</b></p>
+                  <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+                     public class DateSequenceGenerator {
+
+                         private PrefixGenerator prefix;
+                         private String suffix;
+                         private int initial;
+                         private int counter;
+
+                         public DateSequenceGenerator() {}
+
+                         @Autowired
+                         public DateSequenceGenerator(PrefixGenerator generator) {
+                             this.prefix = generator;
+                         }
+                         ...
+                     }
+                  </code>
+                  </pre>
+               </section>
+
+               <section style="text-align: left;">
+                  <p style="font-style: italic; margin-bottom: 0px">The heart of the Spring Framework</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Dependency Injection</b></p>
+
+                  <ul style="font-size: 24px">
+                     <li>Programming technique .</li>
+                     <ul style="list-style-type: circle">
+                        <li>Making a class independent of its dependencies.</li>
+                     </ul>
+                     <li>By decoupling the usage of an object from its creation.</li>
+                     <li>Dependent of 4 roles:</li>
+                     <ul style="list-style-type: circle">
+                        <li>The service/instance you want to use.</li>
+                        <li>The client that uses the service/instance.</li>
+                        <li>An interface that’s used by the client and implemented by the service.</li>
+                        <li>The injector which creates a service instance and injects it into the client.</li>
+                     </ul>
+                  </ul>
+               </section>
+
+               <section>
+                  <p style="font-style: italic; margin-bottom: 0px">The Spring Framework</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Dependency Injection (DI)</b></p>
+                  <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+                     public class DateSequenceGenerator {         # <= Client
+
+                         private PrefixGenerator prefix;            # <= Interface
+                         private String suffix;
+                         private int initial;
+                         private int counter;
+
+                         public DateSequenceGenerator() {}
+
+                         @Autowired                           # <= Injector (one way to inject)
+                         public DateSequenceGenerator(PrefixGenerator generator) {
+                             this.prefix = generator;
+                         }
+                         ...
+                     }
+
+                     public class DatePrefixGenerator {            # <= Service/Instance
+                     }
+                  </code>
+                  </pre>
+               </section>
+
+               <section>
+                  <p style="font-style: italic; margin-bottom: 0px">Other ways to initialize beans</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Configuration Code (Java)</b></p>
+                  <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+                     @Configuration
+                     @ComponentScan("no.hvl.dat152")
+                     public class GeneratorConfig {
+                        @Bean
+                        public PrefixGenerator() {
+                          return new DatePrefixGenarator("yyyyMMdd");
+                        }
+                     }
+                  </code>
+                  </pre>
+               </section>
+
+               <section>
+                  <p style="font-style: italic; margin-bottom: 0px">Sources</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Dependency Injection</b></p>
+                  <span style="font-size: 24px">
+                  <p><a href="https://www.programmergirl.com/spring-dependency-injection/">https://www.programmergirl.com/spring-dependency-injection/</a></p>
+                  <p><a href="https://www.baeldung.com/constructor-injection-in-spring">https://www.baeldung.com/constructor-injection-in-spring</a></p>
+                  <p><b>Example with SequenceGenerator:</b> <br>"Spring Recipes: A Problem-Solution Approach" (Second Editon),<br> Gary Mak, Josh Long and Daniel Rubio</p>
+                  </span>
+               </section>
+            </section>
+
+            <!-- -------------------------------------------------------------
+                -- Spring Boot
+                ------------------------------------------------------------- -->
+            <section>
+               <section data-background="white">
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Spring Boot</b></p>
+                  <p style="font-size: 26px; margin-top: 0px; font-style: italic">An easier approach to the Spring Framework</p>
+               </section>
+            
+               <section style="text-align: left;" data-auto-animate>
+                  <p style="font-style: italic; margin-bottom: 0px">An introduction to</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Spring Boot</b></p>
+                  <span style="font-size: 26px">
+                  <ul>
+                     <li>Spring Boot is built on the top of the Spring framework (an extension).</li>
+                     <li>Features:</li>
+                     <ul style="list-style-type: circle">
+                        <li>Standalone (Embedded server: No need for a Tomcat Web Server).</li>
+                        <li>Opinionated (Prebuild configuration of dependencies).</li>
+                        <li>Autoconfiguration.</li>
+                     </ul>
+                  </ul>
+                  </span>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+						<p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Spring Boot</b></p>
+                  <p style="font-size: 26px">Provides a number of starter dependencies for different Spring modules.</p>
+                  <span style="font-size: 26px">
+                  <ul>
+                     <li>spring-boot-starter-web</li>
+                     <li>spring-boot-starter-data-jpa</li>
+                     <li>spring-boot-starter-security</li>
+                     <li>spring-boot-starter-test</li>
+                     <li>And several more</li>
+                  </ul>
+                  </span>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+                  <p style="font-style: italic; margin-bottom: 0px">Maven Dependencies</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>The parent dependency</b></p>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+                        <parent>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-starter-parent</artifactId>
+                            <version>2.7.0</version>
+                            <relativePath></relativePath>  <!-- lookup parent from repository -->
+                        </parent>
+                     </code>
+                  </pre>
+               </section>
+               <section style="text-align: left;" data-auto-animate>
+                  <p style="font-style: italic; margin-bottom: 0px">Maven Dependencies</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Starter Dependencies</b></p>
+                  <pre>
+                     <code lang="xml" data-trim data-line-numbers style="line-height: 1.4">
+                        <dependency>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-starter-web</artifactId>
+                            <version>2.4.4</version>
+                        </dependency>
+                     </code>
+                  </pre>
+               </section>
+               <section>
+                  <img class="stretch" src="images/spring-parent-relative-path.png" alt="Spring-maven-relative-path" style="border: none;">
+               </section>
+               <section style="text-align: left;">
+                  <p style="font-style: italic; margin-bottom: 0px">Maven Dependencies</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Parent RelativePath</b></p>
+
+                  <pre>
+                     <code lang="xml" data-trim data-line-numbers style="line-height: 1.4;">
+                        <parent>
+                            <groupId>com.example.demo</groupId>
+                            <artifactId>AppP</artifactId>
+                            <version>1.0.0</version>
+                            <relativePath>../AppP</relativePath>
+                        </parent>
+                     </code>
+                  </pre>
+               </section>
+            </section>
+
+            
+            <!-- -------------------------------------------------------------
+                -- Demo: Embedded Server vs External Server
+                ------------------------------------------------------------- -->
+            <section>
+               <section style="text-align: left;">
+                  <p style="font-style: italic; margin-bottom: 0px">Spring Boot & Spring Web</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>External vs Embedded Server</b></p>
+               </section>
+
+					<!-- 
+               <section>
+                  <p style="font-style: italic; margin-bottom: 0px">In the beginning</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>External Web Servers</b></p>
+                  <pre>
+                     <code lang="shell">
+$ tree -d -L 2
+.
+|--- conf
+|--- lib
+|--- logs
+|--- temp
+|--- webapps
+| |--- ROOT
+| |--- demo-01-several-controllers-0.0.1-SNAPSHOT
+| |--- demo01
+| |--- demo02
+| |--- demo02frontController_0_0_1_SNAPSHOT
+| |--- demo_01_several_controllers
+| |--- demo_03_command_pattern_war
+| |--- demo_04_front_controller_flow_war
+| |--- docs
+| |--- examples
+| |--- host-manager
+| |--- manager
+|--- work
+                     </code>
+                  </pre>
+               </section> 
+					-->
+
+               <section>
+                  <img class="stretch" src="images/tomcat-server.png" alt="Tomcat Server" style="border: none;">
+               </section> 
+
+               <section>
+                  <img class="stretch" src="images/tomcat-server-deploy.png" alt="Tomcat Server Deploy" style="border: none;">
+               </section>
+
+               <section>
+                  <img class="stretch" src="images/eclipse-run-on-server-tomcat.png" alt="Eclipse Run On Server" style="border: none;">
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+                  <p style="font-style: italic; margin-bottom: 0px">External Web Servers</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Pros</b></p>
+                  <span style="font-size: 26px">
+                  <ul>
+                     <li>Potentially more flexible application architecture.</li>
+                     <li>Really easy to switch servers later.</li>
+                     <li>Application errors can’t harm the server.</li>
+                     <li>Easy to deploy app updates without restarting the server.</li>
+                     <li>Performance and correctness: servers like nginx are highly optimized and tested for complete HTTP correctness, which your app then gets for free.</li>
+                  </ul>
+                  </span>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+                  <p style="font-style: italic; margin-bottom: 0px">External Web Servers</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Cons</b></p>
+                  <span style="font-size: 26px">
+                  <ul>
+                     <li>Extra performance overhead: there could be anything from an extra layer of method abstraction up to CGI-level overhead for your app and the server to communicate.</li>
+                     <li>Deployment complexity: you have to maintain the web server and the application, deploy them individually, ad hoc version testing, etc.</li>
+                     <li>Trickier development environment.</li>
+                  </ul>
+                  </span>
+               </section>
+
+               <section data-auto-animate>
+                  <p style="font-style: italic; margin-bottom: 0px">Spring Boot Default</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Embedded Web Server</b></p>
+                  <pre>
+                     <code lang="shell" data-trim data-line-numbers style="line-height: 1.4;">
+> mvn spring-boot:run
+                     </code>
+                     <p></p>
+                     <code lang="shell" data-trim data-line-numbers style="line-height: 1.4;">
+> mvn package
+> java -cp target/demo-01-several-controllers-0.0.1-SNAPSHOT.jar /
+				no.hvl.dat152.Demo01JettyWebApp
+                     </code>
+                  </pre>
+               </section>
+
+               <section style="text-align: left;">
+                  <p style="font-style: italic; margin-bottom: 0px">Embedded Web Servers</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Pros</b></p>
+                  <span style="font-size: 26px">
+                  <ul>
+                     <li>More self-contained applications. This helps a lot during development.</li>
+                     <li>As a dependency of your application, you can test against server versions just like any other dependency.</li>
+                     <li>More control over how the web server behaves (custom filters, headers, caching).</li>
+                     <li>Single object to be deployed.</li>
+                     <li>Easy to integrate with Docker, Kubernetes, OpenShift etc.</li>
+                  </ul>
+                  </span>
+               </section>
+					
+               <section style="text-align: left;">
+                  <p style="font-style: italic; margin-bottom: 0px">Embedded Web Servers</p>
+                  <p style="color: #cb4b16;font-size: 40px; margin-top: 0px" ><b>Cons</b></p>
+                  <span style="font-size: 24px">
+                  <ul>
+                     <li>Your application has to be designed around the API of whatever server you are using, making it harder to change servers later. <br><small>(Java doesn’t really have this problem, as you can still use the servlet API when embedding)</small></li>
+                     <li>Dependency bloat, as you have to include all the dependencies of the web server.</li>
+                     <li>More effort to deploy hotfixes to security exploits in the server.</li>
+                     <li>You can’t group multiple applications behind one server without a proxy.<br><small>(Not really an issue if deploying to virtual platform)</small></li>
+                     <li>A single uncaught exception is enough to take down the entire application server.</li>
+                  </ul>
+                  </span>
+               </section>
+            </section>
+
+            <!-- --------------------------------------------------------
+               -- Next
+               ------------------------------------------------------------- -->
+				<section>
+               <section data-background="white">
+                  <p style="font-style: italic; margin-bottom: 0px">Next</p>
+                  <p style="font-size: 40px; margin-top: 0px" ><a href="web-04-web-spring-mvc.html"><b>Web Development: Using Spring Web MVC</b></a></p>
+                  <p style="font-size: 18px"><a href="index.html">Home</a></p>
+               </section>
+            </section>
+         </div>
+     </div>
+
+      <script src="dist/reveal.js"></script>
+      <script src="plugin/notes/notes.js"></script>
+      <script src="plugin/markdown/markdown.js"></script>
+      <script src="plugin/highlight/highlight.js"></script>
+      <script>
+         // More info about initialization & config:
+         // - https://revealjs.com/initialization/
+         // - https://revealjs.com/config/
+         Reveal.initialize({
+            hash: true,
+            transition: 'fade',
+
+            // Learn about plugins: https://revealjs.com/plugins/
+            plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+         });
+      </script>
+   </body>
+</html>

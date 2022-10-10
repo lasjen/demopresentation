@@ -1,0 +1,14 @@
+<svg width="450" height="330" xmlns="http://www.w3.org/2000/svg">
+ <g>
+  <title>Layer 1</title>
+  <text fill="#000000" x="18" y="200.75" id="svg_9" stroke-width="0" font-size="24" font-family="Noto Sans JP" text-anchor="start" xml:space="preserve" font-weight="bold">Planning</text>
+  <text fill="#000000" x="184" y="41.75" id="svg_11" stroke-width="0" font-size="24" font-family="Noto Sans JP" text-anchor="start" xml:space="preserve" font-weight="bold">Designing</text>
+  <text fill="#000000" x="25" y="100.75" id="svg_3" stroke-width="0" font-size="24" font-family="Noto Sans JP" text-anchor="start" xml:space="preserve" font-weight="bold">Defining</text>
+  <path id="svg_12" d="m229.0827,111.69651c7.00803,0.00777 13.70294,1.07198 20.04333,2.84985l-5.01796,7.61153l35.61937,0l-8.90712,-13.52898l-8.90032,-13.52493l-4.6852,7.12677c-8.78081,-2.81553 -18.24685,-4.39126 -28.14571,-4.39126c-45.56371,0 -82.49452,32.39161 -82.49452,72.35236c0,16.58503 6.43168,31.82304 17.13542,44.03179l12.54372,-8.44675c-8.65688,-9.86635 -13.86188,-22.17817 -13.89012,-35.58104c0.06305,-32.30775 29.86616,-58.4498 66.69911,-58.49934l0.00001,0zm65.3678,14.47882l-12.54369,8.4508c8.6547,9.86259 13.85972,22.16666 13.88354,35.57351c-0.06306,32.30748 -29.86616,58.4458 -66.70125,58.49904c-6.5274,-0.0074 -12.7721,-0.93826 -18.72531,-2.49499l4.72206,-7.16131l-35.61921,0l8.90053,13.52149l8.90696,13.54014l4.96576,-7.55789c8.42189,2.57134 17.4354,4.00589 26.84921,4.00962c45.57028,-0.00745 82.49476,-32.39908 82.50547,-72.35987c-0.0107,-16.58499 -6.44696,-31.81928 -17.14406,-44.02052l0,-0.00001z" stroke="#000000" fill="none"/>
+  <text fill="#000000" x="343" y="100.75" id="svg_14" stroke-width="0" font-size="24" font-family="Noto Sans JP" text-anchor="start" xml:space="preserve" font-weight="bold">Coding</text>
+  <text stroke="#000000" fill="#CC7C65" x="354" y="200.75" id="svg_15" stroke-width="0" font-size="24" font-family="Noto Sans JP" text-anchor="start" xml:space="preserve" font-weight="bold">Testing</text>
+  <text fill="#000000" x="273" y="298.75" id="svg_16" stroke-width="0" font-size="24" font-family="Noto Sans JP" text-anchor="start" xml:space="preserve" font-weight="bold">Deployment</text>
+  <text fill="#000000" x="46" y="298.75" id="svg_17" stroke-width="0" font-size="24" font-family="Noto Sans JP" text-anchor="start" xml:space="preserve" font-weight="bold">Maintenance</text>
+ </g>
+
+</svg>
