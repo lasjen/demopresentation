@@ -86,7 +86,7 @@
 						<span style="font-size: 24px">
 							<ul>
 								<li>Provide choice at every level.</li>
-								<li>Accommodate diverse perspectives.</li>
+								<li>Accommodate diverse perspectives <br>(not opinionated about how things should be done).</li>
 								<li>Maintain strong backward compatibility.</li>
 								<li>Care about API design.</li>
 								<li>Set high standards for code quality.</li>
@@ -441,6 +441,7 @@ public class App {
                      </code>
                   </pre>
                </section>
+
                <section style="text-align: left;" data-auto-animate>
                   <p style="font-style: italic; margin-bottom: 0px">Maven Dependencies</p>
                   <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Starter Dependencies</b></p>
@@ -454,6 +455,7 @@ public class App {
                      </code>
                   </pre>
                </section>
+               <!--
                <section>
                   <img class="stretch" src="images/spring-parent-relative-path.png" alt="Spring-maven-relative-path" style="border: none;">
                </section>
@@ -472,6 +474,7 @@ public class App {
                      </code>
                   </pre>
                </section>
+               -->
             </section>
 
             
@@ -480,7 +483,7 @@ public class App {
                 ------------------------------------------------------------- -->
             <section>
                <section style="text-align: left;">
-                  <p style="font-style: italic; margin-bottom: 0px">Spring Boot & Spring Web</p>
+                  <p style="font-style: italic; margin-bottom: 0px">Core Spring vs Spring Boot</p>
                   <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>External vs Embedded Server</b></p>
                </section>
 
@@ -536,7 +539,9 @@ $ tree -d -L 2
                      <li>Really easy to switch servers later.</li>
                      <li>Application errors can’t harm the server.</li>
                      <li>Easy to deploy app updates without restarting the server.</li>
+                     <!--
                      <li>Performance and correctness: servers like nginx are highly optimized and tested for complete HTTP correctness, which your app then gets for free.</li>
+                     -->
                   </ul>
                   </span>
                </section>

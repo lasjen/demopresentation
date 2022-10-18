@@ -43,7 +43,7 @@
             -- INTRO: Web Development: Spring MWC
             ---------------------------------------------------------- -->
          <section>
-            <section data-background="white">
+            <section>
                <img src="images/hvl-logo.png" alt="HVL logo" style="border: none; box-shadow: none;"><br><br>
                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Web Development: Spring MVC (Action-based)</b></p>
                <p style="font-size: 24px;font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
@@ -62,12 +62,28 @@
                </span>
             </section>
 
-            <section>
+            <section style="text-align: left;">
                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Sources</b></p>
                <span style="font-size: 24px">
                   <ul>
-                     <li>https://www.baeldung.com/spring-controllers#Overview.</li>
-                     <li>To be updated</li>
+                     <li><a href="https://www.baeldung.com/spring-controllers#Overview">https://www.baeldung.com/spring-controllers#Overview</a>
+                        <ul style="font-size: 20px">
+                           <li>Section 2, 3, 4 (only part regarding web.xml), <br>
+                               5 (only part regarding DispatcherServlet XML file) and 6</li>
+                           <li>See "demo-spring-webmvc.zip" for reference.</li>
+                        </ul>
+                     </li>
+                     <li><a href="https://www.baeldung.com/thymeleaf-in-spring-mvc">https://www.baeldung.com/thymeleaf-in-spring-mvc</a>
+                        <ul style="font-size: 20px">
+                           <li>Section 1, 3, 5 and 6</li>
+                           <li>See "demo-05-spring-web.zip" for reference.</li>
+                        </ul>
+                     </li>
+                     <li><a href="https://www.baeldung.com/spring-boot-internationalization">https://www.baeldung.com/spring-boot-internationalization</a>
+                        <ul style="font-size: 20px">
+                           <li>All sections</li>
+                        </ul>
+                     </li>
                   </ul>
                </span>
             </section>
@@ -103,6 +119,10 @@
                </span>
             </section>
 
+            <section>
+               <img class="stretch" src="images/SpringMVC.webp" alt="DispatcherServlet" style="border: none;">
+            </section>
+
             <section style="text-align: left;" data-auto-animate>
                <p style="font-style: italic; margin-bottom: 0px">Maven Dependencies</p>
                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Web Frameworks: Spring Web MVC (Action based)</b></p>
@@ -121,6 +141,13 @@
                   </dependency>
                </code>
                </pre>
+               <span style="font-size: 24px">
+                  <ul>
+                  <li>In "demo-05-spring-web" we'll use Spring Boot (see next slide)</li>
+                  <li>I have uploaded a small sample application where I use Core Spring.<br>
+                      See: demo-spring-webmvc.zip (not important for any exam)</li>
+                  </ul>
+               </span>
             </section>
             
             <section style="text-align: left;" data-auto-animate>
@@ -146,21 +173,6 @@
                </code>
                </pre>
             </section>
-         </section>
-
-         <!-- --------------------------------------------------------
-            -- Thymeleaf
-            ---------------------------------------------------------- -->  
-         <section>
-
-            <section style="text-align: left;" data-auto-animate>
-               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Introduction to Thymeleaf</b></p>
-               <span style="font-size: 24px">
-                  <ul>
-                     <li>More to come</li>      
-                  </ul>
-               </span>
-            </section>
 
          </section>
 
@@ -173,16 +185,16 @@
                <span style="font-size: 28px">
                   <ul>
                      <li>Smal demo applications keeping track of Inventory (Items).</li>
-                     <li>Based on Spring Boot.</li>
-                     <li>Run by: <b style="font-style: italic">mvn install clean spring-boot:run</b> </li>
+                     <li>Based on <b></b>Spring Boot</b>.</li>
+                     <li>Using <b>Thymeleaf</b> library: an XML/XHTML/HTML5 template engine.</li>
+                     <li>Run by: <b style="font-style: italic">mvn clean package spring-boot:run</b> </li>
                      <li><span style="font-style:italic;">Code: demo-05-spring-web.zip (see course overview)</span></li>
                   </ul>
                </span>
             </section>
 
             <section>
-               <pre><code>
-<?xml version="1.0" encoding="UTF-8"?>
+               <pre><code data-line-numbers="5-10">< ?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -192,7 +204,7 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-parent</artifactId>
       <version>2.7.4</version>
-      <relativePath /> <!-- lookup parent from repository -->
+      <relativePath></relativePath> <!-- lookup parent from repository -->
    </parent>
    
    <groupId>no.hvl.dat152</groupId>
@@ -209,48 +221,9 @@
                </code></pre>
             </section>
 
-            <section>
-               <pre><code>
-   ...
-   <dependencies>
-      <dependency>
-         <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter-web</artifactId>
-      </dependency>
-
-      <dependency>
-         <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter-thymeleaf</artifactId>
-      </dependency>
-
-      <dependency>
-         <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter-test</artifactId>
-         <scope>test</scope>
-      </dependency>
-   </dependencies>
-   ...
-               </code></pre>
-            </section>
-         
-            <section>
-               <pre><code>
-   ...
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-         </plugin>
-      </plugins>
-   </build>
-   ...
-               </code></pre>
-            </section>
-
             <section data-auto-animate>
                <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px"><b>Project: demo-05-spring-web</b></p>
-               <pre><code lang="text">
+               <pre><code lang="text" data-line-numbers="9,17-27">
 |-- pom.xml
 |-- src
       |-- main
@@ -279,6 +252,65 @@
       |   |       |-- viewitem.html
       |-- test
                </code></pre>
+               <aside class="notes">
+                  <ul>
+                     <li>Before: war-file deployed to an web server (supporting JSP/Servlet)</li>
+                     <li>Now: Executable Jar-file</li>
+                     <li>Thymeleaf uses templates (look at this soon)</li>
+                  </ul>
+               </aside>
+            </section>
+
+            <section>
+               <pre><code>
+   ...
+   <dependencies>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-web</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-thymeleaf</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-test</artifactId>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
+   ...
+               </code></pre>
+               <aside class="notes">
+                  <ul>
+                     <li>starter-web: Automatically configured to use Tomcat Embedded Web Server.</li>
+                     <li>Can be configures to use another web-server.</li>
+                     <li>starter-thymeleaf: thymeleaf + thymeleaf-spring5</li>
+                  </ul>
+               </aside>
+            </section>
+         
+            <section>
+               <pre><code>
+   ...
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+         </plugin>
+      </plugins>
+   </build>
+   ...
+               </code></pre>
+               <aside class="notes">
+                  <ul>
+                     <li>Used to make maven package all needed libraries into JAR-file</li>
+                     <li>Run by java -jar "jar-file" (show this)</li>
+                  </ul>
+               </aside>
             </section>
 
             <section data-auto-animate>
@@ -299,7 +331,7 @@ public class ItemController {
                <aside class="notes">
                   <ul>
                      <li>Annotations: Found by spring and automatically autowired and interpreted.</li>
-                     <l>RequestMapping</l>
+                     <li>RequestMapping</li>
                      <li>HTML Template: Return name of template to be redirected to.</li>
                   </ul>
                </aside>
@@ -309,10 +341,394 @@ public class ItemController {
                <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px"><b>Project: demo-05-spring-web</b></p>
                <p style="font-size: 30px; margin-bottom: 0px">src/main/resources/templates/index.html</p>
                <p style="font-size: 24px; font-style:italic; margin-top: 0px">See project: demo-05-spring-web.zip</p>
+               <pre><code lang="java">< !DOCTYPE HTML>
+< html xmlns:th="http://www.thymeleaf.org">
+< head th:replace="fragments/general.html :: headerfiles (title='ItemView')">
+< /head>
+< body>
+<div class="container">
+  	<div class="page-header" id="banner">
+	     <div th:replace="fragments/general.html :: header"></div>
+	     <div th:replace="fragments/general.html :: menu"></div>
+  	</div>
+     
+  	<p>Welcome to the Shopping List at HVL and dat152 lecture.</p>
+ 
+ 	<div th:replace="fragments/general.html :: footer"></div>
+  
+</div>
+< /body>
+< /html>
+                                 </code></pre>
                <aside class="notes">
                   <ul>
-                     <li></li>
+                     <li>This is Thymeleaf.</li>
+                     <li>Reuse of fragments, for instance "header" and "menu"</li>
                   </ul>
+               </aside>
+            </section>
+
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- Thymeleaf
+            ---------------------------------------------------------- -->  
+         <section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Introduction to Thymeleaf</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>A Java template engine for processing and creating HTML, XML, JavaScript, CSS and text.</li> 
+                     <li>A full featured supstitude for JSP.</li>     
+                     <li>Display internationaliazation messages from message files (we'll see this later).</li>
+                     <li>Provides full integration with Spring Framework.</li>
+                  </ul>
+               </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Spring Boot: Maven Dependencies</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Introduction to Thymeleaf</b></p>
+               <pre><code data-line-numbers="8-11">...
+   <dependencies>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-web</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-thymeleaf</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-test</artifactId>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
+   ...
+               </code></pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Core Spring: Maven Dependencies</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Introduction to Thymeleaf</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+                  <dependency>
+                     <groupId>org.thymeleaf</groupId>
+                     <artifactId>thymeleaf</artifactId>
+                     <version>3.0.11.RELEASE</version>
+                  </dependency>
+                  <dependency>
+                     <groupId>org.thymeleaf</groupId>
+                     <artifactId>thymeleaf-spring5</artifactId>
+                     <version>3.0.11.RELEASE</version>
+                  </dependency>
+               </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Simple Expressions</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Introduction to Thymeleaf</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>Variables: ${...}</li>
+                     <!--<li>Selection variables: *{...}</li>-->
+                     <li>Messages: #{...}</li>
+                     <li>Link URLs: @{...}</li>
+                  </ul>
+               </span>
+               <aside class="notes">
+                  <ul>
+                     <li>Link URL we'll see in the form "createitem".</li>
+                  </ul>
+               </aside>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 24px; font-style: italic; margin-bottom: 0px"><b>Thymeleaf Template:</b> src/main/resources/templates/viewitem.html</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Introduction to Thymeleaf</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+< html>
+   ....
+< body>
+   <div class="container">
+      <div class="page-header" id="banner">
+         <div th:replace="fragments/general.html :: header"></div>
+         <div th:replace="fragments/general.html :: menu"></div>
+      </div>
+            
+      < table cellpadding="10">
+         ...
+      < /table>
+         
+      <div th:replace="fragments/general.html :: footer"></div>
+   </div>
+< /body>
+< /html>
+                  </code>
+                  </pre>
+            </section>
+
+            <section>
+               <p style="font-size: 24px; font-style: italic; margin-bottom: 0px">th:replace vs th:insert vs th:include</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Introduction to Thymeleaf</b></p>
+               <ul>
+                  <li><b>Replace</b>: substitute the host tag by the fragment?s</li>
+                  <li><b>Insert</b>: insert the specified fragment as the body of its host tag including the fragment tag</li>
+                  <li><b>Include</b>: insert the specified fragment as the body of its host tag but excluding the fragment tag.</li>
+               </ul>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 24px; font-style: italic; margin-bottom: 0px"><b>Thymeleaf Template:</b> src/main/resources/templates/viewitem.html</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Introduction to Thymeleaf</b></p>
+               <pre>
+                  <code class="" lang="java" data-trim data-line-numbers style="line-height: 1.4">         
+                     <table cellpadding="10">
+                        <tr>
+                           <td width="100px">Id:</td>
+                           <td><b margin-left="15px" th:text="${item.id}" /></td>
+                        </tr>
+                        <tr>
+                           <td>Name:</td>
+                           <td><b th:text="${item.name}" /></td>
+                        </tr>
+                        <tr>
+                           <td>Price:</td>
+                           <td><b th:text="${item.price}" /></td>
+                        </tr>
+                        <tr>
+                           <td>Description:</td>
+                           <td><b th:text="${item.description}" /></td>
+                        </tr>
+                     </table>
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 24px; font-style: italic; margin-bottom: 0px"><b>Thymeleaf Template:</b> src/main/resources/templates/fragments/general.html</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Introduction to Thymeleaf</b></p>
+               <pre>
+                  <code class="" lang="java" data-trim data-line-numbers style="line-height: 1.4">         
+< body>
+   <div th:fragment="header">
+         <h1>Demo: Spring Web MVC (Item Shoppinglist)</h1>
+   </div>
+   
+   <div class="text-left" th:fragment="menu">
+         <p> <a href="/">Home</a> | <a href="/viewitems">Shoppinglist</a> | 
+            <a href="spring.io">Spring Framework</a> | 
+            <a href="https://www.thymeleaf.org/documentation.html">Thymeleaf</a></p>	
+   </div>
+   <footer class="text-center" th:fragment="footer">
+      <p style="font-style: italic"> Created by Lasse Jenssen </p>
+      <p> <a href="http://www.jcon.no/blog">http://www.jcon.no/blog</a></p>
+   </footer>
+< /body>
+                  </code>
+               </pre>
+            </section>
+
+         </section>
+         
+         <!-- --------------------------------------------------------
+            -- Internationalization with Thymeleaf
+            ---------------------------------------------------------- --> 
+
+         <section>
+            <section style="text-align: left;">
+               <p style="font-size: 24px; font-style: italic; margin-bottom: 0px">src/main/resources/messages.properties</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Internationalization with Thymeleaf</b></p>
+               <pre>
+                  <code class="" lang="java" data-trim data-line-numbers style="line-height: 1.4">         
+label.heading=My Shopping List
+label.main-text=Welcome to the Shopping List at HVL and dat152 lecture
+
+label.name=Name
+label.price=Price
+label.description=Description
+label.button-new-item=New Item
+label.create-item=Create Item
+
+lang.change=Change Language
+lang.uk=English(UK)
+lang.no=Norwegian(NO)
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;">
+               <p style="font-size: 24px; font-style: italic; margin-bottom: 0px">src/main/resources/messages_no.properties</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Internationalization with Thymeleaf</b></p>
+               <pre>
+                  <code class="" lang="java" data-trim data-line-numbers style="line-height: 1.4">         
+label.heading=Min Shopping liste
+label.main-text=Velkommen to HVL og DAT152 sin Shopping liste 
+
+label.name=Navn
+label.price=Pris
+label.description=Beskrivelse
+label.button-new-item=Ny gjenstand
+label.create-item=Lag ny gjenstand
+
+lang.change=Endre spraak
+lang.uk=Engelsk(UK)
+lang.no=Norsk(NO)
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;">
+               <p style="font-size: 24px; font-style: italic; margin-bottom: 0px">Refactored: fragments/general.html: Menu: with option box to choose lang</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Internationalization with Thymeleaf</b></p>
+               <pre>
+                  <code data-line-numbers="6-11" lang="java" data-trim style="line-height: 1.4">         
+                     <div class="text-left" th:fragment="menu">
+                        <p> <a href="/">Home</a> | <a href="/viewitems">Shoppinglist</a> | 
+                            <a href="spring.io">Spring Framework</a> | 
+                            <a href="https://www.thymeleaf.org/documentation.html">Thymeleaf</a> | 
+
+                            <span th:text="#{lang.change}"></span>:
+                            <select id="locales">
+                             <option value=""></option>
+                             <option value="uk" th:text="#{lang.uk}"></option>
+                             <option value="no" th:text="#{lang.no}"></option>
+                            </select>
+                        </p>	
+                    </div>
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;">
+               <p style="font-size: 24px; font-style: italic; margin-bottom: 0px">Refactored: fragments/general.html: HEAD: Added Javascript set locale after selected</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Internationalization with Thymeleaf</b></p>
+               <pre>
+                  <code data-line-numbers="5-16" lang="java" data-trim data-line-numbers style="line-height: 1.4">         
+                     < head th:fragment="headerfiles (title)">
+                     <title th:text="${title}"></title>
+                     <meta charset="UTF-8" />
+                     <link rel="stylesheet" href="/bootstrap.min.css" media="screen"/>
+                     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+                     </script>
+                     <script type="text/javascript">
+                           $(document).ready(function () {
+                              $("#locales").change(function () {
+                                 var selectedOption = $('#locales').val();
+                                 if (selectedOption != '') {
+                                       window.location.replace('?lang=' + selectedOption);
+                                 }
+                              });
+                           });
+                     </script>
+                     < /head>
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 24px; font-style: italic; margin-bottom: 0px">Refactored: src/main/resources/templates/viewitem.html</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Internationalization with Thymeleaf</b></p>
+               <pre>
+                  <code class="" lang="java" data-trim data-line-numbers style="line-height: 1.4">         
+                     <table cellpadding="10">
+                        <tr>
+                           <td width="100px">Id:</td>
+                           <td><b margin-left="15px" th:text="${item.id}" /></td>
+                        <tr>
+                        <tr>
+                           <td><b th:text="#{label.name}" />:</td>
+                           <td><b th:text="${item.name}" /></td>
+                        <tr>
+                        <tr>
+                           <td><b th:text="#{label.price}" />:</td>
+                           <td><b th:text="${item.price}" /></td>
+                        <tr>
+                        <tr>
+                           <td><b th:text="#{label.description}" />:</td>
+                           <td><b th:text="${item.description}" /></td>
+                        <tr>
+                     </table>
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 24px; font-style: italic; margin-bottom: 0px">Refactored: FORM in src/main/resources/templates/createitem.html</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Internationalization with Thymeleaf</b></p>
+               <pre>
+                  <code data-line-numbers="1,5,9,13,19" lang="java" data-trim data-line-numbers style="line-height: 1.4">         
+<form th:action="@{/createitem}" method="post" enctype="multipart/form-data">
+   <div><input type="hidden" th:value="${id}" name="id" /></div>
+   <table>
+      <tr>
+         <td><span th:text="#{label.name}" />:</td>
+         <td><input name="name" /></td>
+      </tr>
+      <tr>
+         <td><span th:text="#{label.price}" />:</td>
+         <td><input name="price" /></td>
+      </tr>
+      <tr>
+         <td><span th:text="#{label.description}" />:</td>
+         <td><input name="description" /></td>
+      </tr>
+   </table>
+   <br>
+   <div>
+      <input type="submit" th:value="#{label.button-new-item}" name="button"/>
+   </div>
+</form>
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 24px; font-style: italic; margin-bottom: 0px">New class: InternationalizationConfig implements WebMvcConfigurer</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Internationalization with Thymeleaf</b></p>
+               <pre>
+                  <code data-line-numbers="" lang="java" data-trim data-line-numbers style="line-height: 1.4">         
+                     @Configuration
+                     public class InternationalizationConfig implements WebMvcConfigurer {
+                         @Bean
+                         public LocaleResolver localeResolver() {
+                             SessionLocaleResolver localeResolver = new SessionLocaleResolver();
+                             localeResolver.setDefaultLocale(Locale.UK);
+                             return localeResolver;
+                         }
+                         
+                         @Bean
+                         public LocaleChangeInterceptor localeChangeInterceptor() {
+                             LocaleChangeInterceptor localeChangeInterceptor = 
+                                                                 new LocaleChangeInterceptor();
+                             localeChangeInterceptor.setParamName("lang");
+                             return localeChangeInterceptor;
+                         }
+                         
+                         @Override
+                         public void addInterceptors(InterceptorRegistry registry) {
+                             registry.addInterceptor(localeChangeInterceptor());
+                         }
+                     }
+                  </code>
+               </pre>
+               <aside class="notes">
+                  <ul>
+                     <li>"Boiler plate" code.</li>
+                     <li>LocaleResolver: Set the default Locale, by session, cookies, the Accept-Language header, or a fixed value</li>
+                     <li>Here we are using "SessionLocaleResolver"</li>
+                     <li>LocaleChangeInterceptor: an interceptor bean that will switch to a new locale based on the value of the lang parameter appended to a request.</li>
+                     <li>Defining the "lang" variable.</li>
+                     <li>To achieve this, our @Configuration class has to implement the WebMvcConfigurer interface and override the addInterceptors() method.</li>
+                  </ul>
+
                </aside>
             </section>
 
