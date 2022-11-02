@@ -48,7 +48,7 @@
                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Web Development: FrontController</b></p>
                <p style="font-size: 24px;font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
                <p style="font-size: 15px;">(Based on material from Atle Geitung, 2021)</p>
-               <p style="font-size: 18px"><a href="index.html">Home</a></p>
+               <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
             </section>
             <section style="text-align: left;">
                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Agenda: Back to Web Development</b></p>
@@ -57,12 +57,13 @@
                      <li>Backend Web Developement.</li>
                      <li>More about MVC.</li>
                      <li>More about the design pattern "FrontController".</li>
-                     <li>Design pattern: Command , Application Controller.</li>
+                     <li>Command Design pattern.</li>
                      <li>FrontController with FlowManager.</li>
                      <li>Pure J2EE Servlets (later we'll take a look at Frameworks that build on J2EE).</li>
                   </ul>
                </span>
             </section>
+            
             <section>         
                   <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Syllabus for this lecture</b></p>
                   <span style="font-size: 24px">
@@ -79,9 +80,22 @@
             <section style="text-align: left;">
                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: demo-01-several-controllers</b></p>
                <span style="font-size: 28px">
-                  <p>Smal demo applications keeping track of Inventory (Items).</p>
-                  <p style="font-style:italic;">Code: demo-01-several-controllers.zip (see course overview)</p>
+                  <ul>
+                     <li>Smal demo applications keeping track of Inventory (Items).</li>
+                     <li>Maven project: pom.xml</li>
+                     <li style="font-style:italic;">Code: demo-01-several-controllers.zip (see course overview)</li>
+                  </ul>
                </span>
+               <aside class="notes">
+                  <ul>
+                     <li>Have a look at the pom.xml</li>
+                     <li>Packaging: war -> When deployed to a server supporting Servlet API</li>
+                     <li>Dependencies: Servlet-API, jstl</li>
+                     <li>Resource directory: src/main/webapp</li>
+                     <li>Show Project Properties: Project Facets - Dynamic Web Module</li>
+                     <li>maven-complile-plugin: source > 1.8</li>
+                  </ul>
+               </aside>
             </section>
 
             <section style="text-align: center;">
@@ -235,30 +249,37 @@ public final class ItemDAOMemorySingleton implements ItemDAO {
             <section style="text-align: center;" data-auto-animate>
                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Mapping: src/main/webapp/WEB-INF/web.xml</b></p>
                <pre>
-                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
-< ?xml version="1.0" encoding="UTF-8"? >
-< web-app >
-< servlet >
-   < servlet-name >ViewItemController< /servlet-name >
-   < servlet-class >no.hvl.dat152.controller.ViewItemController< /servlet-class >
-< /servlet >
-< servlet >
-   < servlet-name >ViewShoppinglistController< /servlet-name >
-   < servlet-class >no.hvl.dat152.controller.ViewShoppinglistController< /servlet-class >
-< /servlet >
+                  <code lang="java" data-trim data-line-numbers="7-10,16-19" style="line-height: 1.4;">
+< ?xml version="1.0" encoding="UTF-8"?>
+< web-app>
+< servlet>
+   < servlet-name>ViewItemController< /servlet-name>
+   < servlet-class>no.hvl.dat152.controller.ViewItemController< /servlet-class>
+< /servlet>
+< servlet>
+   < servlet-name>ViewShoppinglistController< /servlet-name>
+   < servlet-class>no.hvl.dat152.controller.ViewShoppinglistController< /servlet-class>
+< /servlet>
 ...
-< servlet-mapping >
-   < servlet-name >ViewItemController< /servlet-name >
-   < url-pattern >/viewitem< /url-pattern >
-< /servlet-mapping >
-< servlet-mapping >
-   < servlet-name >ViewShoppinglistController< /servlet-name >
-   < url-pattern >/viewshoppinglist< /url-pattern >
-< /servlet-mapping >
+< servlet-mapping>
+   < servlet-name>ViewItemController< /servlet-name>
+   < url-pattern>/viewitem< /url-pattern>
+< /servlet-mapping>
+< servlet-mapping>
+   < servlet-name>ViewShoppinglistController< /servlet-name>
+   < url-pattern>/viewshoppinglist< /url-pattern>
+< /servlet-mapping>
 ...
-< /web-app >
+< /web-app>
                   </code>
                </pre>
+               <aside class="notes">
+                  <ul>
+                     <li>Sorry for the spaces.</li>
+                     <li>Define servlet name, associated with Controller class</li>
+                     <li>Defines a URL mapping to the servlet-name and class</li>
+                  </ul>   
+               </aside>
             </section>
 
             <section style="text-align: center;" data-auto-animate>
@@ -309,10 +330,12 @@ public class ViewShoppinglistController extends HttpServlet {
                <aside class="notes">
                   <ul>
                      <li>Show trick with editing Server.xml (to set context-path).</li>
+                     <li>Show code not very robust. Price: character.</li>
                   </ul>
                </aside>
             </section>
          </section>
+
          <!-- --------------------------------------------------------
             -- Recap
             ------------------------------------------------------------- -->
@@ -528,7 +551,7 @@ protected final void doPost(final HttpServletRequest req,
                      <li><b>Purpose</b>: 
                         <ul>
                            <li>Encapsulate a command (for instance "createItem") with associated data and business logic as an object ...</li>
-                           <li>.. , and use polymorphism instead of if-elseif-else to perform the right command.</li>
+                           <li>.. , and use <b>polymorphism</b> instead of if-elseif-else to perform the right command.</li>
                         </ul>
                      <li>Let us: <b>Decouple</b> objects that produce the commands from their consumers</li>
                   </ul>
@@ -539,7 +562,7 @@ protected final void doPost(final HttpServletRequest req,
                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Design Pattern: Command</b></p>
                <img class="stretch" src="images/command-pattern-1.png" alt="Command Pattern 1" style="border:none;" />
             </section>
-
+            <!--
             <section style="text-align: left;" data-auto-animate>
                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Design Pattern: Application Controller</b></p>
                <img class="stretch" src="images/applicatonController-1.png" alt="ApplicationController" style="border:none;" />
@@ -549,7 +572,7 @@ protected final void doPost(final HttpServletRequest req,
                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Design Pattern: Application Controller</b></p>
                <img class="stretch" src="images/frontController-2.png" alt="Command Pattern 1" style="border:none;" />
             </section>
-            <!--
+            
             <section style="text-align: left;" data-auto-animate>
                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Design Pattern: Application Controller</b></p>
                <img class="stretch" src="images/command-pattern-2.png" alt="Command Pattern 1" style="border:none;" />
@@ -584,13 +607,9 @@ public class FrontController extends HttpServlet {
             throws ServletException, IOException {
 
       String cmd = req.getPathInfo();
-      if (cmd == null || cmd.length() == 1) {
-         return;
-      }
-      cmd = cmd.substring(1);
 
       final Action action = ActionMapper.mapToAction(cmd);
-      action.execute(req, resp);
+      action.execute(req, resp);                // polymorphism happens
    }
 
    @Override
@@ -677,12 +696,12 @@ public class ActionMapper {
 
    private static List< ActionMapperType > actionMapperTypeList = 
       new ArrayList< >(Arrays.asList(
-         new ActionMapperType("viewshoppinglist", new ViewShoppingListAction()),
-         new ActionMapperType("viewitem", new ViewItemAction()),
-         new ActionMapperType("updateitem", new UpdateItemFormAction()),
-         new ActionMapperType("updateitemsave", new UpdateItemSaveAction()),
-         new ActionMapperType("createitem", new CreateItemFormAction()),
-         new ActionMapperType("createitemsave", new CreateItemSaveAction()) 
+         new ActionMapperType("/", new ViewShoppingListAction()),
+         new ActionMapperType("/viewshoppinglist", new ViewShoppingListAction()),
+         new ActionMapperType("/viewitem", new ViewItemAction()),
+         ...
+         new ActionMapperType("/createitem", new CreateItemFormAction()),
+         new ActionMapperType("/createitemsave", new CreateItemSaveAction()) 
       ));
 
    private static Map< String, ActionMapperType > mapActionType =
@@ -751,6 +770,7 @@ public class ActionMapper {
             </section>
 
             <section>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px">"ViewShoppingListAction" from last example</p>
                <pre>
                   <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
 public class ViewShoppingListAction implements Action {
@@ -777,6 +797,7 @@ public class ViewShoppingListAction implements Action {
             </section>
 
             <section>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px">Here we have removed the page flow</p>
                <pre>
                   <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
 public class ViewShoppingListAction implements Action {
@@ -814,11 +835,6 @@ protected final void doGet(final HttpServletRequest req,
 
    String cmd = req.getPathInfo();
 
-   if (cmd == null || cmd.length() == 1) {
-      return;
-   }
-   cmd = cmd.substring(1);
-
    final Action action = ActionMapper.mapToAction(cmd);
    action.execute(req, resp);
 }
@@ -826,8 +842,8 @@ protected final void doGet(final HttpServletRequest req,
                </pre>
                <aside class="notes">
                   <ul>
-                     <li>Let's make this a little simpler.</li>
-                     <li></li>
+                     <li>Now we have removed the page flow from the command (action.execute).</li>
+                     <li>Need to add code for page flow.</li>
                   </ul>
                </aside>
             </section>
@@ -841,7 +857,7 @@ protected final void doGet(final HttpServletRequest req,
                      final HttpServletResponse resp)
                   throws ServletException, IOException {
 
-   final String cmd = getCommand(req);
+   final String cmd = req.getPathInfo();
    final Action action = ActionMapper.mapToAction(cmd);
 
    final int result = action.execute(req, resp);
@@ -863,25 +879,6 @@ protected final void doGet(final HttpServletRequest req,
                   </ul>
                </aside>
             </section>
-
-            <section>
-               <pre>
-                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
-private String getCommand(final HttpServletRequest req) {
-
-   String cmd = req.getPathInfo();
-
-   if (cmd == null || cmd.length() <= 1) {
-      cmd = "";
-   } else {
-      cmd = cmd.substring(1);
-   }
-
-   return cmd;
-}
-                  </code>
-               </pre>
-            </section>
             
             <section>
                <pre>
@@ -892,12 +889,13 @@ public class FlowManager {
 
    public FlowManager() {
       pages = new HashMap< >();
-      pages.put("viewshoppinglist", "../shoppinglist.jsp");
-      pages.put("viewitem", "../item.jsp");
-      pages.put("updateitem", "../updateitemform.jsp");
-      pages.put("updateitemsave", "../item.jsp");
-      pages.put("createitem", "../createitemform.jsp");
-      pages.put("createitemsave", "../shoppinglist.jsp");
+      pages.put("/", "../shoppinglist.jsp");
+      pages.put("/viewshoppinglist", "../shoppinglist.jsp");
+      pages.put("/viewitem", "../item.jsp");
+      pages.put("/updateitem", "../updateitemform.jsp");
+      pages.put("/updateitemsave", "../item.jsp");
+      pages.put("/createitem", "../createitemform.jsp");
+      pages.put("/createitemsave", "../shoppinglist.jsp");
    }
 
    public final String getNextPage(final String cmd) {
@@ -951,7 +949,7 @@ public class FlowManager {
             <section>
                <p style="font-style: italic; margin-bottom: 0px">Next</p>
                <p style="font-size: 40px; margin-top: 0px" ><a href="web-02-web-frameworks.html"><b>Web Development: Frameworks</b></a></p>
-               <p style="font-size: 18px"><a href="index.html">Home</a></p>
+               <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
             </section>
          </section>  
 

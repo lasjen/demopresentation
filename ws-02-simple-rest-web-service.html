@@ -21,274 +21,904 @@
 
       <div class="reveal">
          <div class="slides">
-				<!-- --------------------------------------------------------
-               -- WebServices: A simple web service
+            <!-- --------------------------------------------------------
+               -- WebServices: A simple REST Web Service
                ---------------------------------------------------------- -->
-				<section>
-					<section data-background="black">
-						<img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
-						<p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>WebServices: A simple web service</b></p>
-						<p style="font-size: 24px;font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
-						<p style="font-size: 18px"><a href="index.html">Home</a></p>
-					</section>
-				</section>
-				
-				<!-- -------------------------------------------------------------
+            <section>
+               <section>
+                  <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>WebServices: A simple REST WS</b></p>
+                  <p style="font-size: 24px;font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
+                  <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
+               </section>
+            </section>
+            
+            <!-- -------------------------------------------------------------
                 -- Spring Initializer
                 ------------------------------------------------------------- -->
-				<section>
+            <section>
+
+               <section>
+                  <span style="font-size: 40px" data-auto-animate>
+                     <p style="color: #cb4b16; font-style: italic"><b>Spring Initializer</b></p>
+                     <a href="http://start.spring.io">http://start.spring.io</a>
+                  </span>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+                  <p style="font-style: italic; margin-bottom: 0px">Spring Initializer</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Command Line w/Curl</b></p>
+
+                  <pre>
+                     <code lang="shell" data-trim data-line-numbers style="line-height: 1.4;">
+curl -G https://start.spring.io/starter.tgz \
+	-d javaVersion=8 \
+	-d dependencies=web \
+	-d name=SpringRestDemo \
+	-d groupId=no.hvl.dat152 \
+	-d artifactId=SimpleRestDemo \
+	-d packageName=no.hvl.dat152.demo \
+	-d type=maven-project \
+	-o simple-rest-demo.tar.gz
+                     </code>
+                  </pre>
+               </section>
+            
+					<section style="text-align: left;" data-auto-animate>
+                  <pre>
+                     <code lang="bash-3" data-trim data-line-numbers="1-9,14" style="line-height: 1.4;">
+bash-3.2$ curl -G https://start.spring.io/starter.tgz \
+> -d javaVersion=8 \
+> -d dependencies=web \
+> -d name=SpringRestDemo \
+> -d groupId=no.hvl.dat152 \
+> -d artifactId=SimpleRestDemo \
+> -d packageName=no.hvl.dat152.simple-rest-demo \
+> -d type=maven-project \
+> -o simple-rest-demo.tar.gz
+	% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+											Dload  Upload   Total   Spent    Left  Speed
+100 61670  100 61670    0     0   192k      0 --:--:-- --:--:-- --:--:--  198k
+
+bash-3.2$ ls -ltr
+total 128
+-rw-r--r--  1 lassejenssen  staff  61670 Oct 25 08:16 simple-rest-demo.tar.gz
+                     </code>
+                  </pre>
+               </section>
+
+					<section style="text-align: left;" data-auto-animate>
+                  <pre>
+                     <code lang="bash-3" data-trim data-line-numbers="1" style="line-height: 1.4;">
+bash-3.2$ tar xvf simple-rest-demo.tar.gz
+x mvnw.cmd
+x mvnw
+x pom.xml
+x .mvn/
+x .mvn/wrapper/
+x .mvn/wrapper/maven-wrapper.properties
+x .mvn/wrapper/maven-wrapper.jar
+x src/
+x src/main/
+x src/main/resources/
+x src/main/resources/templates/
+x src/main/resources/static/
+x src/main/resources/application.properties
+x src/main/java/
+x src/main/java/no/
+x src/main/java/no/hvl/
+x src/main/java/no/hvl/dat152/
+x src/main/java/no/hvl/dat152/demo/
+x src/main/java/no/hvl/dat152/demo/SpringRestDemoApplication.java
+x src/test/
+x src/test/java/
+x src/test/java/no/
+x src/test/java/no/hvl/
+x src/test/java/no/hvl/dat152/
+x src/test/java/no/hvl/dat152/demo/
+x src/test/java/no/hvl/dat152/demo/SpringRestDemoApplicationTests.java
+x .gitignore
+x HELP.md
+                     </code>
+                  </pre>
+               </section>
+
+					<section style="text-align: left;" data-auto-animate>
+                  <pre>
+                     <code lang="bash-3" data-trim data-line-numbers="1" style="line-height: 1.4;">
+mvn clean package -D skipTests spring-boot:run
+                     </code>
+                  </pre>
+               </section>
 
 					<section>
-						<span style="font-size: 50px">
-							<p style="font-style: italic"><b>Spring Initializer</b></p>
-							<a href="http://start.spring.io">http://start.spring.io</a>
-						</span>
-					</section>
-
-					<section style="text-align: left;">
-						<p style="font-style: italic; margin-bottom: 0px">Spring Initializer</p>
-						<p style="font-size: 50px; margin-top: 0px" ><b>Command Line w/Curl</b></p>
-
+						<p style="font-style: italic; margin-bottom: 0px">Spring Boot and pom.xml</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Default: Tomcat Embedded Server</b></p>
 						<pre>
-							<code lang="shell" data-trim data-line-numbers style="line-height: 1.4;">
-								curl -G https://start.spring.io/starter.tgz \
-									-d javaVersion=8 \
-									-d dependencies=web,jpa \
-									-d name=SpringBootDemo \
-									-d groupId=org.example.springbootdemo \
-									-d artifactId=SpringBootDemo \
-									-d packageName=org.example.springbootdemo \
-									-o myfile.tar.gz
-							</code>
-						</pre>
+                     <code lang="bash-3" data-trim data-line-numbers style="line-height: 1.4;">
+<parent>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-parent</artifactId>
+	<version>2.7.5</version>
+	<relativePath></relativePath> 
+</parent>
+
+<dependencies>
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-web</artifactId>
+	</dependency>
+
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-test</artifactId>
+		<scope>test</scope>
+	</dependency>
+</dependencies>
+                     </code>
+                  </pre>
 					</section>
-				
-				</section>
+
 					
-				<!-- -------------------------------------------------------------
-					-- Demo: Simple WebService
-					------------------------------------------------------------- -->
-				<section>
 
-					<section style="text-align: left;">
-						<p style="font-style: italic; margin-bottom: 0px">Spring Boot & REST WebService</p>
-						<p style="font-size: 50px; margin-top: 0px" ><b>Demo</b></p>
-						<span style="font-size: 26px">
-							<p>1. Starting WebService without RestController</p>
-							<p>2. Creating a simple rest controller (hello)</p>
-							<p>3. Calling rest web service : </p>
-							<p style="font-family: Courier New, monospace;">curl –G http://localhost:8080/hello?name=Bill</p>
-						</span>
+            </section>
+               
+            <!-- -------------------------------------------------------------
+               -- Demo: Simple WebService
+               ------------------------------------------------------------- -->
+            <section>
+
+               <section style="text-align: left;">
+                  <p style="font-style: italic; margin-bottom: 0px">Spring Boot & REST WebService</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Demo</b></p>
+                  <span style="font-size: 26px; line-height: 1.6;">
+							<ol>
+								<li>Starting WebService without RestController</li>
+								<li>Change from Tomcat to Jetty Embedded Server</li>
+								<li>Creating a simple rest controller (hello)</li>
+								<li>Calling rest web service : <br>
+								<span style="font-family: Courier New, monospace;">curl -G http://localhost:8080/hello?name=Bill</span></li>
+							</ol>
+                  </span>
+               </section>
+
+					<section>
+						<p style="font-style: italic; margin-bottom: 0px">Spring Boot and pom.xml</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Changing: Using Jetty Embedded</b></p>
+						<pre>
+                     <code lang="bash-3" data-trim data-line-numbers="5-10,13-16" style="line-height: 1.4;">
+<dependencies>
+	<dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <exclusions>
+         <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+         </exclusion>
+      </exclusions>
+   </dependency>
+
+   <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jetty</artifactId>
+   </dependency>
+
+	...
+</dependencies>
+                     </code>
+                  </pre>
 					</section>
 
-					<section style="text-align: left;">
-						<pre>
-							<code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
-package com.example.demo;
+               <section style="text-align: left;">
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers="7" style="line-height: 1.4;">
+package no.hvl.dat152.demo.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HelloController {
-	@RequestMapping("/hello")
+	
+	@RequestMapping(value = "/hello", produces = MediaType.TEXT_PLAIN_VALUE)
 	public String hello(String name) {
 		return "Hello to " + name;
 	}
+
 }
-							</code>
-						</pre>
-					</section>
+                     </code>
+                  </pre>
+               </section>
 
-					<section>
-						<img class="stretch" src="images/spring-boot-maven-run.png" alt="Spring-boot-maven-run" style="border: none;">
-					</section>
-					
-				</section>
+               <section>
+                  <img class="stretch" src="images/SpringMVC.webp" alt="DispatcherServlet" style="border: none;">
+               </section>
 
-				<!-- -------------------------------------------------------------
-						-- Demo: Greetings Class w/Counter and content
-						------------------------------------------------------------- -->
-				<section>
+               <section style="text-align: left;">
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+package no.hvl.dat152.demo.controller;
 
-					<section style="text-align: left;">
-						<p style="font-style: italic; margin-bottom: 0px">MediaType.APPLICATION_JSON_VALUE</p>
-						<p style="font-size: 50px; margin-top: 0px" ><b>Demo</b></p>
-						<span style="font-size: 26px">
-							<p>1. Introducing a Greeting class w/Counter and Greeting content.</p>
-							<p>2. Create new WebService "Greeting" configured to return Json.</p>
-							<p>3. Calling rest web service : </p>
-							<p style="font-family: Courier New, monospace;">curl –G http://localhost:8080/greeting?name=Bill</p>
-						</span>
-					</section>
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-					<section>
-						<pre>
-							<code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
-package com.example.demo;
+@RestController
+public class HelloController {
+	
+	@RequestMapping(value = "/hello", produces = MediaType.TEXT_PLAIN_VALUE)
+	public String hello(String name) {
+		return "Hello to " + name;
+	}
+
+}
+                     </code>
+                  </pre>
+               </section>
+
+               <section style="text-align: left;">
+                  <pre>
+                     <code lang="bash-3" data-trim style="line-height: 1.4;">
+bash-3.2$ curl -G http://localhost:8080/hello?name=Bill
+Hello to Bill
+                     </code>
+                  </pre>
+               </section>
+               
+            </section>
+
+            <!-- -------------------------------------------------------------
+                  -- Demo: JSON and Greetings Class w/Counter and content
+                  ------------------------------------------------------------- -->
+            <section>
+
+               <section style="text-align: left;">
+                  <p style="font-style: italic; margin-bottom: 0px">MediaType.APPLICATION_JSON_VALUE</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Demo</b></p>
+                  <span style="font-size: 26px">
+                     <p>1. Introducing a Greeting class w/Counter and Greeting content.</p>
+                     <p>2. Create new WebService "Greeting" configured to return Json.</p>
+                     <p>3. Calling rest web service : </p>
+                     <p style="font-family: Courier New, monospace;">curl –G http://localhost:8080/greeting?name=Bill</p>
+                  </span>
+               </section>
+
+               <section>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+package no.hvl.dat152.demo.model;
 
 public class Greeting {
-	private final long id;
-	private final String content;
+   private final long id;
+   private final String content;
 
-	public Greeting(long id, String content) {
-		this.id = id;
-		this.content = content;
-	}
+   public Greeting(long id, String content) {
+      this.id = id;
+      this.content = content;
+   }
 
-	public long getId() {
-		return id;
-	}
+   public long getId() {
+      return id;
+   }
 
-	public String getContent() {
-		return content;
-	}
+   public String getContent() {
+      return content;
+   }
 }
+                     </code>
+                  </pre>
+               </section>
+
+               <section>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+@RestController
+public class GreetingController {
+
+	private static final String template = "Hello, %s!";
+	private final AtomicLong counter = new AtomicLong();
+			
+	@RequestMapping(value = "/greeting", 
+	                produces = MediaType.APPLICATION_JSON_VALUE)
+	public Greeting greeting(
+		@RequestParam(value = "name", defaultValue = "World") String name) {
+		
+		return
+			new Greeting(counter.incrementAndGet(), String.format(template, name));
+	}
+
+}
+                     </code>
+                  </pre>
+						<aside class="notes">
+							<ul>
+								<li>AtomicLong.incrementAndGet (do the operations in one atomic operation.</li>
+							</ul>
+						</aside>
+               </section>
+
+               <section>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers="7-8" style="line-height: 1.4;">
+@RestController
+public class GreetingController {
+
+   private static final String template = "Hello, %s!";
+   private final AtomicLong counter = new AtomicLong();
+         
+   @RequestMapping(value = "/greetings/{name}", 
+                  produces = MediaType.APPLICATION_JSON_VALUE)
+   public Greeting greetings(
+      @PathVariable(value = "name") Optional< String> name) {
+      
+      return
+         new Greeting(counter.incrementAndGet(), 
+                  String.format(template, name.orElseGet(() -> "World")));
+   }
+
+}
+                     </code>
+                  </pre>
+						<aside class="notes">
+							<ul>
+								<li>Another way of doing the same thing.</li>
+							</ul>
+						</aside>
+               </section>
+
+               <section>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+@RestController
+public class GreetingController {
+
+   private static final String template = "Hello, %s!";
+   private final AtomicLong counter = new AtomicLong();
+         
+   @RequestMapping(value = "/greetings/{name}", 
+                  produces = MediaType.APPLICATION_JSON_VALUE)
+   public Greeting greetings(
+      @PathVariable(value = "name") Optional< String> name) {
+      
+      return
+         new Greeting(counter.incrementAndGet(), 
+                  String.format(template, name.orElseGet(() -> "World")));
+   }
+
+}
+                     </code>
+                  </pre>
+						<aside class="notes">
+							<ul>
+								<li>Another way of doing the same thing.</li>
+							</ul>
+						</aside>
+               </section>
+
+					<section>
+						<pre>
+                     <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+bash-3.2$ curl -G http://localhost:8080/greeting?name=Bill
+{"id":1,"content":"Hello, Bill!"}bash-3.2$
 							</code>
 						</pre>
 					</section>
 
 					<section>
 						<pre>
-							<code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
-private static final String template = "Hello, %s!";
-private final AtomicLong counter = new AtomicLong();
-
-@RequestMapping(value = "/greeting", produces = MediaType.APPLICATION_JSON_VALUE)
-public Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
-	return
-		new Greeting(counter.incrementAndGet(), String.format(template, name));
+                     <code lang="java" data-trim data-line-numbers="1,5-8" style="line-height: 1.4;">
+bash-3.2$ curl -G http://localhost:8080/greeting?name=Bill | json_pp
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    33    0    33    0     0   1465      0 --:--:-- --:--:-- --:--:--  3000
+{
+   "content" : "Hello, Bill!",
+   "id" : 2
 }
 							</code>
 						</pre>
 					</section>
-				</section>
 
-				<!-- -------------------------------------------------------------
-                -- Demo: Testing WebServices
-                ------------------------------------------------------------- -->
-					<section>
-					<section style="text-align: left;">
-						<p style="font-style: italic; margin-bottom: 0px">Unit Testing WebServices</p>
-						<p style="font-size: 50px; margin-top: 0px" ><b>Demo</b></p>
-						<span style="font-size: 26px">
-							<p>Extend the DemoApplicationTests class ... </p>
-							<p>1. Create a test for failing web service ("morning" - not existing).</p>
-							<p>2. Create a test for sucessfull web service call ("greeting").</p>
-							<p>3. Create a test checking content type is Json.</p>
-							<p>4. Create a test checking increasing counter.</p>
-						</span>
+               <section style="text-align: left;">
+                  <p style="font-style: italic; margin-bottom: 0px">MediaType.APPLICATION_JSON_VALUE</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Why JSON over XML?</b></p>
+                  <span style="font-size: 26px">
+							<ul>
+								<li>JSON is <b>faster</b> because it is designed specifically for data interchange. 
+									<ul style="list-style-type:circle; font-size: 22px;">
+										<li>JSON encoding is terse (requires less bytes)</li>
+										<li>JSON parsers are less complex (requires less processing time and memory overhead)</li>
+										<li>XML is slower, because it is designed for a lot more than just data interchange</li>
+									</ul>
+								</li>
+								<li>JSON <b>less complex</b> (easier to read and handle)</li>
+							</ul>
+                  </span>
+               </section>
+
+					<section style="text-align: left;" data-auto-animate="">
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Web Services: WADL vs WSDL</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">Web Application Description Language.</p>
+
+                  <span style="font-size: 24px;">
+                     <ul>
+								<li>A machine readable XML description of HTTP based web-services.</li>
+                        <li>Lightweight.</li>
+								<li>Easier to understand, and easier to write than WSDL.</li>
+								<li>Some implementations of JAX-RS includes tools to auto generate WADL:<br>
+									(For instance Jersey, Apache CFX)
+								</li>
+								<li>Spring has Spring REST Doc (does not produce WADL, but documentation)</li>
+                     </ul>
+							<p style="font-style: italic">Note! We are not going to gernerate WADL desciptions or use Spring REST Doc.</p>
+                  </span>
+               </section>
+
+					<section style="text-align: left;" data-auto-animate>
+                  <p style="font-style: italic; margin-bottom: 0px">Demo: Testing our Greeting API</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>SoapUI</b></p>
+						<img src="images/soapui-rest-greeting.png" alt="SoapUI Example" style="border: none; box-shadow: none;"/>
 					</section>
-					<section>
-						<pre>
-							<code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
-package com.example.demo;
+
+            </section>
+
+            <!-- -------------------------------------------------------------
+               -- Demo: Testing WebServices
+               --------------------------------------------------------------- -->
+      
+				 <section>
+               <section style="text-align: left;" data-auto-animate="">
+                  <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Unit Testing WebServices (JUnit5)</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Testing REST API in Spring Boot</b></p>
+
+                  <span style="font-size: 24px;">
+                     <ul>
+								<li>JUnit is one of the most popular unit-testing frameworks in the Java ecosystem.</li>
+                        <li>JUnit 5: Goal of supporting new features in Java 8 and above.</li>
+                        <li>Direct support to run Unit tests on the JUnit Platform in Eclipse and IntelliJ.</li>
+                        <li> ... or just run by <span style="font-style: italic">"mvn test"</span> (or invoked in other goals)</li>
+                        <li>To skip test in Maven: <span style="font-style: italic">mvn package -DskipTests</span> (use with care)</li>
+                     </ul>
+                     <p>Source: <a href="https://www.baeldung.com/junit-5">https://www.baeldung.com/junit-5</a></p>
+                  </span>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate="">
+                  <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Unit Testing WebServices (JUnit5)</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>JUnit 5</b></p>
+                  <p style="font-size: 26px">The Architecture of Junit5 can be divided into 3 different projects:</p>
+                  <span style="font-size: 24px;">
+                     <ul>
+								<li><b>JUnit Platform</b>: 
+                           <ul style="list-style-type:circle;">
+                              <li>provides an API to launch the tests from either the IDE's, Build Tools or Console.</li>
+                              <li>defines a TestEngine API which enables development of new Testing Frameworks on top of the Platform.</li>
+                           </ul>
+                        </li>
+                        <li><b>JUnit Jupiter</b>: provides a TestEngine implementation to run JUnit5 tests on the platform.</li>
+                        <li><b>JUnit Vintage</b>: provides a TestEngine implementation to support <br>backward compatibility for tests written with Junit3 and Junit4</li>
+                     </ul>
+                  </span>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+                  <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Maven Dependencies</p>
+                  <p style="color: #cb4b16; font-size: 32px; margin-top: 0px" ><b>Unit Testing WebServices</b></p>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+<dependency>
+   <groupId>org.junit.jupiter</groupId>
+   <artifactId>junit-jupiter-engine</artifactId>
+   <version>5.8.1</version>
+   <scope>test</scope>
+</dependency>
+							</code>
+						</pre>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+                  <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Maven Dependencies: Spring Boot Starter Test (always included)</p>
+                  <p style="color: #cb4b16; font-size: 32px; margin-top: 0px" ><b>Unit Testing WebServices (JUnit5)</b></p>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+<dependency>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-starter-test</artifactId>
+   <scope>test</scope>
+</dependency>
+							</code>
+						</pre>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+                  <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Demo: Example Test Code</p>
+                  <p style="color: #cb4b16; font-size: 32px; margin-top: 0px" ><b>Unit Testing WebServices (JUnit5)</b></p>
+                  <span style="font-size: 26px">
+                     <p>Extend the DemoApplicationTests class ... </p>
+							<ol style="line-height: 1.6;">
+                     	<li>Create a test for failing web service ("morning" - not existing).</li>
+                     	<li>Create a test for sucessfull web service call ("greeting").</li>
+                     	<li>Create a test checking content type is Json.</li>
+                     	<li>Create a test checking increasing counter.</li>
+							</ol>
+                  </span>
+               </section>
+
+					<section style="text-align: left;" data-auto-animate>
+                  <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Demo: Example Test Code</p>
+                  <p style="color: #cb4b16; font-size: 32px; margin-top: 0px" ><b>Unit Testing WebServices (JUnit5)</b></p>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+package no.hvl.dat152.demo;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class DemoApplicationTests {
-	@Autowired
-	private TestRestTemplate template;
+@SpringBootTest
+class SpringRestDemoApplicationTests {
 
 	@Test
 	void contextLoads() {
 	}
+
 }
 							</code>
 						</pre>
-					</section>
-					<section>
-						<pre>
-							<code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
-package com.example.demo;
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+						<p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Unit Testing WebServices (JUnit5)</p>
+                  <p style="color: #cb4b16; font-size: 32px; margin-top: 0px" ><b>Adding configuration for using a random port</b></p>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers="6" style="line-height: 1.4;">
+package no.hvl.dat152.demo;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class SpringRestDemoApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
+                     </code>
+                  </pre>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+						<p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Unit Testing WebServices (JUnit5)</p>
+                  <p style="color: #cb4b16; font-size: 32px; margin-top: 0px" ><b>Create a test for failing web service ("morning" - not existing)</b></p>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers="7,11-12,14-22" style="line-height: 1.4;">
+package no.hvl.dat152.demo;
 
 import ...
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class DemoApplicationTests {
-	@Autowired
-	private TestRestTemplate template;
+class SpringRestDemoApplicationTests {
+   @Autowired
+   private TestRestTemplate template;
 
-		...
+   @Test
+   @DisplayName("Not existing URI (/morning)")
+   public void checkWrongGreeting() throws Exception {
+      ResponseEntity< Greeting> response = 
+               template.getForEntity("/morning", Greeting.class);
 
-	@Test
-	public void checkWrongGreeting() throws Exception {
-		ResponseEntity< Greeting > response = template.getForEntity("/morning", Greeting.class);
-		assertThat(response.getStatusCode().isError()).isTrue();
-	}
+      assertTrue(response.getStatusCode().isError(), 
+               () -> "Not existing URI should return error status");
+   }
 
 }
-							</code>
-						</pre>
-					</section>
-					<section>
-						<pre>
-							<code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
-package com.example.demo;
+                     </code>
+                  </pre>
+               </section>
 
-import ...
-import org.junit.jupiter.api.Test;
-import org.springframework.http.ResponseEntity;
-import static org.assertj.core.api.Assertions.assertThat;
+               <section style="text-align: left;" data-auto-animate>
+                  <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Unit Testing WebServices (JUnit5)</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Assertion vs Assumption</b></p>
+                  <span style="font-size: 26px">
+                     <p><b>Assertion:</b> </p>
+							<ul>
+                     	<li>The process of making sure some condition is met.</li>                     
+							</ul>
+                     <p><b>Assumption:</b></p>
+                     <ul>
+                        <li>Check the prerequisites of the test.</li>
+                     	<li>If they are not available or do not have the expected value,<br> 
+                            there's no point in continuing with the test.</li>
+                     </ul>
+                  </span>
+               </section>
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class DemoApplicationTests {
-	@Autowired
-	private TestRestTemplate template;
+               <section style="text-align: left;" data-auto-animate>
+						<p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Unit Testing WebServices (JUnit5)</p>
+                  <p style="color: #cb4b16; font-size: 32px; margin-top: 0px" ><b>Demo: Assumption</b></p>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers="4-5" style="line-height: 1.4;">
+   @Test
+   @DisplayName("Wrong Path (/morning) with Assumption")
+   public void checkWrongGreetingAssumption() throws Exception {
+      assumeTrue("DEV".equals(System.getenv("APP_MODE")), 
+                 () -> "Aborting test: APP_MODE not set to 'DEV'");
+      
+      ResponseEntity< Greeting> response = 
+                  template.getForEntity("/morning", Greeting.class);
 
+      assertTrue(response.getStatusCode().isError());
+   }
+                     </code>
+                  </pre>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+						<p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Unit Testing WebServices (JUnit5)</p>
+                  <p style="color: #cb4b16; font-size: 32px; margin-top: 0px" ><b>Create a test for sucessfull web service call ("greeting")</b></p>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers="4-6,10-11" style="line-height: 1.4;">
+   @Test
+   @DisplayName("Check Greeting OK")
+   public void checkOkGreeting() throws Exception {
+      String name = "bill";
+      String greetingTemplate = "Hello, %s!";
+      String expectedValue = String.format(greetingTemplate, name);
+      
+      ResponseEntity< Greeting> response = template.getForEntity("/greeting?name=" + name, Greeting.class);
+
+      assertTrue(response.getStatusCode().is2xxSuccessful());
+      assertEquals(expectedValue, response.getBody().getContent());
+   }
+
+                     </code>
+                  </pre>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+						<p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Unit Testing WebServices (JUnit5)</p>
+                  <p style="color: #cb4b16; font-size: 32px; margin-top: 0px" ><b>Create a test checking content type is JSON</b></p>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers="4,8-9" style="line-height: 1.4;">
+   @Test
+   @DisplayName("Check content-type is JSON")
+   public void checkContentTypeJSON() throws Exception {
+      String expectedType = MediaType.APPLICATION_JSON_VALUE;
+
+      ResponseEntity< Greeting> response = template.getForEntity("/greeting", Greeting.class);
+      
+      assertEquals( expectedType, 
+                    response.getHeaders().getContentType().toString());
+   }
+                     </code>
+                  </pre>
+               </section>
+
+					<section style="text-align: left;" data-auto-animate>
+						<p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Unit Testing WebServices (JUnit5)</p>
+                  <p style="color: #cb4b16; font-size: 32px; margin-top: 0px" ><b>Create a test checking increasing counter</b></p>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers="11-19" style="line-height: 1.4;">
 	@Test
-	public void checkOkGreeting() throws Exception {
-		String name = "bill";
-		ResponseEntity< Greeting > response = template.getForEntity("/greeting?name=" + name, Greeting.class);
-
-		assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-		assertThat(response.getBody().getContent().equals(String.format("Hello, %s", name)));
+	public void checkOkCounter() throws Exception {
+		ResponseEntity< Greeting> response1 = template.getForEntity("/greeting", Greeting.class);
+		ResponseEntity< Greeting> response2 = template.getForEntity("/greeting", Greeting.class);
+		
+		long expectedValue = response1.getBody().getId() + 1;
+		
+		assertEquals(expectedValue, response2.getBody().getId());
 	}
+                     </code>
+                  </pre>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+						<p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Unit Testing WebServices (JUnit5)</p>
+                  <p style="color: #cb4b16; font-size: 32px; margin-top: 0px" ><b>assumingThat and assertAll</b></p>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers="11-16" style="line-height: 1.4;">
+   @Test
+   @DisplayName("Check Greeting Content)")
+   public void checkGreetingContent() throws Exception {
+      String name = "bill";
+      String greetingTemplate = "Hello, %s!";
+      String expectedValue = String.format(greetingTemplate, name);
+      
+      ResponseEntity< Greeting> response = template.getForEntity("/greeting?name=" + name, Greeting.class);
+      Greeting greeting = response.getBody();
+      
+      assumingThat(greeting != null,
+            () -> assertAll("Checking Greeting",
+               () -> assertEquals(expectedValue, greeting.getContent()),
+               () -> assertTrue(greeting.getId()>0)
+            )
+      );
+   
+   }
+                     </code>
+                  </pre>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate="">
+                  <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Unit Testing WebServices (JUnit5)</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Annotations</b></p>
+
+                  <span style="font-size: 24px;">
+                     <ul>
+								<li><b>@DisplayName</b> defines a custom display name for a test class or a test method</li>
+                        <li><b>@Disable</b>: disables a test class or method (previously @Ignore)</li>
+                        <li><b>@Tag</b> declares tags for filtering tests</li>
+                        <li><b>@BeforeEach</b> denotes that the annotated method will be executed before each test method (previously @Before)</li>
+                        <li><b>@AfterEach</b> denotes that the annotated method will be executed after each test method (previously @After)</li>
+                        <li><b>@BeforeAll</b> denotes that the annotated method will be executed before all test methods in the current class (previously @BeforeClass)</li>
+                        <li><b>@AfterAll</b> denotes that the annotated method will be executed after all test methods in the current class (previously @AfterClass)</li>
+                     </ul>
+                  </span>
+                  <br><br><small>Demo: Run test in Eclipse (look at output).</small>
+                  <aside class="notes">
+                     <ul>
+                        <li>BeforeAll: Before Web Server startsup (Prepare data)</li>
+                     </ul>
+                  </aside>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+						<p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Unit Testing WebServices (JUnit5)</p>
+                  <p style="color: #cb4b16; font-size: 32px; margin-top: 0px" ><b>@Tag</b></p>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers="3" style="line-height: 1.4;">
+   @Test
+   @DisplayName("Check Greeting Content)")
+   @Tag("UnitTests")
+   public void checkGreetingContent() throws Exception {
+      String name = "bill";
+      String greetingTemplate = "Hello, %s!";
+      String expectedValue = String.format(greetingTemplate, name);
+      
+      ResponseEntity< Greeting> response = template.getForEntity("/greeting?name=" + name, Greeting.class);
+      Greeting greeting = response.getBody();
+      
+      assumingThat(greeting != null,
+            () -> assertAll("Checking Greeting",
+               () -> assertEquals(expectedValue, greeting.getContent()),
+               () -> assertTrue(greeting.getId()>0)
+            )
+      );
+   
+   }
+                     </code>
+                  </pre>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+						<p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Unit Testing WebServices (JUnit5)</p>
+                  <p style="color: #cb4b16; font-size: 32px; margin-top: 0px" ><b>@Tag</b></p>
+                  <pre>
+                     <code lang="shell" data-trim data-line-numbers="1,7" style="line-height: 1.4;">
+mvn test -D groups=UnitTests
+
+...
+[INFO]
+[INFO] Results:
+[INFO]
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.510 s
+[INFO] Finished at: 2022-10-30T21:01:12+01:00
+[INFO] ------------------------------------------------------------------------
+                     </code>
+                  </pre>
+                  <aside class="notes">
+                     <ul>
+                        <li>Show how to add tag in "Run Configruration"</li>
+                     </ul>
+                  </aside>
+               </section>
+               
+               <!-- 
+               <section style="text-align: left;" data-auto-animate>
+						<p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Unit Testing WebServices</p>
+                  <p style="color: #cb4b16; font-size: 32px; margin-top: 0px" ><b>Assertions</b></p>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+@Test
+void lambdaExpressions() {
+      List numbers = Arrays.asList(1, 2, 3);
+      assertTrue(numbers.stream()
+      .mapToInt(Integer::intValue)
+      .sum() > 5, () -> "Sum should be greater than 5");
 }
-							</code>
-						</pre>
-					</section>
-					<section>
-						<pre>
-							<code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
-package com.example.demo;
 
-import ...
-import org.junit.jupiter.api.Test;
-import org.springframework.http.ResponseEntity;
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class DemoApplicationTests {
-	@Autowired
-	private TestRestTemplate template;
-
-	@Test
-	public void checkContentTypeJSON() throws Exception {
-		String expectedType = MediaType.APPLICATION_JSON_VALUE;
-		ResponseEntity< Greeting > response = template.getForEntity("/greeting", Greeting.class);
-		assertThat(expectedType).isEqualTo(response.getHeaders().getContentType().toString());
-	}
+@Test
+void groupAssertions() {
+   int[] numbers = {0, 1, 2, 3, 4};
+   assertAll("numbers",
+      () -> assertEquals(numbers[0], 1),
+      () -> assertEquals(numbers[3], 3),
+      () -> assertEquals(numbers[4], 1)
+   );
 }
-							</code>
-						</pre>
-					</section>
-				</section>
+                     </code>
+                  </pre>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate>
+						<p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Unit Testing WebServices</p>
+                  <p style="color: #cb4b16; font-size: 32px; margin-top: 0px" ><b>Assumptions</b></p>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+@Test
+void trueAssumption() {
+      assumeTrue(5 > 1);
+      assertEquals(5 + 2, 7);
+}
+
+@Test
+void falseAssumption() {
+      assumeFalse(5 < 1);
+}
+
+@Test
+void assumptionThat() {
+      String someString = "Just a string";
+      assumingThat(
+         someString.equals("Just a string"),
+         () -> assertEquals(2 + 2, 4)
+      );
+}
+                     </code>
+                  </pre>
+               </section>
+               -->
+
+               <section style="text-align: left;" data-auto-animate>
+						<p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Unit Testing WebServices</p>
+                  <p style="color: #cb4b16; font-size: 32px; margin-top: 0px" ><b>Exception Testing</b></p>
+                  <pre>
+                     <code lang="java" data-trim data-line-numbers="6-7,9, 15-18" style="line-height: 1.4;">
+@Test
+@DisplayName("Can not divide on zero")
+void checkExceptionDivisionByZero() {
+   String expectedErrorMessage = "/ by zero";
+   
+   Throwable exception = assertThrows(ArithmeticException.class, 
+      () -> { int result = 10/0; });
+
+   assertEquals(expectedErrorMessage, exception.getMessage());
+}
+   
+@Test
+@DisplayName("Illegal argument (Integer conversion)")
+void checkExceptionIllegalArgument() {
+   String str = null;
+   assertThrows(IllegalArgumentException.class, 
+         () -> { Integer.valueOf(str); }, 
+         () -> "Trying to covert null as Integer should result in IllegalArgumentException");
+}
+                     </code>
+                  </pre>
+               </section>
+
+            </section>
 
             <!-- --------------------------------------------------------
                -- Next
                ------------------------------------------------------------- -->
-            <section data-background="black">
+            <section>
+               <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
                <p style="font-style: italic; margin-bottom: 0px">Next</p>
                <p style="font-size: 0px; margin-top: 0px" ><a href="ws-03-rest-store.html"><b>Web Services: Rest Store</b></a></p>
-               <p style="font-size: 18px"><a href="index.html">Home</a></p>
+               <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
             </section>
 
          </div>

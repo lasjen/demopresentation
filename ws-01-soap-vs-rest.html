@@ -18,138 +18,328 @@
 
    </head>
    <body>
+<!-- --------------------------------------------------------
+   -- Column definitions
+   ------------------------------------------------------------- -->
+<style>
+   .item-top { grid-area: top; }
+   .item-main-left { grid-area: main-left; }
+   .item-main-right { grid-area: main-right; }
+
+   .grid-container {
+         display: grid;
+         grid-template-areas:
+            'top top'
+            'main-left main-right';
+
+         grid-gap: 10px;
+         padding: 10px;
+   }
+</style>
 
       <div class="reveal">
          <div class="slides">
-            <section data-background="black">
+            <section>
+               <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
                <p style="color: #cb4b16; font-size: 50px; margin-top: 0px"><b>WebServices: SOAP vs REST</b></p>
                <p style="font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
-               <p style="font-size: 18px"><a href="index.html">Home</a></p>
+               <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
             </section>
 
             <!-- --------------------------------------------------------
             -- Sources
             ------------------------------------------------------------- -->
             <section style="text-align: left;">
-               <p style="font-size: 50px; ">Sources</p>
+               <p style="color: #cb4b16; font-size: 40px; ">Sources</p>
                <span style="font-size: 24px">
                   <ul>
+                     <li><a href="http://www.techmachina.com/2007/08/evolution-of-web-services.html">"Evolution of Web Services"</a></li>
                      <li><a href="https://www.soa4u.co.uk/2019/02/a-brief-look-at-evolution-of-interface.html">"A brief look at the evolution of interface protocols leading to modern APIs", by SOA4U Tech Magazine</a></li>
-                     <li><a href="https://www.oreilly.com/library/view/rest-api-design/9781449317904/">REST API Design Rulebook, Mark Masse, O'Reilly</a></li>
+                     <li><a href="https://www.oreilly.com/library/view/rest-api-design/9781449317904/">REST API Design Rulebook, Mark Masse, O'Reilly</a> <br>
+                         (You do not need to buy the book. Instead, read the summary article below).</li>
                      <li><a href="https://cagline.medium.com/restful-web-services-ddafb8019f2e">Summary article: About "Rest API Design Rulebook", by Chanuka Asanka</a></li>
                   </ul>
                   </span>
             </section>
+
             <!-- --------------------------------------------------------
             -- History
             ------------------------------------------------------------- -->
             <section>
-               <h3>Before WebServices</h3>
-               <p>And before most of you where born.</p>
-               <img src="images/history-ws-technology.png" alt="History of distributed technology" style="width:700px;" /></br>
-               <small>
-               <p><a href="https://www.soa4u.co.uk/2019/02/a-brief-look-at-evolution-of-interface.html">Source: https://www.soa4u.co.uk/2019/02/a-brief-look-at-evolution-of-interface.html)</a></p>
-               </small>
-            </section>
-
-            <section data-visibility="hidden">
-               <section style="text-align: left;">
-                  <h4>Web of Services (Used by W3C)</h4>
-
-                  <blockquote> Often known as "Web Services".</blockquote><br>
-
-                  Based on technologies such as: <br><br>
-                  <ul>
-                     <li>HTTP, XML, SOAP, WSDL, SPARQL and others.</li>
-                  </ul>
-
+               <section data-auto-animate>
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Before WebServices</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">And before most of you where born.</p>
+                  
+                  <img src="images/history-ws-technology.png" alt="History of distributed technology" style="width:700px; border: none; box-shadow: none;" /></br>
+                  <small>
+                  <p><a href="https://www.soa4u.co.uk/2019/02/a-brief-look-at-evolution-of-interface.html">Source: https://www.soa4u.co.uk/2019/02/a-brief-look-at-evolution-of-interface.html)</a></p>
+                  </small>
                </section>
-               <section style="text-align: left;">
-                  <h4>Any Service which are:</h4></br>
 
+               <section data-auto-animate>
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Before WebServices</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">And before most of you where born.</p>
+                  
+                  <ul style="font-size: 26px;">
+                     <li>In the beginning there was Remote Procedure Call (RPC) mechanism.</li>
+                     <li>Common for these implementations:
+                        <ul style="font-size: 22px;">
+                           <li>Client/server architecture</li>
+                           <li>A client invokes a procedure that executes on the server.</li>
+                           <li>Arguments can be passed from the client to the server</li>
+                           <li>and return values can be passed from the server to the client</li>
+                           <li>Binary</li>
+                        </ul>
+                     </li>
+                  </ul>
+               </section>
+
+               <section data-auto-animate>
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Before WebServices</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">Serializing the object model.</p>
+                  <ul style="font-size: 26px;">
+                     <li>CORBA (OMG)
+                        <ul style="list-style-type:circle; font-size: 22px;">
+                           <li>standards-based, vendor-neutral, and language-agnostic.</li>
+                           <li>Very powerful but limited however by its complicated way of
+                              utilizing the power and flexibility of the Internet.</li>
+                        </ul>
+                     </li>
+                     <li>DCOM (Microsoft)
+                        <ul style="list-style-type:circle; font-size: 22px;">
+                           <li>Distributed Computing platform closely tied to Microsoft
+                               component efforts such as OLE, COM and ActiveX.</li>
+                        </ul>
+                     </li>
+                     <li>RMI (Sun Microsystems)
+                        <ul style="list-style-type:circle; font-size: 22px;">
+                           <li>Java based effort which does not play well with otherlanguages. </li> 
+                           <li>The J2EE platform integrated RMI with IIOP.</li>
+                        </ul>
+                     </li>
+                     <li>EJB (Entrprise JavaBeans)
+                        <ul style="list-style-type:circle; font-size: 22px;">
+                           <li>A server-side software component that encapsulates business logic of an application. </li> 
+                           <li>EJB originally specified Java Remote Method Invocation (RMI) as the transport protocol, but later releases also support HTTP.</li>
+                        </ul>
+                     </li>
+                  </ul>
+               </section>
+
+               <section>
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Before WebServices</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">Marchalling/ Unmarshalling introduced.</p>
+                  <span style="text-align: left; font-size: 26px">
+                     <p><b>Background:</b><br>
+                        Java was growing under the parol "Run anywhere" (Java Virtual Machine).</p>
+                     <p > As a response Microsoft came up with a cross-platform interoperability standard:</p>
+                  </span>
                   <ul>
+                     <li><b>XML-RPC</b>
+                        <ul style="list-style-type:circle; font-size: 22px;">
+                           <li>A very Lightweigth RPC system. </li> 
+                           <li>Marshaling/ Unmarshalling: conversion of in-memory object to XML (and visa-versa)</li>
+                           <li>Uses HTTP rather than a proprietary system.</li>
+                        </ul>
+                     </li>
+                  </ul>
+               </section>
+
+               <section data-auto-animate>
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Web Services</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">An evolution or a revolution?</p>
+                  
+                  <span style="font-size: 24px; text-align: left;">
+                     <ul>
+                        <li>The XML-RPC standard quickly evolved into the more elaborate<br> <b>SOAP</b> specification.</li>
+                     
+
+                     <p>During the same timeframe, the need arose to provide more automation around 
+                        message parsing, code generation, and discovery of web services over the network.</p>
+                     
+                     
+                        <li><b>WSDL</b> became the standard for defining web services interfaces.</li>
+                        <li><b>UDDI</b> became the standard for registering and finding web services on the Web.</li>
+                     </ul>
+                  </span>
+               </section>
+
+               <section data-auto-animate>
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Web Services</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">An evolution or a revolution?</p>
+                  
+                  <p style="text-align: center; font-style:italic">
+                     <b>Together, SOAP, WSDL, and UDDI formed what is commonly referred to as Web Services.</b>
+                  </p>
+               </section>
+
+               <section style="text-align: center;" data-auto-animate>
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Web Services</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">Any Service which are:</p>
+
+                  <ul style="font-size: 24px;">
                      <li>Available over the Internet or private (intranet) networks</li>
                      <li>Uses a standardized XML messaging system</li>
                      <li>Not tied to any one operating system or programming language</li>
-                     <li>Self-describing via a common XML grammar
-                     <li>Discoverable via a simple find mechanism
+                     <li>Self-describing via a common XML grammar</li>
+                     <li>Discoverable via a simple find mechanism</li>
                   </ul>
                </section>
             </section>
+
             <!-- --------------------------------------------------------
-            -- SOAP Section
-            ------------------------------------------------------------- -->
+              -- Web Services: SOAP, WSDL and UDDI
+              ----------------------------------------------------------- -->
             <section>
-               <section style="text-align: left;">
-                  <p style="font-size: 50px"><b>SOAP: Simple Object Access Protocol</b></p>
-                  <p>Came as an improvement over CORBA, DCOM, and Java RMI.</p>
-                  <p>Is an Application Communication Protocol.</p>
-                  <p>Is based on XML.</p>
-                  <p>Is platform (and language) independent.</p>
+               <section style="text-align: left" data-auto-animate>
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Web Services: SOAP</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">Simple Object Access Protocol</p>
 
-               </section>
-               <section style="text-align: left;">
-                  <p style="font-size: 50px"><b>SOAP: Continued ...</b></p>
-                  <p>Is NOT tied to any transport protocol: SMTP, <b>HTTP(S)</b>, FTP, MQ.</p>
-                  <p>Is a format for sending and receiving messages.
-                  <ul style="list-style-type:circle">
-                     <li>Request</li>
-                     <li>Response</li>
-                  </ul></p>
-                  <p>Is a <a href="https://www.w3.org/">W3C</a> recommendation.</p>
+                  <span style="font-size: 24px;">
+                     <ul>
+                        <li>An open-standard, XML-based <b>messaging protocol</b> for exchanging information among computers.
+                           <ul style="list-style-type:circle">
+                              <li>Request</li>
+                              <li>Response</li>
+                           </ul>
+                        </li>
+                        <li>Extends HTTP for XML messaging (but HTTP is not a requirement).</li>
+                        <li>Provides data transport for Web services.</li>
+                        <li>Platform- and language-independent.</li>
+                        <li>Is a <a href="https://www.w3.org/">W3C</a> recommendation (<a href="https://www.w3.org/TR/soap/">https://www.w3.org/TR/soap/</a>).</li>
+                     </ul>
+                  </span>
+                  <aside class="notes">
+                     <ul>
+                        <li>Is an Application Communication Protocol.</li>
+                     </ul>
+                  </aside>
                </section>
 
-               <section>
-                  <p style="font-size: 50px; margin-bottom: 0px"><b>SOAP: Continued ...</b></p>
-                  <p style="font-style: italic; margin-top: 0px">Skeleton SOAP Message</p>
-                  <br>
+               <section style="text-align: left" data-auto-animate>
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Web Services: SOAP</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">Skeleton Message</p>
                   <pre>
                   <code lang="xml" data-trim data-line-numbers>
-                     <?xml version="1.0"?>
-                     <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope/"
-                                 soap:encodingStyle="http://www.w3.org/2003/05/soap-encoding">
-                         <soap:Header> ... </soap:Header>
-                        <soap:Body>
-                           ...
-                           <soap:Fault> ... </soap:Fault>
-                        </soap:Body>
-                     </soap:Envelope>
-
+<?xml version="1.0"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope/" 
+               soap:encodingStyle="http://www.w3.org/2003/05/soap-encoding">
+   <soap:Header> ... </soap:Header>
+   <soap:Body>
+      ...
+      <soap:Fault> ... </soap:Fault>
+   </soap:Body>
+</soap:Envelope>
                   </code>
                   </pre>
                </section>
-               <section style="text-align: left;">
 
-                  <p style="font-size: 50px; margin-bottom: 0px"><b>WSDL</b></p>
-                  <p style="font-style: italic; margin-top: 0px">Web Services Description Language</p>
-                  <br>
-                  <p>Is used to describe web services (a kind of an interface).</p>
-                  <p>Is written in XML.</p>
-                  <p>Is a W3C recommendation.</p>
+               <section style="text-align: left;" data-auto-animate="">
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Web Services: WSDL</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">Web Services Description Language</p>
+
+                  <span style="font-size: 24px;">
+                     <ul>
+                        <li>A <b>contract</b> for a SOAP based web service.</li>
+                        <li>Is used for describing the functionality of a SOAP based web service.</li>
+                        <li>Is used to describe web services (a kind of an interface).</li>
+                        <li>Is written in XML.</li>
+                        <li>Is a W3C recommendation (<a href="https://www.w3.org/TR/wsdl.html">https://www.w3.org/TR/wsdl.html</a>).</li>
+                     </ul>
+                  </span>
                </section>
-               <section>
-                  <p style="font-style: italic; margin-bottom: 0px">Discoverable via a</p>
-                  <p style="font-size: 50px; margin-top: 0px"><b>simple find mechanism</b></p>
+
+               <section style="text-align: left;" data-auto-animate="">
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Web Services: WSDL</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">To ways to code a SOAP Web Service</p>
+
+                  <span style="font-size: 24px;">
+                     <ul>
+                        <li><b>contract-first:</b> First creating the WSDL, and then the implementation (the web service).</li>
+                        <li><b>contract-last:</b> The WSDL is created from the source code, or implementation, so it will most likely be generated by a tool rather than created by the developer.</li>
+                     </ul>
+                  </span>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate="">
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Web Services: WSDL</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">Discoverable via a simple find mechanisme</p>
 
                   <p><a href="https://www.w3schools.com/xml/tempconvert.asmx" target="_blank">https://www.w3schools.com/xml/tempconvert.asmx</a></p>
                   <p><a href="https://www.w3schools.com/xml/tempconvert.asmx?wsdl" target="_blank">https://www.w3schools.com/xml/tempconvert.asmx?wsdl</a></p>
                </section>
+
                <section>
-                  <img src="images/soapui-supported-by-smartbear-logo-vector.png"/>
+                  <img src="images/soapui-supported-by-smartbear-logo-vector.png" style="border: none; box-shadow: none;"/>
                   <p>Testing tool for SOAP and REST (OpenSource Edition).</p>
                   Download: <a href="https://www.soapui.org/downloads/soapui/">https://www.soapui.org/downloads/soapui/</a>
                </section>
+
+               <section style="text-align: left;" data-auto-animate="">
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Web Services: UDDI</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">Universal Description, Discovery, and Integration</p>
+
+                  <span style="font-size: 24px;">
+                     <ul>
+                        <li>An industry consortium to create and to implement a directory of Web services.</li>
+                        <li>A platform-independent, open framework.</li>
+                        <li>Can communicate via SOAP, CORBA, Java RMI Protocol.</li>
+                        <li>Uses WSDL to describe interfaces to web services.</li>
+                        <li><b>UDDI operators</b> are organizations that implement a UDDI registry and expose it via Web services according to the UDDI specifications. <br> 
+                           <span style="font-style: italic; font-size: 18px;">(At the time of this writing, four organizations provide public UDDI V2 implementations: <br>
+                              Hewlett-Packard, IBM, Microsoft, and SAP).</span></li>
+                     </ul>
+                  </span>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate="">
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Web Services Architectures</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">Simple Architecture</p>
+                  <img src="https://www.guru99.com/images/3-2016/032316_0646_Webservicea1.png" alt="Simple Architecture" style="border: none; box-shadow: none;" />
+                  <p style="font-size: 20px; font-style: italic;">Source: <a href="https://www.guru99.com/web-service-architecture.html">https://www.guru99.com/web-service-architecture.html</a></p>
+               </section>
+
+               <section style="text-align: left;" data-auto-animate="">
+                  <div class="grid-container">
+                     <div class="item-top">
+                        <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Web Services Architectures</b></p>
+                        <p style="font-size: 26px; font-style: italic; margin-top: 0px">A Service Oriented Architecture (SOA)</p>
+                     </div>
+                     <div class="item-main-left">
+                        <img src="https://www.guru99.com/images/3-2016/032316_0646_Webservicea3.png" alt="A Service Oriented Architecture (SOA)" style="border: none; box-shadow: none;" />
+                     </div>
+                     <div class="item-main-right">
+                        <span style="font-size: 26px;"><br><br>
+                        <p>Three distinct roles:</p>
+                        <ul>
+                           <li>Service Registry (broker)</li>
+                           <li>Service Provider</li>
+                           <li>Service Requestor (consumer)</li>
+                        </ul>
+                        </span>
+                     </div>
+                  </div>
+                  <p style="font-size: 20px; font-style: italic;">Source: <a href="https://www.guru99.com/web-service-architecture.html">https://www.guru99.com/web-service-architecture.html</a></p>
+               </section>
+
             </section>
+
             <!-- --------------------------------------------------------
             -- Rest Section - Introduction
             ------------------------------------------------------------- -->
             <section>
-               <section>
-                  <p style="font-size: 50px"><b>REST: REpresentational State Transfer</b></p>
-                  <p>A term coined by <a href="https://en.wikipedia.org/wiki/Roy_Fielding">Roy Fielding</a> in 2000.</p>
-                  <p>An <span style="color: red">architecture style</span> for designing loosely coupled applications over the network, that is often used in the development of web services.</p>
-                  <p>A REST API consists of an assembly of <span style="color: red">interlinked resources</span>.</p>
-                  <p>This set of resources is known as the REST API’s<br> <span style="color: red">resource model</span>.</p>
+
+               <section style="text-align: left;" data-auto-animate="">
+                  <p style="color: #cb4b16; font-size: 50px; margin-bottom: 0px"><b>Web Services: REST</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">REpresentational State Transfer</p>
+                  <span style="font-size: 24px;">
+                     <ul>
+                        <li>A term coined by <a href="https://en.wikipedia.org/wiki/Roy_Fielding">Roy Fielding</a> in 2000.</li>
+                        <li>An <b>architecture style</b> for designing loosely coupled applications over the network, that is often used in the development of web services.</li>
+                        <li>A REST API consists of an assembly of <b>interlinked resources</b>.</li>
+                        <li>This set of resources is known as the REST APIs <b>resource model</b>.</li>
+                     </ul>
+                  </span>
                </section>
 
                <section>
@@ -177,63 +367,84 @@
                      </tr>
                      <tr>
                         <td>JAX-WS</td>
-                        <td>JAX-RS</td>
+                        <td>JAX-RS<br> (not only alternative)</td>
                      </tr>
                      </tbody>
                   </table>
 
                </section>
 
-               <section>
-                  <p style="font-size: 50px">JAX-RS</p>
-                  <p>A specification, a set of interfaces and annotations offered by Java EE.</p>
-                  <p style="font-size: 50px">Jersey, RESTEasy and Apache CXF</p>
-                  <p>Most popular implementations of the JAX-RS specification.</p>
+               <section style="text-align: left;" data-auto-animate>
+                  <p style="color: #cb4b16; font-size: 40px"><b>JAX-RS</b></p>
+                  <p style="font-size: 27px">A specification, and a set of interfaces and annotations offered by Java EE.</p>
+                  <p style="color: #cb4b16; font-size: 40px">Jersey, RESTEasy and Apache CXF</p>
+                  <p  style="font-size: 27px">Most popular implementations of the JAX-RS specification.</p>
                </section>
 
-               <section>
+               <section style="text-align: left;" data-auto-animate>
+                  <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>JAX-RS</b></p>
+                  <p style="font-size: 26px; font-style: italic; margin-top: 0px">Using Jersey implementation</p>
                   <pre>
                      <code lang="java" data-trim data-line-numbers>
-                        @Path("/greetings")
-                        public class JaxRsController {
+@Path("/greetings")
+public class JaxRsController {
 
-                           @GET
-                           @Path("/{name}")
-                           @Produces(MediaType.TEXT_PLAIN)
-                           public Response greeting(@PathParam("name") String name) {
+   @GET
+   @Path("/{name}")
+   @Produces(MediaType.TEXT_PLAIN)
+   public Response greeting(@PathParam("name") String name) {
 
-                              String greeting = "Hello " + name;
-                              return Response.ok(greeting).build();
-                           }
-                        }
+      String greeting = "Hello " + name;
+      return Response.ok(greeting).build();
+   }
+}
                      </code>
                   </pre>
                </section>
 
                <section style="text-align: left;">
+                  <p style="font-style: italic; margin-bottom: 0px">There is no "Spring REST Framework"</p>
+                  <img src="images/spring-logo.png" alt="Spring-logo" width="30%" style="float: right; border: none">
+                  <p style="font-size: 50px; margin-top: 0px" ><b>Spring & REST</b></p>
+                  <span style="font-size: 26px">
+                  <p><b>Spring Boot:</b> spring-boot-starter-web</p>
+                  <p>Spring Framework:</p>
+                  <ul>
+                      <li>org.springframework.spring-web</li>
+                      <li>org.springframework.spring-webmvc</li>
+                  </ul>
+                  </span>
+              </section>
+              
+               <section style="text-align: left;" data-auto-animate>
                   <p style="font-style: italic; margin-bottom: 0px">We will be using</p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>Spring Boot and Spring WebMVC</b></p><br>
-                  <p>Spring WebMVC is a module of <span style="color: #dc322f">Spring Framework</span> for creating web applications. </p>
-                  <p><span style="color: #dc322f">Spring WebMVC</span> adds REST capability to Spring Framework.</p><br>
-                  <small><p style="font-style: italic">Note! Spring WebMVC is not implementing JAX-RS.</p></small>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Spring Boot and Spring WebMVC</b></p>
+
+                  <span style="font-size: 24px;">
+                     <p>Spring WebMVC is a module of <b>Spring Framework</b> for creating web applications. </p>
+                     <p><b>Spring WebMVC</b> adds REST capability to Spring Framework.</p>
+                  </span>
+                  <p style="font-style: italic">Note! Spring WebMVC is NOT implementing JAX-RS.</p>
                </section>
 
-               <section>
+               <section  style="text-align: left;" data-auto-animate>
+                  <p style="font-style: italic; margin-bottom: 0px">We will be using</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Spring Boot and Spring WebMVC</b></p>
                   <pre>
                      <code lang="java" data-trim data-line-numbers>
-                        @RestController
-                        @RequestMapping("/greetings")
-                        public class SpringRestController {
+@RestController
+@RequestMapping("/greetings")
+public class SpringRestController {
 
-                           @RequestMapping(method = RequestMethod.GET,
-                                       value = "/{name}",
-                                       produces = MediaType.TEXT_PLAIN_VALUE)
-                           public ResponseEntity< ? > greeting(@PathVariable String name) {
+   @RequestMapping(method = RequestMethod.GET,
+               value = "/{name}",
+               produces = MediaType.TEXT_PLAIN_VALUE)
+   public ResponseEntity< ? > greeting(@PathVariable String name) {
 
-                              String greeting = "Hello " + name;
-                              return new ResponseEntity<>(greeting, HttpStatus.OK);
-                           }
-                        }
+      String greeting = "Hello " + name;
+      return new ResponseEntity<>(greeting, HttpStatus.OK);
+   }
+}
                      </code>
                   </pre>
                </section>
@@ -245,55 +456,56 @@
             <section>
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">Six architectual constraints for a truly</p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>RESTFul WebService (API)</b></p><br>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>RESTFul WebService (API)</b></p><br>
                </section>
                
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">First architectual constraints </p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>Client - Server Architecture</b></p><br>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Client - Server Architecture</b></p>
 
-                  <p>Enforces <span style="color: #dc322f">Separation of concerns</span>.</p>
+                  <p>Enforces <b>Separation of concerns</b>.</p>
                   <p>Separating the user interface concerns from the data storage concerns.</p>
                </section>
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">Second architectual constraints </p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>Statelessness</b></p><br>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Statelessness</b></p>
 
                   <p>No session information is retained by the server.</p>
                   <p>The client application must entirely keep the session state.</p>
                </section>
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">Third architectual constraints </p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>Cacheability</b></p><br>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Cacheability</b></p>
 
                   <p>A response should implicitly or explicitly label itself as cacheable or non-cacheable.</p>
                </section>
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">Fourth architectual constraints </p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>Layered System</b></p><br>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Layered System</b></p>
 
                   <p>A client cannot ordinarily tell whether it is connected directly to the end server or to an intermediary along the way (for instance proxy or load balancer).</p>
                </section>
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">Fifth architectual constraints </p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>Code on demand (optional)</b></p><br>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Code on demand (optional)</b></p>
 
                   <p>Servers can temporarily extend or customize the functionality of a client by transferring executable code: for example, compiled components such as Java applets, or client-side scripts such as JavaScript.</p>
                </section>
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">Sixth architectual constraints </p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>Uniform Interface</b></p><br>
-                  <ul style="list-style-type:bullet;line-height: 1.6" >
-                     <li>Identification of Resources (<span style="color:red">URI</span>)</li>
-                     <li>Manipulation of resources through <span style="color:red">representations</span> (Usually JSON objects).</li>
-                     <li><span style="color:red">Self-descriptive</span> messages. For instance:</li>
-                  <ul style="list-style-type:circle">
-                     <li>Request type and protocol: <code>GET / HTTP/1.1</code></li>
-                     <li>Protocol and response status: <code>HTTP/1.1 200 OK</code></li>
-                     <li>Media type: <code>Content-Type: text/html</code></li>
-                  </ul>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Uniform Interface</b></p>
 
-                     <li><span style="color:red">Hypermedia</span> as the engine of application state.</li>
+                  <ul style="font-size: 26px; list-style-type: bullet;line-height: 1.6" >
+                     <li>Identification of Resources (<b>URI</b>)</li>
+                     <li>Manipulation of resources through <b>representations</b> (Usually JSON objects).</li>
+                     <li><b>Self-descriptive</b> messages. For instance:
+                        <ul style="list-style-type:circle; font-size: 22px">
+                           <li>Request type and protocol: <code>GET / HTTP/1.1</code></li>
+                           <li>Protocol and response status: <code>HTTP/1.1 200 OK</code></li>
+                           <li>Media type: <code>Content-Type: text/html</code></li>
+                        </ul>
+                     </li>
+                     <li><b>Hypermedia</b> as the engine of application state (HATEOAS).</li>
                   </ul>
                </section>
             </section>
@@ -303,71 +515,70 @@
             <section>
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">Four different  </p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>REST Resource Archetypes</b></p><br>
-                  <ul style="list-style-type:disc;line-height: 1.6" >
-                     <li>Document</li>
-                     <li>Collection</li>
-                     <li>Store</li>
-                     <li>Controller</li>
-                  </ul>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>REST Resource Archetypes</b></p>
+                  <span style="font-size: 26px;">
+                     <ul style="list-style-type:disc;line-height: 1.6" >
+                        <li>Document</li>
+                        <li>Collection</li>
+                        <li>Store</li>
+                        <li>Controller</li>
+                     </ul>
+                  </span>
                </section>
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">1st REST Resource Archetype  </p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>Document</b></p><br>
-
-                  <p>A document resource can be compared to an object instance or database record.</p>
-                  <p>Examples:</p>
-                  <ul style="list-style-type:disc;line-height: 1.6" >
-                     <li>http://api.soccer.restapi.org # Called docroot</li>
-                     <li>http://api.soccer.restapi.org/leagues/premier-league</li>
-                     <li>http://api.example.com/book-management/books/{id}</li>
-                     <li>http://api.example.com/author-management/authors/{id}</li>
-                  </ul>
-
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Document</b></p>
+                  <span style="font-size: 26px;">
+                     <p>A document resource can be compared to an <b>object instance<br> or database record</b>.</p>
+                     <p>Examples:</p>
+                     <ul style="list-style-type:disc;line-height: 1.6" >
+                        <li>http://api.soccer.restapi.org   # Called docroot</li>
+                        <li>http://api.soccer.restapi.org/leagues/premier-league</li>
+                        <li>http://api.example.com/book-management/books/{id}</li>
+                        <li>http://api.example.com/author-management/authors/{id}</li>
+                     </ul>
+                  </span>
                </section>
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">2nd REST Resource Archetype  </p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>Collection</b></p><br>
-
-                  <p>A <span style="color: red">server managed</span> collection of resources. </p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Collection</b></p>
+                  <span style="font-size: 26px;">
+                  <p>A <b>server managed</b> collection of resources. </p>
                   <p>Clients may add new resources, however the collection is in charge whether to create a new resource or not and the collection also determines the URIs of each contained resource.</p>
                   <p>Examples:</p>
-                  <small>
-                  <ul style="list-style-type:disc;line-height: 1.6" >
+                  <ul style="font-size: 20px; list-style-type:disc;line-height: 1.6" >
                      <li>http://api.example.com/book-management/books</li>
                      <li>http://api.example.com/book-management/books/rest-api-design-rulebook-oreilly</li>
                      <li>http://api.example.com/author-management/authors</li>
                      <li>http://api.example.com/author-management/authors/mark-masse</li>
                   </ul>
-                  </small>
+                  </span>
                </section>
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">3rd REST Resource Archetype  </p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>Store</b></p><br>
-
-                  <p>A a <span style="color: red">client managed</span> resource repository.</p>
-                  <p>On their own stores do not create new resources..</p>
-                  <p>Examples:</p>
-                  <small>
-                  <ul style="list-style-type:disc;line-height: 1.6" >
-                     <li>http://mymusic.com/playlists</li>
-                     <li>http://mymusic.com/playlists/5/songs</li>
-                     <li>http://mymusic.com/playlists/5/songs/3</li>
-                  </ul>
-                  </small>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Store</b></p>
+                  <span style="font-size: 26px;">
+                     <p>A a <b>client managed</b> resource repository.</p>
+                     <p>On their own stores do not create new resources..</p>
+                     <p>Examples:</p>
+                     <ul style="font-size: 20px; list-style-type:disc;line-height: 1.6" >
+                        <li>http://mymusic.com/playlists</li>
+                        <li>http://mymusic.com/playlists/5/songs</li>
+                        <li>http://mymusic.com/playlists/5/songs/3</li>
+                     </ul>
+                  </span>
                </section>
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">4th REST Resource Archetype  </p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>Controller</b></p><br>
-
-                  <p>A controller resource models a <span style="color: red">procedural concept</span>.</p>
-                  <p>A REST API relies on controller resources to perform application specific actions that cannot be logically mapped to one of the standard CRUD operations.</p>
-                  <p>Examples:</p>
-                  <span style="font-size: 22px">
-                  <ul style="list-style-type:disc;line-height: 1.6" >
-                     <li>http://api.hvl.no/students/1/send-sms?text=hello</li>
-                     <li>http://api.hvl.no/semesters/h2022/courses/1/students/send-sms?text=REST tomorrow</li>
-                  </ul>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Controller</b></p>
+                  <span style="font-size: 26px;">
+                     <p>A controller resource models a <b>procedural concept</b>.</p>
+                     <p>A REST API relies on controller resources to perform application specific actions that cannot be logically mapped to one of the standard CRUD operations.</p>
+                     <p>Examples:</p>
+                     <ul style="font-size: 20px; list-style-type:disc;line-height: 1.6" >
+                        <li>http://api.hvl.no/students/1/send-sms?text=hello</li>
+                        <li>http://api.hvl.no/semesters/h2022/courses/dat152/register</li>
+                     </ul>
                   </span>
                </section>
             </section>
@@ -377,7 +588,7 @@
             <section>
                <section>
                   <p style="font-style: italic; margin-bottom: 0px">Resource Identification</p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>URI Path Design</b></p><br>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>URI Path Design</b></p><br>
                   <small>Source: REST API Design Rulebook, Mark Masse, O'Reilly</small>
                </section>
                <section style="text-align: left;">
@@ -480,12 +691,13 @@
             <section>
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">We'll look at some rules regarding</p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>Resource Names</b></p><br>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Resource Names</b></p><br>
                   <small>Source: REST API Design Rulebook, Mark Masse, O'Reilly</small>
                </section>
                <section style="text-align: left;">
                   <p>Rule: A singular noun should be used for document names.</p>
-                  <code>api.hvl.no/teachers/lasse-jenssen</code><br><br>
+                  <code>api.hvl.no/teachers/lasse-jenssen</code><br>
+                  <code>knowsitall.no/animals/cat</code><br><br>
                   <p>Rule: A plural noun should be used for collection names.</p>
                   <p>Rule: A plural noun should be used for store names</p>
                   <code>api.hvl.no/teachers</code><br>
@@ -494,7 +706,7 @@
                <section style="text-align: left;">
                   <p>Rule: A verb or verb phrase should be used for controller names</p>
                   <code>api.hvl.no/students/4/register</code><br>
-                  <code>api.bitbucket.hvl.no/qa/runTestSuite</code><br><br>
+                  <code>api.bitbucket.hvl.no/qa/run-test-suite</code><br><br>
                   <p>Rule: CRUD function names should NOT be used in URIs</p>
                   <code>Anti-patterns:</code><br>
                   <code>api.hvl.no/deleteStudent?id=123</code><br>
@@ -507,7 +719,7 @@
             <section>
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">We'll look at some rules regarding</p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>URI Format</b></p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>URI Format</b></p>
                   <p>URI = scheme "://" authority "/" path [ "?" query ] [ "#" fragment ]</p><br>
                   <small>Source: REST API Design Rulebook, Mark Masse, O'Reilly</small>
                </section>
@@ -520,7 +732,7 @@
                </section>
                <section style="text-align: left;">
                   <p>Rule: Hyphens (-) should be used to improve the readability of URIs.</p>
-                  <p>Rule: Underscores (_) should not be used in URIs</p>
+                  <p>Rule: Underscores (_) should NOT be used in URIs</p>
                   <p>Rule: Lowercase letters should be preferred in URI paths</p>
                   <code>api.hvl.no/teachers/lasse-jenssen</code><br><br>
                </section>
@@ -540,7 +752,7 @@
             <section>
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">We'll look at some rules regarding</p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>URI Query Design</b></p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>URI Query Design</b></p>
                   <p>URI = scheme "://" authority "/" path [ "?" query ] [ "#" fragment ]</p><br>
                   <small>Source: REST API Design Rulebook, Mark Masse, O'Reilly</small>
                </section>
@@ -576,22 +788,22 @@
             <section>
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">We'll look at some rules regarding</p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>Response Status Codes</b></p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Response Status Codes</b></p>
                   <p style="font-size: 24px">Part of an HTTP repsonse message:<br>
                      <code>Status-Line = [HTTP-Version] [Status-Code] [Reason-Phrase] CRLF</code></p><br>
                   <small>Source: REST API Design Rulebook, Mark Masse, O'Reilly</small>
                </section>
                <section style="text-align: left;">
-                  <p>Rule: <span style="color: red">200 (“OK”)</span> should be used to indicate nonspecific success.</p>
-                  <p>Rule: <span style="color: red">200 (“OK”)</span> must NOT be used to communicate errors in the response body.</p>
-                  <p>Rule: <span style="color: red">201 (“Created”)</span> must be used to indicate successful resource creation</p>
-                  <p>Rule: <span style="color: red">204 (“No Content”)</span> should be used when the response body is intentionally empty</p>
+                  <p>Rule: <b>200 (“OK”)</b> should be used to indicate nonspecific success.</p>
+                  <p>Rule: <b>200 (“OK”)</b> must NOT be used to communicate errors in the response body.</p>
+                  <p>Rule: <b>201 (“Created”)</b> must be used to indicate successful resource creation</p>
+                  <p>Rule: <b>204 (“No Content”)</b> should be used when the response body is intentionally empty</p>
                </section>
                <section style="text-align: left;">
-                  <p>Rule: <span style="color: red">401 (“Unauthorized”)</span> must be used when there is a problem with the client’s credentials.</p>
-                  <p>Rule: <span style="color: red">403 (“Forbidden”)</span> should be used to forbid access regardless of authorization state.</p>
-                  <p>Rule: <span style="color: red">404 (“Not Found”)</span> must be used when a client’s URI cannot be mapped to a resource.</p><br>
-                  <p>Rule: <span style="color: red">500 (“Internal Server Error”)</span> should be used to indicate API malfunction.</p>
+                  <p>Rule: <b>401 (“Unauthorized”)</b> must be used when there is a problem with the client’s credentials.</p>
+                  <p>Rule: <b>403 (“Forbidden”)</b> should be used to forbid access regardless of authorization state.</p>
+                  <p>Rule: <b>404 (“Not Found”)</b> must be used when a client’s URI cannot be mapped to a resource.</p><br>
+                  <p>Rule: <b>500 (“Internal Server Error”)</b> should be used to indicate API malfunction.</p>
                </section>
             </section>
             <!-- --------------------------------------------------------
@@ -600,23 +812,23 @@
             <section>
                <section style="text-align: left;">
                   <p style="font-style: italic; margin-bottom: 0px">We'll look at some rules regarding</p>
-                  <p style="font-size: 50px; margin-top: 0px" ><b>HTTP Headers</b></p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>HTTP Headers</b></p>
                   <small>Source: REST API Design Rulebook, Mark Masse, O'Reilly</small>
                </section>
                <section style="text-align: left;">
-                  <p>Rule: <span style="color: red">Content-Type</span> must be used.</p>
-                  <p>Rule: <span style="color: red">Content-Length</span> should be used.</p>
-                  <p>Rule: <span style="color: red">Last-Modified</span> should be used in responses.</p>
-                  <p>Some rules about <span style="color: red">caching</span>, but we'll skip these for now.</p>
+                  <p>Rule: <b>Content-Type</b> must be used.</p>
+                  <p>Rule: <b>Content-Length</b> should be used.</p>
+                  <p>Rule: <b>Last-Modified</b> should be used in responses.</p>
+                  <p>Some rules about <b>caching</b>, but we'll skip these for now.</p>
                </section>
             </section>
             <!-- --------------------------------------------------------
                -- Next
                ------------------------------------------------------------- -->
-            <section data-background="black">
+            <section>
                <p style="font-style: italic; margin-bottom: 0px">Next</p>
-               <p style="font-size: 50px; margin-top: 0px" ><a href="ws-02-the-spring-framework.html"><b>Web Services: Spring Framework</b></a></p>
-               <p style="font-size: 18px"><a href="index.html">Home</a></p>
+               <p style="font-size: 40px; margin-top: 0px" ><a href="ws-02-simple-rest-web-service.html"><b>Web Services: Simple Rest Web Service</b></a></p>
+               <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
             </section>
 
          </div>

@@ -28,12 +28,12 @@
                   <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
                   <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Web Frameworks: Spring </b></p>
                   <p style="font-size: 24px;font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
-                  <p style="font-size: 18px"><a href="index.html">Home</a></p>
+                  <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
                </section>
 
                <section style="text-align: left;">
                   <span style="font-size: 24px">
-                     <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Agenda: The Spring Framwork</b></p>
+                     <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Agenda: The Spring Framwork</b></p>
                      <ul>
                         <li>History</li>
                         <li>The IoC Container</li>
@@ -44,7 +44,16 @@
                      </ul>
                   </span>
                </section>
+
+               <section>         
+                  <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Syllabus for this lecture</b></p>
+                  <span style="font-size: 24px">
+                     <p>DZone: Dependency Injection in Spring</p>
+                     <p>Link: <a href="https://dzone.com/articles/dependency-injection-in-spring">https://dzone.com/articles/dependency-injection-in-spring</a>                     </p>
+                  </span>   
+               </section>
             </section>
+
             <!-- --------------------------------------------------------
                -- The Spring Framework - Introduction
                ------------------------------------------------------------- -->
@@ -54,8 +63,9 @@
                   <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>History</b></p>
 						<span style="font-size: 24px">
 							<ul>
-								<li>2002: Book "Expert One-on-One J2EE Design and Development", Rod Johnsen</li>
-								<li>2003: 0.9 version of the Framwork released</li>
+								<li>2002: Book "Expert One-on-One J2EE Design and Development", Rod Johnsen<br>
+                            (first version)</li>
+								<li>2003: 0.9 version of the Framwork released (under Apache 2.0 license)</li>
 								<li>2004 March: First production release (1.0)</li>
 								<li>Latest version (Per 5th of May 2022): 5.3</li>
 							</ul>
@@ -114,12 +124,13 @@
 							<li>The core of Spring Framework.</li>
 							<li>Responsible to instantiate, configure and assemble the objects.</li>
 							<li>Components are called "Beans" (can be any POJOs).</li>
-							<li>Two types of IoC Containers: BeanFactory and <b>ApplicationContext</b></li>
+							<li>Two types of IoC Containers: BeanFactory and <b>ApplicationContext</b> (superset of BeanFactory)</li>
 							<li>Tasks:
 								<ul style="list-style-type: circle">
 									<li>to instantiate the application class.</li>
-									<li>to configure the objects.</li>
+									<li>to configure the objects (Spring Beans).</li>
 									<li>to assemble the dependencies between the objects.</li>
+                           <li>to resolve messages / internationalization</li>
 								</ul>
 							</li>
                   </ul>
@@ -134,7 +145,59 @@
 
                <section>
                   <pre>
-                  <code data-trim data-noescape >
+                  <code lang="xml" data-trim>
+<dependencies>
+   <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring.version}</version>
+   </dependency>
+
+   <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${spring.version}</version>
+   </dependency>
+   ...
+</dependencies>
+                  </code>
+                  </pre>
+               </section>
+
+               <!--
+               <section style="text-align: left;">
+                  <p style="font-style: italic; font-size: 26px; margin-bottom: 0px">The IoC Container</p>
+                  <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Interface: ApplicationContext</b></p>
+                  <span style="font-size: 24px">
+                     <p> The important features of ApplicationContext are:</p> 
+                     <ul >
+                        <li>Resolving messages</li>
+                        <li>Supporting internationalization</li>
+                        <li>Publishing events</li>
+                        <li>Application-layer specific contexts</li>
+                     </ul>
+                  </span>
+               </section>
+               -->
+
+               <section style="text-align: left;">
+                  <p style="font-style: italic; font-size: 26px; margin-bottom: 0px">The IoC Container</p>
+                  <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Interface: ApplicationContext</b></p>
+                  <ul style="font-size: 24px">
+							<li>Implementations:
+								<ul style="list-style-type: circle">
+									<li>FileSystemXmlApplicationContext</li>
+									<li>ClassPathXmlApplicationContext</li>
+									<li>AnnotationConfigWebApplication (implements WebApplicationContext)</li>
+                           <li>XmlWebConfigWebApplication (implements WebApplicationContext)</li>
+								</ul>
+							</li>
+                  </ul>
+               </section>
+
+               <section>
+                  <pre>
+                  <code lang="java" data-trim data-noescape >
 public class App {
 
 	public static void main( String[] args ) {
@@ -142,8 +205,7 @@ public class App {
 		ApplicationContext context =
 							new ClassPathXmlApplicationContext("spring-config.xml");
 		
-		SequenceGenerator sequence = context.getBean("sequenceGenerator");
-		System.out.println("Next:" + sequence.getNext());
+		...
 
 	}
 }
@@ -151,166 +213,79 @@ public class App {
                   </pre>
                </section>
 
+               <section style="text-align: left;">
+                  <p style="font-style: italic; font-size: 26px; margin-bottom: 0px">The IoC Container</p>
+                  <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>What is a Spring Bean</b></p>
+                  <span style="font-size: 20px">
+                     <ul>
+							<li>In Spring, <b>a bean</b> is an object that the Spring container instantiates, assembles, and manages.</li>
+                     <li>So should we configure all of the objects of our application as Spring beans? <br>
+                         Well, as a best practice, we shouldn't.</li>
+                     <li>In general, we should define beans for ...
+                        <ul style="list-style-type: circle; font-size: 18px;">
+                           <li>service layer objects</li>
+                           <li>data access objects (DAOs)</li>
+                           <li>presentation objects</li>
+                           <li>infrastructure objects such as Hibernate SessionFactories</li>
+                           <li>JMS Queues, and so forth</li>
+                        </ul>
+                     </li>
+                     </ul>
+                  </span>
+               </section>
+
                <section>
-						<p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px">Bean initialization <b>by propery</b></p>
-						<p style="font-style:italic;font-size: 24px; margin-top: 0px">src/main/resources/spring-config.xml</p>
-                  <pre><code lang="xml" data-trim data-line-numbers>
-                     # File: 
-                     <beans
-                           xmlns="http://www.springframework.org/schema/beans"
-                           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                           xsi:schemaLocation="http://www.springframework.org/schema/beans"
-                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-                        ...
-                        <bean name="sequenceGenerator"
-                             class="no.hvl.dat152.sequence.FirstSequenceGenerator">
-                           <property name="prefix" value="30"></property>
-                           <property name="suffix" value="A"></property>
-                           <property name="initial" value="1000"></property>
-                        </bean>
-                     </beans>
+                  <pre><code lang="java" data-trim data-line-numbers>
+@Repository
+public class ItemDaoImpl implements ItemDao {
+
+   @Autowired
+   DataSource ds;
+
+   ...
+}              
+                  </code></pre>
+                  <pre><code lang="yaml" data-trim data-line-numbers>
+# application.properties
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+spring.datasource.url=jdbc:oracle:thin:@my-host:1522/my-service
+spring.datasource.username=lasse
+spring.datasource.password=secret
+
+spring.datasource.hikari.poolName=HikariPoolBooks
+spring.datasource.hikari.minimumIdle=5
+spring.datasource.hikari.maximumPoolSize=5
                   </code></pre>
                </section>
 
                <section>
-						<p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px">Bean initialization <b>by constructor</b></p>
-						<p style="font-style:italic;font-size: 24px; margin-top: 0px">src/main/resources/spring-config.xml</p>
-                  <pre>
-                  <code lang="xml" data-trim data-line-numbers>
-                     # File: spring-config.xml
-                     <beans
-                           xmlns="http://www.springframework.org/schema/beans"
-                           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                           xsi:schemaLocation="http://www.springframework.org/schema/beans"
-                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-                        ...
-                        <bean name="sequenceGenerator"
-                             class="no.hvl.dat152.sequence.FirstSequenceGenerator">
-                           <constructor-arg value="30"></constructor-arg>
-                           <constructor-arg value="A"></constructor-arg>
-                           <constructor-arg value="1000"></constructor-arg>
-                        </bean>
-                     </beans>
-                  </code>
-                  </pre>
+                  <pre><code lang="java" data-trim data-line-numbers>
+@Service
+public class ItemService {
+   private final Logger log = LoggerFactory.getLogger(ItemService.class);
+
+   @Autowired
+   ItemDao itemDao;
+
+   ...
+}              
+                  </code></pre>
                </section>
             </section>
-
-            <!-- -------------------------------------------------------------
-                -- The Spring Framework - Dependency Injection
-                ------------------------------------------------------------- -->
+            <!-- --------------------------------------------------------
+               -- The Spring Framework - Core (Dependency Injection)
+               ---------------------------------------------------------- -->
             <section>
-               <section data-auto-animate>
-                  <p style="font-style: italic; margin-bottom: 0px">The Spring Framework</p>
-                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Dependency Injection (DI)</b></p>
-                  <pre>
-                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
-                     public class DateSequenceGenerator {
-
-                        private PrefixGenerator prefix;
-                        private String suffix;
-                        private int initial;
-                        private int counter;
-
-                        public DateSequenceGenerator() {}
-
-                        public void setPrefix(PrefixGenerator generator) {
-                          this.prefix = generator;
-                        }
-                        ...
-                     }
-                  </code>
-                  </pre>
-						<aside class="notes">
-							<ul>
-								<li>The DateSequenceGenerator does not instanciate a instance of an PrefixGenerator.</li>
-								<li>Actually it doesn't know of any implementations. It doesn't have to - because of DI.</li>
-								<li>The DateSequenceGenerator does not know how the PrefixGenerator is implemented.</li>
-								<li>The dependence is injected (DI).</li>
-								<li>This is way of programming (techique) is called Inversion of Controll.</li>
-							</ul>
-						</aside>
-               </section>
-
-               <section data-transition="fade" data-auto-animate="">
-                  <p style="font-style: italic; margin-bottom: 0px">The Spring Framework</p>
-                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Dependency Injection (DI)</b></p>
-                  <pre>
-                     <code lang="xml" data-trim data-line-numbers style="line-height: 1.4">
-                        <bean id="datePrefixGenerator"
-                             class="no.hvl.dat152.prefix.DatePrefixGenerator">
-                            <property name="pattern" value="yyyyMMdd"></property>
-                        </bean>
-
-                        <bean name="dateSequenceGenerator"
-                             class="no.hvl.dat152.sequence.DateSequenceGenerator">
-                            <property name="suffix" value="A"></property>
-                            <property name="initial" value="1000"></property>
-                            <property name="datePrefixGenerator">
-                                <ref bean="datePrefixGenerator"></ref>
-                            </property>
-                        </bean>
-                     </code>
-                  </pre>
-						<aside class="notes">
-							<ul>
-								<li>First: Initializing a DatePrefixGenerator (implenting PrefixGenarator).</li>
-								<li>Second: The DatePrefixGenerator is injected into the DateSequenceGenerator.</li>
-								<li>Here the dependency is injected (by property).</li>
-							</ul>
-						</aside>
-               </section>
-
-               <section data-transition="fade">
-                  <p style="font-style: italic; margin-bottom: 0px">The Spring Framework</p>
-                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Dependency Injection: Autowiring</b></p>
-                  <pre>
-                     <code lang="xml" data-trim data-line-numbers style="line-height: 1.4">
-                        <bean id="datePrefixGenerator"
-                             class="no.hvl.dat152.prefix.DatePrefixGenerator">
-                            <property name="pattern" value="yyyyMMdd"></property>
-                        </bean>
-
-                        <bean name="dateSequenceGenerator"
-                             class="no.hvl.dat152.sequence.DateSequenceGenerator">
-                            <property name="suffix" value="A"></property>
-                            <property name="initial" value="1000"></property>
-
-
-
-                        </bean>
-                     </code>
-                  </pre>
-						<aside class="notes">
-							<ul>
-								<li>The injection by property is removed.</li>
-								<li>We'll let the dependency be "Autowired" by the IoC container instead.</li>
-							</ul>
-						</aside>
-               </section>
-
-               <section>
-                  <p style="font-style: italic; margin-bottom: 0px">The Spring Framework</p>
-                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Dependency Injection (DI)</b></p>
-                  <pre>
-                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
-                     public class DateSequenceGenerator {
-
-                         private PrefixGenerator prefix;
-                         private String suffix;
-                         private int initial;
-                         private int counter;
-
-                         public DateSequenceGenerator() {}
-
-                         @Autowired
-                         public DateSequenceGenerator(PrefixGenerator generator) {
-                             this.prefix = generator;
-                         }
-                         ...
-                     }
-                  </code>
-                  </pre>
+               
+               <section style="text-align: left;">
+                  <p style="font-style: italic; font-size: 24px; margin-bottom: 0px">Dependency Injection</p>
+                  <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Core Spring</b></p>
+                  <span style="font-size: 28px">
+                     <ul>
+                        <li>Demo: demo-spring-framework.zip.</li>
+                        <li>Just some simple demo code to show technics used in Spring.</li>
+                     </ul>
+                  </span>
                </section>
 
                <section style="text-align: left;">
@@ -325,56 +300,12 @@ public class App {
                      <li>By decoupling the usage of an object from its creation.</li>
                      <li>Dependent of 4 roles:</li>
                      <ul style="list-style-type: circle">
-                        <li>The service/instance you want to use.</li>
-                        <li>The client that uses the service/instance.</li>
-                        <li>An interface that’s used by the client and implemented by the service.</li>
-                        <li>The injector which creates a service instance and injects it into the client.</li>
+                        <li>An <b>interface</b> that is used by the client and implemented by the service.</li>
+                        <li>The <b>service/instance</b> you want to use.</li>
+                        <li>The <b>client</b> that uses the service/instance.</li>
+                        <li>The <b>injector</b> which creates a service instance and injects it into the client.</li>
                      </ul>
                   </ul>
-               </section>
-
-               <section>
-                  <p style="font-style: italic; margin-bottom: 0px">The Spring Framework</p>
-                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Dependency Injection (DI)</b></p>
-                  <pre>
-                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
-                     public class DateSequenceGenerator {         # <= Client
-
-                         private PrefixGenerator prefix;            # <= Interface
-                         private String suffix;
-                         private int initial;
-                         private int counter;
-
-                         public DateSequenceGenerator() {}
-
-                         @Autowired                           # <= Injector (one way to inject)
-                         public DateSequenceGenerator(PrefixGenerator generator) {
-                             this.prefix = generator;
-                         }
-                         ...
-                     }
-
-                     public class DatePrefixGenerator {            # <= Service/Instance
-                     }
-                  </code>
-                  </pre>
-               </section>
-
-               <section>
-                  <p style="font-style: italic; margin-bottom: 0px">Other ways to initialize beans</p>
-                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Configuration Code (Java)</b></p>
-                  <pre>
-                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
-                     @Configuration
-                     @ComponentScan("no.hvl.dat152")
-                     public class GeneratorConfig {
-                        @Bean
-                        public PrefixGenerator() {
-                          return new DatePrefixGenarator("yyyyMMdd");
-                        }
-                     }
-                  </code>
-                  </pre>
                </section>
 
                <section>
@@ -383,9 +314,310 @@ public class App {
                   <span style="font-size: 24px">
                   <p><a href="https://www.programmergirl.com/spring-dependency-injection/">https://www.programmergirl.com/spring-dependency-injection/</a></p>
                   <p><a href="https://www.baeldung.com/constructor-injection-in-spring">https://www.baeldung.com/constructor-injection-in-spring</a></p>
-                  <p><b>Example with SequenceGenerator:</b> <br>"Spring Recipes: A Problem-Solution Approach" (Second Editon),<br> Gary Mak, Josh Long and Daniel Rubio</p>
                   </span>
                </section>
+
+               <section>
+                  <p style="font-style: italic; font-size: 24px; margin-bottom: 0px">First some trivial code</p>
+                  <pre>
+                  <code  lang="java" data-line-numbers data-trim data-noescape>
+public class OldCar {
+
+   private String color;
+   private Engine engine;
+   
+   public OldCar(String color) {
+      System.out.println("Got a new " + color + " car");
+      this.color = color;
+      this.engine = new DieselEngine();
+   }
+   
+   public void start() {
+         engine.turnOn();
+   }
+}
+                  </code>
+                  </pre>
+               </section>
+
+               <section>
+                  <p style="font-style: italic; font-size: 24px; margin-bottom: 0px">First some trivial code</p>
+                  <pre>
+                  <code  lang="java" data-line-numbers="9" data-trim data-noescape >
+public class OldCar {
+
+   private String color;
+   private Engine engine;
+   
+   public OldCar(String color) {
+      System.out.println("Got a new " + color + " car");
+      this.color = color;
+      this.engine = new DieselEngine();         # Dependency
+   }
+   
+   public void start() {
+         engine.turnOn();
+   }
+}
+                  </code>
+                  </pre>
+               </section>
+
+               <section>
+                  <p style="font-style: italic; font-size: 24px; margin-bottom: 0px">The interface and one implementation</p>
+                  <pre>
+                  <code  lang="java" data-trim data-noescape >
+public interface Engine {
+   void turnOn();
+}
+                  </code>
+                  </pre><br>
+                  <pre>
+                     <code  lang="java" data-trim data-noescape >
+public class DieselEngine implements Engine {
+
+   @Override
+   public void turnOn() {
+      System.out.println("Started diesel engine");
+   }
+}
+                     </code>
+                     </pre>
+               </section>
+
+               <section>
+                  <pre>
+                  <code  lang="java" data-trim data-noescape >
+public class App {
+
+	public static void main( String[] args ) {
+
+		ApplicationContext context =
+							new ClassPathXmlApplicationContext("spring-config.xml");
+		
+      OldCar car1 = new OldCar("Blue");
+      car1.start();
+	}
+}
+                  </code>
+                  </pre><br>
+                  Output: <br>
+                  <pre><code lang="bash">
+Got a new blue car.
+Started diesel engine
+                  </code></pre>
+               </section>
+
+               <section>
+                  <p style="font-style: italic; font-size: 24px; margin-bottom: 0px">Let's remove the dependency (the client)</p>
+                  <pre>
+                  <code  lang="java" data-trim data-noescape >
+public class Car {
+
+   private String color;
+   private Engine engine;
+   
+   public Car(String color, Engine engine) {
+      System.out.println("Got a new " + color + " car");
+      this.color = color;
+      this.engine = engine;
+   }
+   
+   public void start() {
+         engine.turnOn();
+   }
+}
+                  </code>
+                  </pre>
+               </section>
+
+               <section>
+                  <p style="font-style: italic; font-size: 24px; margin-bottom: 0px">... and add default constructor and getters/setters (the client)</p>
+                  <pre>
+                  <code  lang="java" data-trim data-noescape >
+public class Car {
+
+   private String color;
+   private Engine engine;
+   
+   public Car() {}
+
+   public Car(String color, Engine engine) {
+      System.out.println("Got a new " + color + " car");
+      this.color = color;
+      this.engine = engine;
+   }
+   
+   public void start() {
+         engine.turnOn();
+   }
+   
+   // Getters and Setters
+   ...
+}
+                  </code>
+                  </pre>
+               </section>
+
+               <section style="text-align: left;">
+                  <p style="font-style: italic; font-size: 24px; margin-bottom: 0px">Let's invert the controll of initiating objects (the injector)</p>
+                  <pre>
+                  <code lang="java" data-line-numbers="10-11" data-trim data-noescape >
+public class App {
+
+   public static void main( String[] args ) {
+      ApplicationContext context =
+                     new ClassPathXmlApplicationContext("spring-config.xml");
+      
+      OldCar car1 = new OldCar("Blue");
+      car1.start();
+
+      Car car2 = (Car) context.getBean("redFerrari");
+      car2.start();
+   }
+}
+                  </code>
+                  </pre>
+               </section>
+
+               <section style="text-align: left;">
+                  <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px">Bean initialization <b>by constructor</b></p>
+                  <p style="font-style: italic; font-size: 24px; margin-top: 0px">File: src/main/resources/spring-config.xml</p>
+                  <pre>
+                  <code lang="xml" data-trim >
+<beans>
+   
+   <bean id="myEngine" class="no.hvl.dat152.entity.parts.DieselEngine" ></bean>
+   
+   <bean name="redFerrari" class="no.hvl.dat152.entity.Car">
+      <constructor-arg value="red"></constructor-arg>
+      <constructor-arg><ref bean="myEngine"></ref></constructor-arg>
+   </bean>
+
+</beans>
+                  </code>
+                  </pre>
+               </section>
+
+               <section>
+                  <p style="font-style: italic; font-size: 24px; margin-bottom: 0px">Let's invert the controll of initiating objects (IoC)</p>
+                  <pre>
+                  <code  lang="java" data-line-numbers="10-11" data-trim data-noescape >
+public class App {
+
+   public static void main( String[] args ) {
+      ApplicationContext context =
+                     new ClassPathXmlApplicationContext("spring-config.xml");
+      
+      OldCar car1 = new OldCar("Blue");
+      car1.start();
+
+      Car car2 = (Car) context.getBean("redFerrari");
+      car2.start();
+   }
+}
+                  </code>
+                  </pre>
+                  <p style="font-style: italic; font-size: 24px; margin-bottom: 0px">Output: (Why do we get this order?)</p>
+                  <pre><code lang="bash">Got a new red car.
+Got a new blue car.
+Started diesel engine
+Started diesel engine</code></pre>
+               </section>
+
+               <section style="text-align: left;">
+                  <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px"><p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px">Bean initialization <b>by propery</b></p>
+                  <p style="font-style: italic; font-size: 24px; margin-top: 0px">File: src/main/resources/spring-config.xml</p>
+                  <pre>
+                  <code lang="xml" data-trim data-line-numbers="5-8">
+<beans>
+   
+   <bean id="myEngine" class="no.hvl.dat152.entity.parts.DieselEngine"></bean>
+   
+   <bean name="redFerrari" class="no.hvl.dat152.entity.Car">
+    	<property name="color" value="red" ></property>
+    	<property name="engine" ref="myEngine" ></property> 
+   </bean>
+
+</beans>
+                  </code>
+                  </pre>
+                  <p style="font-style: italic; font-size: 24px; margin-bottom: 0px">Output: (What happend to the output about the red car?)</p>
+                  <pre><code lang="bash">Got a new blue car.
+Started diesel engine
+Started diesel engine</code></pre>
+               </section>
+
+               <section style="text-align: left;">
+                  <p style="font-style: italic; font-size: 24px; margin-bottom: 0px">Let's introduce a new type of engine: Electrical</p>
+                  <pre>
+                  <code  lang="java" data-line-numbers data-trim data-noescape >
+public class ElectricalEngine implements Engine {
+
+   @Override
+   public void turnOn() {
+         System.out.println("Started electric engine");
+   }
+
+}
+                  </code>
+                  </pre>
+               </section>
+               
+               <section style="text-align: left;">
+                  <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px"><p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px">Bean initialization <b>by propery</b></p>
+                  <p style="font-style: italic; font-size: 24px; margin-top: 0px">File: src/main/resources/spring-config.xml</p>
+                  <pre>
+                  <code lang="xml" data-trim data-line-numbers="3">
+<beans>
+   
+   <bean id="myEngine" class="no.hvl.dat152.entity.parts.ElectricalEngine">
+   </bean>
+   
+   <bean name="redFerrari" class="no.hvl.dat152.entity.Car">
+    	<property name="color" value="red" ></property>
+    	<property name="engine" ref="myEngine" ></property> 
+   </bean>
+
+</beans>
+                  </code>
+                  </pre>
+                  <p style="font-style: italic; font-size: 24px; margin-bottom: 0px">Output: (Remember: No code is refactored. Only config.)</p>
+                  <pre><code lang="bash" data-line-numbers="3">Got a new blue car.
+Started diesel engine
+Started electric engine</code></pre>
+               </section>
+
+               <section style="text-align: left;">
+                  <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px"><p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px">Bean initialization <b>by Code</b></p>
+                  <p style="font-style: italic; font-size: 24px; margin-top: 0px">Later: Configure beans with code</p>
+                  <pre>
+                  <code lang="java" data-trim data-line-numbers>
+@Configuration
+public class InternationalizationConfig implements WebMvcConfigurer {    
+      @Bean
+      public LocaleResolver localeResolver() {
+         SessionLocaleResolver localeResolver = new SessionLocaleResolver();
+         localeResolver.setDefaultLocale(Locale.UK);
+         return localeResolver;
+      }
+      
+      @Bean
+      public LocaleChangeInterceptor localeChangeInterceptor() {
+         LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+         localeChangeInterceptor.setParamName("lang");
+         return localeChangeInterceptor;
+      }
+      
+      @Override
+      public void addInterceptors(InterceptorRegistry registry) {
+         registry.addInterceptor(localeChangeInterceptor());
+      }
+}
+                  </code>
+                  </pre>
+               </section>
+
             </section>
 
             <!-- -------------------------------------------------------------
@@ -603,6 +835,22 @@ $ tree -d -L 2
                </section>
             </section>
 
+            <!-- -------------------------------------------------------------
+                -- Demo: Spring Boot Initializer
+                ------------------------------------------------------------- -->
+            <section>
+               <section style="text-align: left;">
+                  <p style="font-style: italic; font-size: 24px; margin-bottom: 0px">start.spring.io</p>
+                  <p style="color: #cb4b16; font-size: 36px; margin-top: 0px"><b>Spring Boot Initializier</b></p>
+                  <span style="font-size: 28px">
+                     <ul>
+                        <li>Demo: demo-spring-framework.zip.</li>
+                        <li>Just some simple demo code to show technics used in Spring.</li>
+                     </ul>
+                  </span>
+               </section>
+            </section>
+
             <!-- --------------------------------------------------------
                -- Next
                ------------------------------------------------------------- -->
@@ -610,7 +858,7 @@ $ tree -d -L 2
                <section data-background="white">
                   <p style="font-style: italic; margin-bottom: 0px">Next</p>
                   <p style="font-size: 40px; margin-top: 0px" ><a href="web-04-web-spring-mvc.html"><b>Web Development: Using Spring Web MVC</b></a></p>
-                  <p style="font-size: 18px"><a href="index.html">Home</a></p>
+                  <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
                </section>
             </section>
          </div>

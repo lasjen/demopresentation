@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>HVL: Dat152</title>
+    <meta name="description" content="Page for dat152 presentations">
+    <meta name="author" content="Lasse Jenssen">
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/white.css">
+    <link rel="stylesheet" href="dist/theme/robot-lung.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/zenburn.css">
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+
+        <section data-background="white">
+            <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
+            <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Building a RESTFull Store WebService</b></p>
+            <p style="font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
+            <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
+        </section>
+        <!-- --------------------------------------------------------
+            -- Introduction
+            ------------------------------------------------------------- -->
+        <section>
+        
+
+            <section style="text-align: left;">
+                
+                <p style="font-style: italic; margin-bottom: 0px">RESTFull Web Service</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: demo-06-rest-students-v1.0</b></p>
+                <span style="font-size: 28px">
+                   <ul>
+                      <li>Smal REST applications keeping track of "Students".</li>
+                      <li>Based on <b>Spring Boot</b> and <b>Spring WebMVC</b>.</li>
+                      <li>We'll use an H2 database</li>
+                      <li>We'll use Spring Data and JPA (JpaRepository)</li>
+                      <li><span style="font-style:italic;">Code: demo-06-rest-students-v1.0.zip (see course overview)</span></li>
+                   </ul>
+                </span>
+             </section>
+
+        </section>
+
+        <!-- --------------------------------------------------------
+            -- H2 database
+            ------------------------------------------------------------- -->
+        <section>
+            
+            <section style="text-align: left;">
+                
+                <p style="font-style: italic; margin-bottom: 0px">Sources</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>H2 Database</b></p>
+                <span style="font-size: 26px">
+                    <ul>
+                        <li>Download and documentation: <br>
+                            <a href="https://www.h2database.com/html/main.html">https://www.h2database.com/html/main.html</a></li>
+                        <li>Articles: 
+                            <ul style="list-style-type: circle;">
+                                <li><a href="https://www.javatpoint.com/spring-boot-h2-database">https://www.javatpoint.com/spring-boot-h2-database</a> 
+                                    <br>(Used in this presentation)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </span>
+            </section>
+
+            <section style="text-align: left;">
+                
+                <p style="font-style: italic; margin-bottom: 0px">In-memory database</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>H2 Database</b></p>
+                <span style="font-size: 28px">
+                    <ul>
+                        <li>Very fast, open source, JDBC API.</li>
+                        <li>Embedded and server modes; in-memory database (or persistant).</li>
+                        <li>Browser based Console application.</li>
+                        <li>Small footprint: around 2.5 MB jar file size.</li>
+                        <li>Uses: Early development, testing and POCs</li>
+                        <li><a href="https://www.h2database.com/html/main.html">https://www.h2database.com/html/main.html</a></li>
+                    </ul>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Spring Boot: Maven Dependencies</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>H2 Database</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+                    <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <scope>runtime</scope>
+                    </dependency>
+                </code>
+                </pre>
+             </section>
+
+            <section style="text-align: left;">
+                
+                <p style="font-style: italic; margin-bottom: 0px">In-memory database</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>H2 Database</b></p>
+                <span style="font-size: 28px">
+                    <ul>
+                        <li>Simplest form: NO other configuration needed (except from the JPA anotations).</li>
+                        <li>We'll see how we also can configure the database connection.</li>
+                    </ul>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">application.properties</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>H2 Database</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+spring.datasource.url=jdbc:h2:mem:dat152
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=secure
+                </code>
+                </pre>
+             </section>
+
+        </section>
+
+        <!-- --------------------------------------------------------
+            -- Next
+            ------------------------------------------------------------- -->
+        <section>
+            <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
+            <p style="font-style: italic; margin-bottom: 0px">Next</p>
+            <p style="font-size: 50px; margin-top: 0px" ><a href="ws-04.html"><b>To come ...</b></a></p>
+            <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
+        </section>
+
+    </div>
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/markdown/markdown.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+        hash: true,
+        transition: 'fade',
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+    });
+</script>
+</body>
+</html>
