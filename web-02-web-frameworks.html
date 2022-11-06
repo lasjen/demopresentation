@@ -1,0 +1,450 @@
+<!doctype html>
+<html>
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+   <title>HVL: Dat152</title>
+   <meta name="description" content="Page for dat152 presentations">
+   <meta name="author" content="Lasse Jenssen">
+
+   <link rel="stylesheet" href="dist/reset.css">
+   <link rel="stylesheet" href="dist/reveal.css">
+   <link rel="stylesheet" href="dist/theme/white.css">
+   <link rel="stylesheet" href="dist/theme/robot-lung.css">
+
+   <!-- Theme used for syntax highlighted code -->
+   <link rel="stylesheet" href="plugin/highlight/zenburn.css">
+
+</head>
+<body>
+<!-- --------------------------------------------------------
+     -- Column definitions
+     ------------------------------------------------------------- -->
+<style>
+   .item-top { grid-area: top; }
+   .item-main-left { grid-area: main-left; }
+   .item-main-right { grid-area: main-right; }
+
+   .grid-container {
+         display: grid;
+         grid-template-areas:
+            'top top'
+            'main-left main-right';
+
+         grid-gap: 10px;
+         padding: 10px;
+   }
+</style>
+
+   <div class="reveal">
+      <div class="slides">
+         <!-- --------------------------------------------------------
+            -- INTRO: Web Development: Frameworks
+            ---------------------------------------------------------- -->
+         <section>
+            <section data-background="white">
+               <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Web Development: Frameworks</b></p>
+               <p style="font-size: 24px;font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
+               <p style="font-size: 15px;">(Based on material from Atle Geitung, 2021)</p>
+               <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
+            </section>
+
+            <section style="text-align: left;">
+               <span style="font-size: 24px">
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Agenda: Using Web Frameworks</b></p>
+                  <ul>
+                     <li>What is a framework?</li>
+                     <li>Pros and cons: Why use frameworks?</li>
+                     <li>Types of Web Framworks</li>
+                     <li>Action Based Web Frameworks</li>
+                     <li>Component Based Web Framework</li>
+                     <li>Introduction to Spring Web MVC (later)</li>
+                     <li>Introduction to Thymeleaf (later)</li>
+                  </ul>
+               </span>
+            </section>
+            <!--
+            <section>         
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Syllabus for this lecture</b></p>
+                  <span style="font-size: 24px">
+                     <p>Web-tier Archecture (Chapters to - and including - 4.4.2.1.4 Example)</p>
+                     <p>Link: <a href="http://fitxers.oriolrius.cat/1797/web-tier5.html">http://fitxers.oriolrius.cat/1797/web-tier5.html</a>                     </p>
+                  </span>   
+            </section>
+            -->
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- Introduction to Web Framworks
+            ---------------------------------------------------------- -->
+         <section>
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Introduction to Web Framworks</b></p>
+               <p style="font-size: 40px; margin-top: 0px">What is a Framwork?</p>
+               <span style="font-size: 24px">
+                  <p>Definition from wiki: <a href="http://en.wikipedia.org/wiki/Framework">http://en.wikipedia.org/wiki/Framework</a></p>
+                  <p style="font-style:italic">"A framework is a generic term commonly referring to an essential <b>supporting structure</b> which 
+                     <b>other things are built on top of</b>."</p>
+               </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Introduction to Web Framworks</b></p>
+               <p style="font-size: 40px; margin-top: 0px">What is a Web Framwork?</p>
+               <span style="font-size: 22px">
+                  <p>Definition from wiki: <a href="https://en.wikipedia.org/wiki/Web_framework">https://en.wikipedia.org/wiki/Web_framework</a></p>
+                  <p style="font-style:italic">"A software framework that is designed to <b>support the development of web applications</b> including web services, 
+                     web resources, and web APIs. <br>
+                     Web frameworks provide a <b>standard way to build and deploy</b> web applications on the World Wide Web, and
+                     aim to <b>automate the overhead associated with common activities</b> performed in web development."</p>
+               </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Introduction to Web Framworks</b></p>
+               <p style="font-size: 40px; margin-top: 0px">Libary vs Framework</p>
+               <img src="images/library_vs_framework.png" alt="Library vs Framework" style="border: none; box-shadow: none;" />
+               <p style="font-size: 22px">Source: <a href="https://dzone.com/articles/dependency-injection-in-spring">https://dzone.com/articles/dependency-injection-in-spring</a></p>
+            </section>
+            
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Introduction to Web Framworks</b></p>
+               <span style="font-size: 24px">
+                  <p><b>Pros:</b></p>
+                  <ul>
+                     <li>Supposed to simply the development.</li>
+                     <li>Faster and more robust code (but faster is not always better).</li>
+                     <li>Common architecture that project/ team/ department follows.</li>
+                     <li>Less own code to maintain.</li>
+                     <li>Comunitity: Get help or assistance from other users.</li>
+                     <li>Offers:</li>
+                     <ul>
+                        <li>Easy and flexible way to configure (XML, Annotations, property files etc)</li>
+                        <li>Tab library (for instance validating input in Ajax)</li>
+                        <li>Class libraries</li>
+                        <li>And much more ...</li>
+                     </ul>   
+                  </ul>
+               </span>
+               <aside class="notes">
+                  <ul>
+                     <li>For example: Hibernate caused a lot of performance issues.<br>
+                         Not because of Hibernate, but wrong use of it.</li>
+                  </ul>
+               </aside>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Introduction to Web Framworks</b></p>
+               <span style="font-size: 24px">
+                  <p><b>Cons:</b></p>
+                  <ul>
+                     <li>High startup cost: a lot to learn.</li>
+                     <li>Many frameworks to choose from.</li>
+                     <li>Framework implementation might not be the best approach for ALL your problems.</li>
+                     <li>Dependency/ "lock-in".</li>
+                  </ul>
+               </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Types of Web Frameworks</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>Types:
+                        <ul>
+                           <li><b>Client-side Web Frameworks</b>: For instance: Angular, Vue, React (you have looked at React earlier).</li>
+                           <li><b>Server-side Web Frameworks</b>: Todays agenda.</li>
+                        </ul>
+                     </li>
+                  </ul>
+               </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Types of Web Frameworks</b></p>
+               <span style="font-size: 24px;">
+                  <ul style="line-height: 32px">
+                     <li>A common classification of web frameworks is based on the "programming model" being offered the developer.</li>
+                     <li>Web applications have a core with a programming model based on the<br> <b>request-response</b> over a stateless protocol, HTTP (Servlet).</li>
+                     <li>Types:
+                        <ul style="font-size: 18px;line-height: 32px">
+                           <li><b>Action-based</b>: Frameworks that exposes the request-response model, linking "actions" up to URLs (requests).</li>
+                           <li><b>Component-based</b>: Frameworks that hides the request-response model behind UI components (+events).</li>
+                           <li>Also more specialized frameworks, for example RIA (Client-Side: Angular, React, Vue).</li>
+                        </ul>
+                     </li>
+                     <li><i>Note! Not always a clear distinction.</i></li>
+                  </ul>
+               </span>
+            </section>
+
+            <section>
+               <img src="images/framework-timeline.png" alt="Framework Timeline" style="border: none; box-shadow: none;">
+            </section> 
+
+            <section>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Use of frameworks 2022</b></p>
+               <img src="images/web-frameworks-use-2022.png" alt="Framework Usage 2022" style="width: 700px; border: none; box-shadow: none;">
+               <p style="font-style: italic;font-size: 20px; margin-top: 0px"><a href="https://www.monocubed.com/blog/most-popular-web-frameworks/">https://www.monocubed.com/blog/most-popular-web-frameworks/</a></p>
+               
+               <aside class="notes">
+                  <ul>
+                     <li>Strange numbers, but show the most popular frameworks.</li>
+                     <li>ASP.NET must be 70% of the Microsoft developers.</li>
+                  </ul>
+               </aside>
+            </section> 
+      
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Action based Web Frameworks (MVC)</b></p>
+               <span style="font-size: 24px">
+                  <p><b>Examples of action-based framworks:</b></p>
+                  <ul>
+                     <li>Struts2 (Java)</li>
+                     <li>Spring Web MVC (Java/ Kotlin/ Groovy)</li>
+                     <li>PlayFramework (Java / Scala)</li>
+                     <li>Rails (Ruby)</li>
+                     <li>Grails (Groovy)</li>
+                  </ul>
+               </span>
+            </section>
+            <!--
+            <section>
+               <img src="images/web-playframework.png" alt="Play Framework" style="border: none; box-shadow: none;">
+            </section>
+            <section>
+               <img src="images/web-apache-struts2.png" alt="Struts2 Framework" style="border: none; box-shadow: none;">
+            </section>
+            <section>
+               <img src="images/web-spring-web-mvc.png" alt="Spring Framework" style="border: none; box-shadow: none;">
+            </section>
+            -->
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Component Based Web Frameworks</b></p>
+               <span style="font-size: 24px">
+                  <p><b>Examples of component-based frameworks:</b></p>
+                  <ul>
+                     <li>Vaadin (Java) : We'll have a quick look at this.</li>
+                     <li>GWT (Java) : GWT is a development toolkit for building and optimizing complex browser-based applications.</li>
+                     <li>ASP.NET WebForms (MVVM): a part of the ASP.NET web application framework</li>
+                  </ul>
+               </span>
+            </section>
+            <!--
+            <section>
+               <img src="images/vaadin-homepage.png" alt="Vaadin Framework" style="border: none; box-shadow: none;">
+            </section>
+
+            <section>
+               <img src="images/gwt-homepage.png" alt="GWT Framework" style="border: none; box-shadow: none;">
+               <aside class="notes">
+                  <p>Seems a little cheeper than the rest.</p>
+               </aside>
+            </section>
+            -->
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Component Based Web Frameworks</b></p>
+               <span style="font-size: 24px">
+                  <p><b>Also some Component-based <span style="color:red;">Desktop</span> Frameworks:</b></p>
+                  <ul>
+                     <li><b>Java Swing</b>: a GUI widget toolkit for Java. It is part of Oracle's Java Foundation Classes (JFC) - an API for providing a graphical user interface (GUI) for Java programs.</li>
+                     <li><b>JavaFX</b>: (https://openjfx.io/) - an open source, next generation client application platform for desktop, mobile and embedded systems built on Java.</li>
+                     <li><b>Java SWT</b> (https://www.eclipse.org/swt/): an open source widget toolkit for Java designed to provide efficient, portable access to the user-interface facilities of the operating systems on which it is implemented.</li>
+                     <li><b>Qt</b> - (C++, Python, etc)</li>
+                  </ul>
+               </span>
+            </section>
+
+         </section>
+         
+         <!-- --------------------------------------------------------
+            -- Component Based Web Framework: Vaadin
+            ---------------------------------------------------------- -->   
+         <section>
+            
+            <section style="text-align: left;" data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px"><b>Demo: HelloWorldUI (Vaadin)</b></p>
+               <span style="font-size: 28px">
+                  <ul>
+                     <li>Intro application with a few simple components (Label, TextField, Button).</li>
+                     <li>We are NOT going to code with Vaadin. <br>(Code in this section: Only to show the concept).</li>
+                  </ul>
+                  
+                  <p style="font-style:italic;">Code: demo-component-based-vaadin.zip (see course overview).</p>
+               </span>
+            </section>
+
+            <section data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px"><b>Demo: HelloWorldUI (Vaadin)</b></p>
+               <img src="images/vaadin-example.png" alt="Vaadin Example Output"/>
+            </section>
+           
+            <section data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px"><b>Demo: HelloWorldUI (Vaadin)</b></p>
+               <p style="font-style:italic;font-size: 24px; margin-top: 0px">src/main/java/no/hvl/dat152/helloworld/HelloWorldUI.java</p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+@Theme("mytheme")
+public class HelloWorldUI extends UI {
+
+   private static final long serialVersionUID = 1L;
+
+   @Override
+   protected void init(VaadinRequest vaadinRequest) {
+      Panel contentPane = new Panel();
+      VerticalLayout layout = new VerticalLayout();
+      
+      Label lblHeading = new Label();
+      helloworldLabel.setValue("Demo: Vaadin - HelloWorld");
+      layout.addComponent(lblHeading); 
+      ...
+      contentPane.setContent(layout);
+      setContent(contentPane);
+   }
+
+   @WebServlet(urlPatterns = "/*", name = "HelloWorldUIServlet", asyncSupported = true)
+   @VaadinServletConfiguration(ui = HelloWorldUI.class, productionMode = false)
+   public static class HelloWorldUIServlet extends VaadinServlet {
+      private static final long serialVersionUID = 1L;
+   }
+}                     
+                  </code>
+               </pre>
+               <aside class="notes">
+                  <ul>
+                     <li>Look at HelloWorldUIServlet - extends VaadinServlet (Servlet)</li>
+                     <li>Anotation -> Autowiring -> Calls init-methode</li>
+                  </ul>
+               </aside>
+            </section>
+
+            <section data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px">Demo: HelloWorldUI (Vaadin)</p>
+               <p style="font-style:italic;font-size: 24px; margin-top: 0px">src/main/java/no/hvl/dat152/helloworld/HelloWorldUI.java</p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+   @Override
+   protected void init(VaadinRequest vaadinRequest) {
+         Panel contentPane = new Panel();
+         VerticalLayout layout = new VerticalLayout();
+         
+         Label lblHeading = new Label();
+         lblHeading.setValue("Demo: Vaadin - HelloWorld");
+
+         TextField textField = new TextField();
+         textField.setValue("Write something");
+         
+         Button okButton = new Button("Input");
+         ...
+      
+         Button clearButton = new Button("Clear");
+         ...
+      
+         layout.addComponent(lblHeading);
+         layout.addComponent(textField);
+         layout.addComponent(okButton);
+         layout.addComponent(clearButton);
+         
+         contentPane.setContent(layout);
+         setContent(contentPane);
+   }                   
+                  </code>
+               </pre>
+            </section>
+            <section data-auto-animate>
+               <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px">Demo: HelloWorldUI (Vaadin)</p>
+               <p style="font-style:italic;font-size: 24px; margin-top: 0px">src/main/java/no/hvl/dat152/helloworld/HelloWorldUI.java</p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4;">
+   @Override
+   protected void init(VaadinRequest vaadinRequest) {
+         ...
+         Button okButton = new Button("Input");
+         okButton.addClickListener(event -> {
+            Label newLabel = new Label();
+            newLabel.setValue(textField.getValue());
+            layout.addComponent(newLabel);
+         } );
+      
+         Button clearButton = new Button("Clear");
+         clearButton.addClickListener(event -> {
+            layout.removeAllComponents();
+            layout.addComponent(lblHeading);
+            layout.addComponent(textField);
+            layout.addComponent(okButton);
+            layout.addComponent(clearButton);
+         } );
+      
+         layout.addComponent(lblHeading);
+         ...
+         contentPane.setContent(layout);
+         setContent(contentPane);
+   }                   
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: HelloWorldUI (Vaadin)</b></p>
+               <span style="font-size: 28px">
+                  <p>Let's look at the code in Eclipse, and run.</p>
+                  <p style="font-style:italic;">Code: demo-component-based-vaadin.zip (see course overview).</p>
+               </span>
+               <aside class="notes">
+                  <ul>
+                     <li></li>
+                  </ul>
+               </aside>
+            </section>
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- Summary
+            ------------------------------------------------------------- -->
+         <section>
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 36px; margin-bottom: 0px"><b>Summary: Web Development: Frameworks</b></p>
+               <p style="color: #cb4b16; font-size: 24px; margin-top: 0px"><b>Where are we now?</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>Frameworks are there to assist in our daily programming life.</li>
+                     <li>A lot of frameworks to choose from.</li>
+                     <li>Most often the project or company choose the frameworks to be used.</li>
+                  </ul>
+               </span>
+            </section>
+         
+         <!-- --------------------------------------------------------
+            -- Next
+            ------------------------------------------------------------- -->
+            <section data-background="white">
+               <p style="font-style: italic; margin-bottom: 0px">Next</p>
+               <p style="font-size: 40px; margin-top: 0px" ><a href="web-03-web-frameworks-spring.html"><b>Web Services: The Spring Framework</b></a></p>
+               <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
+            </section>
+         </section>  
+      </div>
+   </div>
+
+   <script src="dist/reveal.js"></script>
+   <script src="plugin/notes/notes.js"></script>
+   <script src="plugin/markdown/markdown.js"></script>
+   <script src="plugin/highlight/highlight.js"></script>
+   <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+         hash: true,
+         margin: 0.2,
+         transition: 'fade',
+
+         // Learn about plugins: https://revealjs.com/plugins/
+         plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+      });
+   </script>
+</body>
+</html>

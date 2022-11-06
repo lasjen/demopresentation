@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+   <title>HVL: Dat152</title>
+   <meta name="description" content="Page for dat152 presentations">
+   <meta name="author" content="Lasse Jenssen">
+
+   <link rel="stylesheet" href="dist/reset.css">
+   <link rel="stylesheet" href="dist/reveal.css">
+   <link rel="stylesheet" href="dist/theme/white.css">
+   <link rel="stylesheet" href="dist/theme/robot-lung.css">
+
+   <!-- Theme used for syntax highlighted code -->
+   <link rel="stylesheet" href="plugin/highlight/zenburn.css">
+
+</head>
+<body>
+<!-- --------------------------------------------------------
+     -- Column definitions
+     ------------------------------------------------------------- -->
+<style>
+   .item-top { grid-area: top; }
+   .item-main-left { grid-area: main-left; }
+   .item-main-right { grid-area: main-right; }
+
+   .grid-container {
+         display: grid;
+         grid-template-areas:
+            'top top'
+            'main-left main-right';
+
+         grid-gap: 10px;
+         padding: 10px;
+   }
+</style>
+
+   <div class="reveal">
+      <div class="slides">
+         <!-- --------------------------------------------------------
+            -- INTRO: Web Development: Spring MWC
+            ---------------------------------------------------------- -->
+         <section>
+            <section>
+               <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Lab: Shopping List extension</b></p>
+               <p style="font-size: 24px;font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
+               <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
+            </section>
+
+            <section style="text-align: left;">
+               <p style="color: #cb4b16; font-size: 40px; margin-bottom: 0px"><b>Item Shopping List</b></p>
+               <p style="font-style: italic; font-size: 26px; margin-top: 0px">Task: Add DELETE functionality</p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>Base the lab on the code in the "demo-04-front-controller-flow.zip" project (see Course Modules overview).</li>
+                     <li>Add functionality to delete an Item from the Shopping list.</li>
+                     <li>Hints: 
+                        <ul>
+                           <li>You must update the following files:
+                              <ul>
+                                 <li>ItemDAO.java</li>
+                                 <li>ItemDAOMemorySingleton.java</li>
+                                 <li>FlowManager.java</li>
+                                 <li>ActionMapper.java</li>
+                                 <li>shoppinglist.jsp</li>
+                              </ul>
+                           </li>
+                           <li>You must create a new Action class (for the delete operation).</li>
+                           <li>Extra: Add a verification page before actually deleting Item.<br>
+                               (Note! Reuse the ViewItemAction class for the uri (mapping) for the verification).</li>
+                        </ul>
+                     </li>
+                  </ul>
+               </span>
+            </section>
+
+         </section>
+
+      </div>
+   </div>
+
+   <script src="dist/reveal.js"></script>
+   <script src="plugin/notes/notes.js"></script>
+   <script src="plugin/markdown/markdown.js"></script>
+   <script src="plugin/highlight/highlight.js"></script>
+   <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+         hash: true,
+         margin: 0.2,
+         transition: 'fade',
+
+         // Learn about plugins: https://revealjs.com/plugins/
+         plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+      });
+   </script>
+</body>
+</html>

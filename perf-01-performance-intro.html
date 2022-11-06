@@ -27,8 +27,8 @@
             <p style="font-size: 18px"><a href="index.html">Home</a></p>
         </section>
         <!-- --------------------------------------------------------
-            -- Sources
-            ------------------------------------------------------------- -->
+             -- Sources
+             ------------------------------------------------------------- -->
         <section style="text-align: left;">
             <p style="font-size: 50px; ">Sources</p>
             <span style="font-size: 24px">
@@ -44,13 +44,13 @@
             </span>
         </section>
         <!-- --------------------------------------------------------
-            -- Response Time vs Throughput
-            ------------------------------------------------------------- -->
+        -- Response Time vs Throughput
+        ------------------------------------------------------------- -->
         <section>
             <section>
                 <p style="font-style: italic; font-size: 50px; ">What do we mean by <span style="color: #cb4b16;"> performance</span>?</p>
             </section>
-            <section>
+            <section data-auto-animate>
                 <p style="font-size: 50px; ">We mean ...</p>
                 <br>
                 <p style="font-style: italic; font-size: 50px; color: #cb4b16">
@@ -61,23 +61,23 @@
                     </span>
                 </p>
             </section>
-            <section style="text-align: left;">
-                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Response Time</b></p>
-                <p style="font-size: 40px; font-style: italic">The <span style="color: #cb4b16">time</span> it takes to execute a
+            <section style="text-align: left;" data-auto-animate>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px">Response Time</p>
+                <p style="font-size: 30px; font-style: italic">The <span style="color: #cb4b16">time</span> it takes to execute a
                     <span style="color: #cb4b16">task</span>.</p>
                 <br>
-                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Throughput</b></p>
-                <p style="font-size: 40px; font-style: italic">The number of <span style="color: #cb4b16">tasks</span> executed in a period of
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px">Throughput</p>
+                <p style="font-size: 30px; font-style: italic">The number of <span style="color: #cb4b16">tasks</span> executed in a period of
                     <span style="color: #cb4b16">time</span>.</p>
                 <p style="font-size: 26px; margin-top: 16px">(Task = A business-oriented unit of work)</p>
             </section>
             <section>
-                <p style="font-size: 40px; margin-top: 0px"><b>Response Time</b> = Time / Tasks</p>
+                <p style="font-size: 40px; margin-top: 0px">Response Time = Time / Tasks</p>
                 <br>
-                <p style="font-size: 40px; margin-top: 0px"><b>Throughput</b> = Tasks / Time</p>
+                <p style="font-size: 40px; margin-top: 0px">Throughput = Tasks / Time</p>
             </section>
             <section>
-                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo</b></p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo</b>: A Google search on the word "performance".</p>
                 <p style="font-size: 36px;"><a href="https://www.google.com/search?q=performance">https://www.google.com/search?q=performance</a></p>
             </section>
             <section>
@@ -160,13 +160,13 @@
                     <li>etc.</li>
                 </ul>
             </section>
-            <section style="text-align: left;">
+            <section style="text-align: left;" data-auto-animate>
                 <p style="font-style: italic; margin-bottom: 0px">These are</p>
-                <p style="font-size: 50px; margin-top: 0px; color: #cb4b16;" ><b>Non-Functional Requirements (NFR)</b></p><br>
+                <p style="font-size: 50px; margin-top: 0px; color: #cb4b16;" >Non-Functional Requirements (NFR)</p><br>
                 <p>If project fails, ignoring the non-functional requirements are most often the cause.<br> And when they fail on these requirements, they fail <b>BIG</b>.</p>
             </section>
-            <section style="text-align: left;">
-                <p style="font-size: 50px; margin-bottom: 0px; color: #cb4b16;" ><b>Non-Functional Requirements</b></p>
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-size: 50px; margin-bottom: 0px; color: #cb4b16;" >Non-Functional Requirements (NFR)</p>
                 <p style="font-style: italic; margin-bottom: 0px">is not only about performance requirements.</p><br>
                 <ul style="list-style-type: square; font-size: 26px">
                     <li><b>Performance</b>: Response Times, Throughput, Scalability.</li>
@@ -253,8 +253,10 @@
                 <p><b>Alternative 1</b>: All requests < 1 sec <span class="fragment" style="color: #cb4b16 ">(not good)</span></p>
                 <p class="fragment"><b>Alternative 2</b>: Average < 1 sec  <span class="fragment" style="color: #cb4b16 ">(not good)</span></p><br>
                 <p class="fragment" style="font-style: italic">We need a better alternative for how to specify requirements.</p><br>
-                <p class="fragment"><span style="color: #cb4b16 "><b>Alternative 2:</b> 90th percentile < 1 sec<br></span>
+                <p class="fragment"><b>Alternative 3:</b> 90th percentile < 1 sec<br>
                 (read: < 1 sec for 90% of the executions)</p>
+                <p class="fragment"><span style="color: #cb4b16;"><b>Alternative 4:</b> 90th percentile < 1 sec, 99th percentile < 5 sec<br></span>
+                    <span style="font-size: 26px">(read: < 1 sec for 90% of the executions, < 5 sec for 99% of the executions)</span></p>
                 <aside class="notes">List1: 90th percentile response time is 0.987 sec<br>
                     List2: 90th percentile response time is 1.273 sec
                 </aside>
@@ -271,11 +273,11 @@
                 <aside class="notes">Chatty Code - no use of tuning SQLs if the network latency kills your application.<br>
                 How do we know where time is spent? Database? Probably not.</aside>
             </section>
-            <section data-auto-animate>
+            <section style="text-align: left;" data-auto-animate>
                 <p data-id="instr" style="font-size: 50px; color: #cb4b16; ">Instrumentation</p>
                 <p style="font-style: italic; font-size: 30px;">"Performance is a feature." Cary Millsap</p>
             </section>
-            <section data-auto-animate>
+            <section style="text-align: left;" data-auto-animate>
                 <p data-id="instr" style="font-size: 50px; color: #cb4b16; ">Instrumentation</p>
                 <span style="font-size: 26px; text-align: left">
                     <p>When issues occures, it is important to fix them ASAP.</p>
@@ -283,7 +285,7 @@
                     <p>Valuable both during development (debug) and testing, and in production.</p>
                 </span>
             </section>
-            <section data-auto-animate>
+            <section style="text-align: left;" data-auto-animate>
                 <p data-id="instr" style="font-size: 50px; color: #cb4b16; ">Instrumentation</p>
                 <span style="font-size: 26px; text-align: left">
                     <p>Might include:</p>
@@ -378,6 +380,14 @@
                     Example: Highway. The car does not really go slower => QUEUING.
                 </aside>
             </section>
+        </section>
+        <!-- --------------------------------------------------------
+					-- Next
+					------------------------------------------------------------- -->
+        <section data-background="black">
+            <p style="font-style: italic; margin-bottom: 0px">Next</p>
+            <p style="font-size: 50px; margin-top: 0px" ><a href="perf-02-performance-database.html"><b>Database Performance</b></a></p>
+            <p style="font-size: 18px"><a href="index.html">Home</a></p>
         </section>
     </div>
 </div>

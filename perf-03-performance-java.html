@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>HVL: Dat152</title>
+    <meta name="description" content="Page for dat152 presentations">
+    <meta name="author" content="Lasse Jenssen">
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/white.css">
+    <link rel="stylesheet" href="dist/theme/robot-lung.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/zenburn.css">
+
+</head>
+<body>
+
+<div class="reveal">
+    <div class="slides">
+        <section data-background="black" style="text-align: left;">
+            <p style="color: #cb4b16; font-size: 50px; margin-top: 0px"><b>Java Performance</b></p>
+            <p style="font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
+            <p style="font-size: 18px"><a href="index.html">Home</a></p>
+        </section>
+        <section style="text-align: left;">
+            <p style="font-size: 50px; ">Sources</p>
+            <span style="font-size: 24px">
+                <ul>
+                    <li><a href="https://callistaenterprise.se/blogg/teknik/2020/05/24/blog-series-reactive-programming-part-1/">
+                        "An Introduction to Reactive Programming - Reactive Programming with Spring, Part 1"</a>, by Anna Eriksson</li>
+                </ul>
+            </span>
+        </section>
+        <!-- --------------------------------------------------------
+            -- General Java Performance
+            ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="head1" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px"><b>Java Performance</b></p>
+                <p data-id="head1" style="font-style: italic; margin-top: 0px">General Java Tuning</p>
+                <span style="font-size: 24px">
+                    <ul style="list-style-type: square">
+                        <li>Choosing the best algoritme to solve your problem</li>
+                        <li>Threading and synchronization</li>
+                        <li>Use of objects: For instance - String vs BufferString</li>
+                        <li>Use of Collections: For instance - LinkedList vs ArrayList</li>
+                        <li>Tuning Garbage Collector</li>
+                        <ul>
+                            <li>Choosing Garbage Collector</li>
+                            <li>by setting flags on the JVM (For instance - setting heap sizes)</li>
+                        </ul>
+                    </ul>
+                </span>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="head1" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px"><b>Java Performance</b></p>
+                <p data-id="head1" style="font-style: italic; margin-top: 0px">General Java Tuning</p>
+                <span style="font-size: 24px">
+                    <ul style="list-style-type: square">
+                        <li>Note! General Java Tuning is not the scope of this course.</li>
+                        <li>Might have a look at (will get back to this):</li>
+                        <ul style="list-style-type: circle">
+                            <li>Monitoring with Java Melody</li>
+                            <li>Profiling</li>
+                        </ul>
+                    </ul>
+                </span>
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+            -- Asynchronous Processing
+            ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;">
+                <p style="font-size: 50px; color: #cb4b16; margin-bottom: 0px"><b>Traditional programming</b></p>
+                <p style="font-style: italic; margin-top: 0px">Thread per request model</p>
+                <span style="font-size: 26px">
+                    <ul style="list-style-type: square">
+                    <li>The servlet container has <span style="color: #cb4b16">a dedicated thread pool</span> to handle requests.</li>
+                        <ul style="list-style-type: circle">
+                            <li>Each incoming request will have a thread assigned </li>
+                            <li>That thread will handle the entire lifecycle of the request <br>(“thread per request model”)</li>
+                        </ul>
+                    <li>Synchronous request/response.</li>
+                    <li>Handles a number of concurrent requests equaling the size of the thread pool.</li>
+                    <li>Threads frequently get blocked waiting for a response from another service.</li>
+                    </ul>
+                </span>
+            </section>
+            <section data-background="svn/blocking-io.svg" data-background-size="70%">
+            </section>
+            <section data-background="svn/blocking-io-calling-several-services.svg" data-background-size="70%">
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px"><b>Traditional programming</b></p>
+                <p style="font-style: italic; margin-top: 0px">Resulting response times when a service needs to do more than one I/O request</p>
+                <span style="font-size: 26px">
+                    <p>Response Time of Service A = the sum of:</p>
+                    <ul>
+                        <li>Time spend in Service A</li>
+                        <li>Response time of service B (network latency + processing)</li>
+                        <li>Response time of service C (network latency + processing)</li>
+                        <li>Response time of datbase request (network latency + processing)</li>
+                    </ul>
+                </span>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px"><b>Traditional programming</b></p>
+                <p style="font-style: italic; margin-top: 0px">Overwhelming the client</p>
+                <span style="font-size: 26px">
+                    <ul style="list-style-type: square">
+                        <li>For instance - if service A is requesting some information from service B<br>
+                            (for example all the orders placed during last month.</li>
+                        <li>If large amount, it might become a problem for service A to retrieve all this information at once.</li>
+                        <li>Service A might be overwhelmed -> Out of memory-error.</li>
+                    </ul>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="reactive" style="font-size: 50px; color: #cb4b16;"><b>Reactive Programming</b></p>
+                <span style="font-size: 26px">
+                    <p>Tries to solve the issues with traditional programming (shown above):</p>
+                    <ul>
+                        <li>Move away from the thread per request model.</li>
+                        <li>Prevent threads from blocking while waiting for I/O operations to complete</li>
+                        <li>Make it easy to do parallel calls.</li>
+                        <li>Support “back pressure”, giving the client a possibility to inform the server on how much load it can handle</li>
+                    </ul>
+                </span>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="reactive" style="font-size: 50px; color: #cb4b16;"><b>Reactive Programming</b></p>
+                <p style="font-style: italic; font-size: 26px">
+                    "Reactive processing is a paradigm that enables developers build
+                    <span style="color: #cb4b16">non-blocking, asynchronous applications </span>
+                    that can handle <span style="color: #cb4b16">back-pressure</span> (flow control)."</p>
+                <p style="text-align: right; font-style: italic; font-size: 22px">https://spring.io/reactive</p>
+            </section>
+            <section data-background="black">
+                <img class="stretch" src="images/spring-reactive.png">
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+					-- Next
+					------------------------------------------------------------- -->
+        <section data-background="black">
+            <p style="font-style: italic; margin-bottom: 0px">Next</p>
+            <p style="font-size: 50px; margin-top: 0px" ><a href="ws-01-soap-vs-rest.html"><b>WebServices: SOAP vs REST</b></a></p>
+            <p style="font-size: 18px"><a href="index.html">Home</a></p>
+        </section>
+    </div>
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/markdown/markdown.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+        hash: true,
+        transition: 'fade',
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+    });
+</script>
+</body>
+</html>
+

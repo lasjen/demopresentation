@@ -1,0 +1,953 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>HVL: Dat152</title>
+    <meta name="description" content="Page for dat152 presentations">
+    <meta name="author" content="Lasse Jenssen">
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/white.css">
+    <link rel="stylesheet" href="dist/theme/robot-lung.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/zenburn.css">
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+
+        <section data-background="white">
+            <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
+            <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Building a RESTFull Store WebService</b></p>
+            <p style="font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
+            <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
+        </section>
+        <!-- --------------------------------------------------------
+            -- Introduction
+            ------------------------------------------------------------- -->
+        <section>
+        
+            <section style="text-align: left;">    
+                <p style="font-style: italic; margin-bottom: 0px">REST Store Web Service</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: demo-06-rest-students-v1.0</b></p>
+                <span style="font-size: 28px">
+                   <ul>
+                      <li>Smal REST applications keeping track of "Courses" and "Semesters".</li>
+                      <li>Based on <b>Spring Boot</b> and <b>Spring WebMVC</b>.</li>
+                      <li>We'll use an H2 database</li>
+                      <li>We'll use Spring Data and JPA (JpaRepository): Hibernate (ORM API)</li>
+                      <li><span style="font-style:italic;">Code: demo-06-rest-students-v1.0.zip (see course overview)</span></li>
+                   </ul>
+                </span>
+             </section>
+
+            <section>
+                <img src="images/simple-rest-store.png" alt="data model" style="border: none; box-shadow: none;" />
+            </section>
+
+            <section style="text-align: left;" data-auto-animate="">
+                
+                <p style="font-style: italic; margin-bottom: 0px">REST API</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: demo-06-rest-students-v1.0</b></p>
+                <span style="font-size: 28px" data-auto-animate="">
+                    <ul>
+                        <li>/students</li>
+                        <li>/students/{id}</li>
+                        <li>/courses</li>
+                        <li>/courses/{id}</li>
+                        <li>/semesters</li>
+                        <li>/semesters/{id}</li>
+                   </ul>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate="">
+            
+                <p style="font-style: italic; margin-bottom: 0px">REST API</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: demo-06-rest-students-v1.0</b></p>
+                <span style="font-size: 28px" data-auto-animate="">
+                    <ul style="color:darkgray">
+                        <li>/students</li>
+                        <li>/students/{id}</li>
+                        <li>/courses</li>
+                        <li>/courses/{id}</li>
+                        <li>/semesters</li>
+                        <li>/semesters/{id}</li>
+                    </ul>
+                </span>
+                <span style="font-size: 28px" data-auto-animate="">
+                    <ul>
+                        <li>/semesters/{id}/courses</li>
+                        <li>/semesters/{id}/courses/{id}</li>
+                        <li>/semesters/{id}/courses/{id}/students</li>
+                    </ul>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate="">
+            
+                <p style="font-style: italic; margin-bottom: 0px">REST API</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: demo-06-rest-students-v1.0</b></p>
+                <span style="font-size: 28px" data-auto-animate="">
+                    <ul>
+                        <li><b>GET /courses</b>: List all courses</li>
+                        <li><b>POST /courses</b>: Register ny course</li>
+                        <br>
+                        <li>GET /courses?[searchParameters][pagination]</li>
+                    </ul>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate="">
+                <p style="font-style: italic; margin-bottom: 0px">REST API</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: demo-06-rest-students-v1.0</b></p>
+                <span style="font-size: 28px" data-auto-animate="">
+                    <ul>
+                        <li><b>GET /courses/{id}</b>: Get course</li>
+                        <li><b>PUT /courses/{id}</b>: Update a course</li>
+                        <li><b>DELETE /courses/{id}</b>: Delete a course</li>
+                        <br>
+                        
+                    </ul>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate="">
+            
+                <p style="font-style: italic; margin-bottom: 0px">REST API</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: demo-06-rest-students-v1.0</b></p>
+                <span style="font-size: 28px" data-auto-animate="">
+                    <ul>
+                        <li><b>GET /students</b>: List all students</li>
+                        <li><b>POST /students</b>: Register ny student</li>
+                        <br>
+                        <li>GET /students?[searchParameters][pagination]</li>
+                    </ul>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate="">
+                <p style="font-style: italic; margin-bottom: 0px">REST API</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: demo-06-rest-students-v1.0</b></p>
+                <span style="font-size: 28px" data-auto-animate="">
+                    <ul>
+                        <li><b>GET /students/{id}</b>: Get student</li>
+                        <li><b>PUT /students/{id}</b>: Update a student</li>
+                        <li><b>DELETE /students/{id}</b>: Delete a student</li>
+                        <br>
+                        <li><b>GET /students/{id}?[filters]</b>: Eks: include=info | semester | history</li>
+                    </ul>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate="">
+            
+                <p style="font-style: italic; margin-bottom: 0px">REST API</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: demo-06-rest-students-v1.0</b></p>
+                <span style="font-size: 28px" data-auto-animate="">
+                    <ul>
+                        <li><b>GET /semesters</b>: List all semesters (could also add filters)</li>
+                        <li><b>POST /semesters</b>: Register ny semester</li>
+                        <br>
+                        <li><b>GET /semesters/{id}</b>: Get semester</li>
+                        <li><span style="color:darkgray"><b>PUT /semesters/{id}</b>: Update a semester</span></li>
+                        <li><b>DELETE /semesters/{id}</b>: Delete a semester</li>
+                    </ul>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate="">
+            
+                <p style="font-style: italic; margin-bottom: 0px">REST API</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: demo-06-rest-students-v1.0</b></p>
+                <span style="font-size: 26px;" data-auto-animate="">
+                    <p><b>GET /semesters/{id}/courses</b></p>
+                    <ul>
+                        <li>Get all courses in a given semester</li>
+                    </ul>
+                    <p><b>POST /semesters/{id}/courses</b></p>
+                    <ul>
+                        <li>Add a new course or a list of courses to a semester</li>
+                        <li>Performance implications?</li>
+                    </ul>
+                    <p><b>DELETE /semesters/{id}/courses/{id}</b></p>
+                    <ul>
+                        <li>Remove a course from a semester</li>
+                    </ul>
+                    <span style="color:darkgray">
+                    <p><b>DELETE /semesters/{id}/courses</b></p>
+                    <ul>
+                        <li>Remove a list of courses from a semester</li>
+                    </ul>
+                    </span>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate="">
+            
+                <p style="font-style: italic; margin-bottom: 0px">REST API</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: demo-06-rest-students-v1.0</b></p>
+                <span style="font-size: 28px" data-auto-animate="">
+                    <p><b>GET /semesters/{id}/courses/{id}/students</b></p>
+                    <ul>
+                        <li>List all students attending a given course a given semester.</li>
+                    </ul>
+                    <p><b>POST /semesters/{id}/courses/{id}/students</b></p>
+                    <ul>
+                        <li>Add a student or a list of students to a course in a given semester.</li>
+                    </ul>
+                    <p><b>DELETE /semesters/{id}/courses/{id}/students</b></p>
+                    <ul>
+                        <li>Remove a student or a list of students from a course a given semester.</li>
+                    </ul>
+                </span>
+            </section>
+
+        </section>
+
+        <!-- --------------------------------------------------------
+            -- H2 database
+            ------------------------------------------------------------- -->
+        <section>
+            
+            <section style="text-align: left;">
+                <p style="font-style: italic; margin-bottom: 0px">Sources</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>H2 Database</b></p>
+                <span style="font-size: 26px">
+                    <ul>
+                        <li>Download and documentation: <br>
+                            <a href="https://www.h2database.com/html/main.html">https://www.h2database.com/html/main.html</a></li>
+                        <li>Articles: 
+                            <ul style="list-style-type: circle;">
+                                <li><a href="https://www.javatpoint.com/spring-boot-h2-database">https://www.javatpoint.com/spring-boot-h2-database</a> 
+                                    <br>(Used in this presentation)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </span>
+            </section>
+
+            <section style="text-align: left;">
+                
+                <p style="font-style: italic; margin-bottom: 0px">In-memory database</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>H2 Database</b></p>
+                <span style="font-size: 28px">
+                    <ul>
+                        <li>Very fast, open source, JDBC API.</li>
+                        <li>Embedded and server modes; in-memory database (or persistant).</li>
+                        <li>Browser based Console application.</li>
+                        <li>Small footprint: around 2.5 MB jar file size.</li>
+                        <li>Uses: Early development, testing and POCs</li>
+                        <li><a href="https://www.h2database.com/html/main.html">https://www.h2database.com/html/main.html</a></li>
+                    </ul>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Spring Boot: Maven Dependencies</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>H2 Database</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+                    <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <scope>runtime</scope>
+                    </dependency>
+                </code>
+                </pre>
+             </section>
+
+            <section style="text-align: left;">
+                
+                <p style="font-style: italic; margin-bottom: 0px">In-memory database</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>H2 Database</b></p>
+                <span style="font-size: 28px">
+                    <ul>
+                        <li>Simplest form: NO other configuration needed (except from the JPA anotations).</li>
+                        <li>We'll see how we also can configure the database connection.</li>
+                    </ul>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">application.properties</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>H2 Database</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+spring.datasource.url=jdbc:h2:mem:dat152
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=secure
+
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+                </code>
+                </pre>
+             </section>
+
+             <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">application.properties</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>H2 Database</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+server.port=8299
+...
+spring.h2.console.enabled=true
+spring.h2.console.port=8299
+                </code>
+                </pre>
+             </section>
+
+             <section>
+                <img src="images/h2-console-start.png" alt="h2-console" style="width: 700px; border: none; box-shadow: none;" />
+            </section>
+
+            <section>
+                <img src="images/h2-console-example.png" alt="h2-console-example" style="width: 800px; border: none; box-shadow: none;" />
+            </section>
+            
+        </section>
+
+        <!-- --------------------------------------------------------
+            -- JPA
+            ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;">
+                <p style="font-style: italic; margin-bottom: 0px">JPA Specification</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Spring Data JPA</b></p>
+                <span style="font-size: 26px">
+                    <ul>
+                        <li>"DAT152: not a database class".<br>
+                            <span style="font-style: italic">We'll use some magic with Spring Boot, H2, JPA and Hibernate.</span></li>
+                        <li>We will use (JPA configurations):
+                            <ul style="list-style-type: circle;">
+                                <li>@Entity</li>
+                                <li>@Id</li>
+                                <li>@GeneratedValue(strategy=GenerationType.AUTO)</li>
+                                <li>@Column(name="SEMESTER_ID")</li>
+                                <br>
+                                <li>@OneToMany(fetch = FetchType.LAZY, mappedBy = "course")</li>
+                                <li>@ManyToOne(fetch = FetchType.LAZY)</li>
+                                <li>@JoinColumn(name = "COURSE_ID")</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </span>
+            </section>
+
+            <section>
+                <img src="images/simple-rest-store-2.png" alt="data model simple" style="border: none; box-shadow: none;" />
+            </section>
+
+            <section style="text-align: left;">
+                <p style="font-style: italic; margin-bottom: 0px">Model classes: Semester</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>JPA annotations</b></p>
+                <pre>
+                    <code lang="java" data-line-numbers="1,5-7,10,13" data-trim data-noescape >
+@Entity
+public class Semester implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private long id;
+
+    @Column(name="STUDY_YEAR", length=4, nullable=false, unique=false)
+    private String studyYear;
+    
+    @Column(name="STUDY_PERIOD", length=1, nullable=false, unique=false)
+    private String studyPeriod;
+    
+    // Constructors, Getters and Setters
+    ...
+}
+                    </code>    
+                </pre>
+                <aside class="notes">
+                    <ul>
+                        <li></li>
+                    </ul>
+                </aside>
+            </section>
+
+            <section style="text-align: left;">
+                <p style="font-style: italic; margin-bottom: 0px">Model classes: Course</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>JPA annotations</b></p>
+                <pre>
+                    <code lang="java" data-line-numbers="1,6-8,11,14,17,20" data-trim data-noescape >
+@Entity
+public class Course implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private long id;
+
+    @Column(name="SHORT_NAME", length=6, nullable=false, unique=true)
+    private String shortName;
+
+    @Column(name="COURSE_NAME", length=50, nullable=false)
+    private String courseName;
+
+    @Column(name="STUDY_POINTS", nullable=false)
+    private int studyPoints;
+
+    @Column(name="STUDY_YEAR", length=1)
+    private int studyYear;
+
+    // Constructors, Getters and Setters
+    ...
+}
+                    </code>    
+                </pre>
+                <aside class="notes">
+                    <ul>
+                        <li></li>
+                    </ul>
+                </aside>
+            </section>
+            <!-- 
+            <section style="text-align: left;">
+                <p style="font-style: italic; margin-bottom: 0px">Model classes: SemesterCourse</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>JPA annotations</b></p>
+                <pre>
+                    <code lang="java" data-line-numbers="1, 5-7,10-11,14-15" data-trim data-noescape >
+@Entity
+public class SemesterCourse implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name="SEMESTER_COURSE_ID")
+    private Long semesterCourseId;
+
+    @ManyToOne
+    @JoinColumn(name = "SEMESTER_ID")
+    Semester semester;
+    
+    @ManyToOne
+    @JoinColumn(name = "COURSE_ID")
+    Course course;
+
+}
+                    </code>    
+                </pre>
+                <aside class="notes">
+                    <ul>
+                        <li></li>
+                    </ul>
+                </aside>
+            </section>
+-->
+            <section style="text-align: left;">
+                <p style="font-style: italic; margin-bottom: 0px">Model classes: Semester</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>JPA annotations</b></p>
+                <pre>
+                    <code lang="java" data-line-numbers="10-19" data-trim data-noescape >
+@Entity
+public class Semester implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private long id;
+    ...
+    
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "semester_course", 
+        joinColumns = @JoinColumn(name = "semester_id"), 
+        inverseJoinColumns = @JoinColumn(name = "course_id"))
+    private List< Course> courses = new ArrayList< Course>();
+
+    public void addCourse(Course course) {
+        courses.add(course);
+    }
+
+    // Constructors, Getters and Setters
+    ...
+}
+                    </code>    
+                </pre>
+                <aside class="notes">
+                    <ul>
+                        <li>mappedBy - needed when bidirectional (also link back on other side)</li>
+                    </ul>
+                </aside>
+            </section>
+
+            <section style="text-align: left;">
+                <p style="font-style: italic; margin-bottom: 0px">Model classes: Course</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>JPA annotations</b></p>
+                <pre>
+                    <code lang="java" data-line-numbers="12-16" data-trim data-noescape >
+@Entity
+public class Course implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private long id;
+
+    ...
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courses")
+    private List<Semester> semesters = new ArrayList<Semester>();
+
+    public void addSemester(Semester semester) {
+        semesters.add(semester);
+    }
+
+    // Constructors, Getters and Setters
+    ...
+}
+                    </code>    
+                </pre>
+                <aside class="notes">
+                    <ul>
+                        <li></li>
+                    </ul>
+                </aside>
+            </section>
+
+            <section style="text-align: left;">
+                <pre>
+                    <code lang="java" data-line-numbers="12-26" data-trim data-noescape >
+@Component
+class BootstrapCommandLineRunner implements CommandLineRunner  {
+    @Autowired
+    CourseRepository courseRepo; 
+    @Autowired
+    SemesterRepository semesterRepo;
+    
+    @Override
+    public void run(String... args) throws Exception {
+
+        // Loading Courses
+        Course c1 = new Course();
+        c1.setCourseName("Web Programming");
+        c1.setShortName("DAT108"); 
+        c1.setStudyPoints(10);
+        
+        // Loading Semesters
+        Semester s1 = new Semester();
+        s1.setStudyYear("2022");
+        s1.setStudyPeriod("A");
+        
+        // Linking
+        s1.addCourse(c1);
+        
+        courseRepo.save(c1);
+        semesterRepo.save(s1));
+    }
+}
+                    </code>    
+                </pre>
+                <aside class="notes">
+                    <ul>
+                        <li></li>
+                    </ul>
+                </aside>
+            </section>
+            
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Let's start the application</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>JPA, H2, Hibernate Demo</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+...
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+...
+spring.h2.console.enabled=true   // default uri: h2-console
+spring.h2.console.port=8299
+                </code>
+                </pre>
+                <p></p>
+             </section>
+
+             <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">More magic: SemesterRepository</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Spring Data: Repository (DAO)</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers="3,6" style="line-height: 1.4">
+package no.hvl.dat152.h2databaseexample.repository;
+
+import org.springframework.data.repository.CrudRepository;
+import no.hvl.dat152.h2databaseexample.model.Semester;
+
+public interface SemesterRepository extends CrudRepository< Semester, Long>  {
+
+}
+                </code>
+                </pre>
+             </section>
+            
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">More magic: CourseRepository</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Spring Data: Repository (DAO)</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers="3-5,11-14" style="line-height: 1.4">
+package no.hvl.dat152.h2databaseexample.repository;
+
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.Query;
+
+import no.hvl.dat152.h2databaseexample.model.Course;
+
+public interface CourseRepository extends CrudRepository< Course, Long> {
+    
+    Course findByShortName(String shortName);
+
+    @Query("SELECT c FROM Course c WHERE LOWER(c.shortName) = LOWER(:shortName)")
+    Course retrieveByShortName(@Param("shortName") String shortName);
+
+}
+                </code>
+                </pre>
+            </section>
+        </section>
+
+        <!-- --------------------------------------------------------
+            -- REST Controllers
+            ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Let's finally write the REST controllers</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>@RestController</b></p>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Class: SemesterController</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>@RestController</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers="9-10,13,15-16" style="line-height: 1.4">
+package no.hvl.dat152.h2databaseexample.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import no.hvl.dat152.h2databaseexample.repository.SemesterRepository;
+
+@RestController
+@RequestMapping(SemesterController.BASE_URL)
+public class SemesterController {
+    
+    final static String BASE_URL = "/semesters";
+    
+    @Autowired
+    private SemesterRepository repository;
+    
+    ...
+}                    
+                </code>
+                </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Method: getAllSemesters</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>@RestController</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers="10-16" style="line-height: 1.4">
+@RestController
+@RequestMapping(SemesterController.BASE_URL)
+public class SemesterController {
+    
+    final static String BASE_URL = "/semesters";
+    
+    @Autowired
+    private SemesterRepository repository;
+    
+    @RequestMapping(method = RequestMethod.GET)
+    public List< Semester> getAllSemesters() {
+        List< Semester> semesters = new ArrayList< >();
+        repository.findAll().forEach(semesters::add);
+        
+        return semesters;
+    }
+}                    
+                </code>
+                </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Method: getAllSemesters</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>@RestController</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers="10" style="line-height: 1.4">
+@RestController
+@RequestMapping(SemesterController.BASE_URL)
+public class SemesterController {
+    
+    final static String BASE_URL = "/semesters";
+    
+    @Autowired
+    private SemesterRepository repository;
+    
+    @GetMapping
+    public List< Semester> getAllSemesters() {
+        List< Semester> semesters = new ArrayList< >();
+        repository.findAll().forEach(semesters::add);
+        
+        return semesters;
+    }
+}                    
+                </code>
+                </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Method: getSemester</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>@RestController</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+@GetMapping("/{id}")
+public Semester getSemester(@PathVariable("id") Long id) {
+    
+    Optional< Semester> semester = repository.findById(id);
+
+    return semester.orElse(null);
+    
+}               
+                </code>
+                </pre>
+                <span style="font-size: 24px; font-style:italic">
+                <p><b>Demo (SoapUI)</b>: Call API with both existing and non-existing id (HttpStatus?).</p>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Method: getSemester</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>@RestController</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers="2,6-9" style="line-height: 1.4">
+@GetMapping("/{id}")
+public ResponseEntity< Semester> getSemester(@PathVariable("id") Long id) {
+    
+    Optional< Semester> semester = repository.findById(id);
+
+    return semester
+            .map( s -> ResponseEntity.ok().body(s) )                 //200 OK
+            .orElseGet( () -> ResponseEntity.notFound().build() );   //404 Not found
+    
+}             
+                </code>
+                </pre>
+                <span style="font-size: 24px; font-style:italic">
+                <p>Return <b>ResponseEntity</b> to controll HttpStatus.</p>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Method: createSemester</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>@RestController</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+@PostMapping
+public Semester createSemester(@RequestBody Semester semester) {
+
+    return repository.save(semester);
+
+}                 
+                </code>
+                </pre>
+                <span style="font-size: 24px; font-style:italic">
+                    <p><b>@RequestBody</b>: JSON data as part of body in request (See SoapUI)</p>
+                    <p><b>Demo (SoapUI)</b>: Call API with complete and non-complete JSON (missing NOT NULL).</p>
+                    </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Method: createSemester</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>@RestController</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+@PostMapping
+public ResponseEntity< Semester> createSemester(@RequestBody Semester semester) {
+    Semester s = null;
+    try {
+        s = repository.save(semester); 
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().build();
+    } 
+    return ResponseEntity.ok().body(s);
+}               
+                </code>
+                </pre>
+                <span style="font-size: 24px; font-style:italic">
+                    <p><b>@RequestBody</b>: JSON data as part of body in request (See SoapUI)</p>
+                    <p><b>Demo (SoapUI)</b>: Call API with complete and non-complete JSON (missing NOT NULL).</p>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Method: deleteSemester</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>@RestController</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+@DeleteMapping("/{id}")
+public void deleteSemester(@PathVariable("id") Long id) {
+        repository.deleteById(id);
+}                
+                </code>
+                </pre>
+                <span style="font-size: 24px; font-style:italic">
+                    <p><b>@PathVariable</b>: When parameter as part of URI (uri/{param})</p>
+                    <p><b>@RequestParam</b>: When parameter as query string (uri?param=value)</p>
+                    <br>
+                    <p><b>Demo (SoapUI)</b>: Test with existing and non-existing id.</p>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Method: deleteSemester</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>@RestController</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers="3-8" style="line-height: 1.4">
+@DeleteMapping("/{id}")
+public ResponseEntity< Semester> deleteSemester(@PathVariable("id") Long id) {
+    Optional< Semester> semester = repository.findById(id);
+    
+    if (semester.isPresent()) {
+        repository.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+    return ResponseEntity.notFound().build();
+}                
+                </code>
+                </pre>
+                <span style="font-size: 24px; font-style:italic">
+                    <p><b>Why is this a bad idea?</b></p>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Method: deleteSemester</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>@RestController</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers="3-8" style="line-height: 1.4">
+@DeleteMapping("/{id}")
+public ResponseEntity< Semester> deleteSemester(@PathVariable("id") Long id) {
+    try {
+        repository.deleteById(id);
+    } catch (Exception e) {
+        return ResponseEntity.notFound().build();
+    } 
+    return ResponseEntity.ok().build();
+}             
+                </code>
+                </pre>
+            </section>
+
+        </section>
+        <!-- --------------------------------------------------------
+            -- Nested REST Controllers
+            ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">URI: /semesters/{id}/courses</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Nested URI Paths</b></p>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Extending SemesterRepository</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Nested URI Paths</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers="8-12" style="line-height: 1.4">
+public interface SemesterRepository extends CrudRepository< Semester, Long>  {
+
+    @Query("SELECT c FROM Course c INNER JOIN c.semesters s WHERE s.id = :id")
+    List< Course> findCoursesBySemesterId(Long id);
+
+}         
+                </code>
+                </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Extending SemesterController</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Nested URI Paths</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers="1-2,6-11" style="line-height: 1.4">
+@GetMapping("/{id}/courses")
+public List< Course> getCoursesBySemesterId(@PathVariable("id") Long id) {
+    
+    return repository.findCoursesBySemesterId(id);
+
+}          
+                </code>
+                </pre>
+                <span style="font-size: 24px; font-style:italic">
+                    <p><b>This will give an ERROR (loops in many-to-many, generating JSON)</b></p>
+                </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+                <p style="font-style: italic; margin-bottom: 0px">Refactor Course.java: Removing loop</p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Nested URI Paths</b></p>
+                <pre>
+                <code lang="java" data-trim data-line-numbers="15" style="line-height: 1.4">
+@Entity
+@Data
+public class Course implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private long id;
+    ...
+    @Column(name="STUDY_YEAR", length=1)
+    private int studyYear;
+    
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courses")
+    @JsonIgnore
+    private List< Semester> semesters = new ArrayList< Semester>();   
+    
+    ...
+                </code>
+                </pre>
+                <span style="font-size: 24px; font-style:italic">
+                    <p><b>@JsonIgnore: Stop loop in join</b></p>
+                </span>
+            </section>
+
+        </section>
+        <!-- --------------------------------------------------------
+            -- Next
+            ------------------------------------------------------------- -->
+        <section>
+            <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
+            <p style="font-style: italic; margin-bottom: 0px">Next</p>
+            <p style="font-size: 40px; margin-top: 0px" ><a href="ws-04-restfull-store-part2.html"><b>Web Services: REST Store - Part 2</b></a></p>
+            <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
+        </section>
+
+    </div>
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/markdown/markdown.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+        hash: true,
+        transition: 'fade',
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+    });
+</script>
+</body>
+</html>

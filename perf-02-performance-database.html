@@ -1,0 +1,871 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>HVL: Dat152</title>
+    <meta name="description" content="Page for dat152 presentations">
+    <meta name="author" content="Lasse Jenssen">
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/white.css">
+    <link rel="stylesheet" href="dist/theme/robot-lung.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/zenburn.css">
+
+    <!-- Plugin for large code -->
+    <link rel="stylesheet" href="plugin/fullscreen-code/reveal.js-fullscreen-code.css">
+
+</head>
+<body>
+<!-- --------------------------------------------------------
+     -- Column definitions
+     ------------------------------------------------------------- -->
+<style>
+    .item-left { grid-area: left; }
+    .item-right { grid-area: right; }
+    .item-left-top { grid-area: left-top; }
+    .item-right-top { grid-area: right-top; }
+    .item-left-bottom { grid-area: left-bottom; }
+    .item-right-bottom { grid-area: right-bottom; }
+
+    .grid-container {
+        display: grid;
+        grid-template-areas:
+            'left right-top'
+            'left right-bottom';
+
+        grid-gap: 10px;
+        padding: 10px;
+    }
+</style>
+<div class="reveal">
+    <div class="slides">
+        <!-- --------------------------------------------------------
+            -- Header Slide
+            ------------------------------------------------------------- -->
+        <section data-background="black" style="text-align: left;">
+            <p style="color: #cb4b16; font-size: 50px; margin-top: 0px"><b>Database Performance</b></p>
+            <p style="font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
+            <p style="font-size: 18px"><a href="index.html">Home</a></p>
+        </section>
+        <!-- --------------------------------------------------------
+            -- Sources
+            ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;">
+                <p style="font-size: 50px; ">Note</p>
+                <span style="font-size: 24px">
+                <ul>
+                    <li>Today we'll look at some sample code.</li>
+                    <li>The code was actually run in production for a Norwegian Bank.</li>
+                    <li>The code is "anonymized":<br>
+                        Instead of querying accounts, we'll be querying "Hamsters".</li>
+                </ul>
+            </span>
+            </section>
+            <section style="text-align: left;">
+                <p style="font-size: 50px; ">Sources</p>
+                <span style="font-size: 24px">
+                <ul>
+                    <li><a href="https://docs.oracle.com/database/121/TGSQL/tgsql_optop.htm#TGSQL228">Oracle Optimizer Access Paths</a></li>
+                    <li><a href="https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing">About Pool Sizing (article + video)</a></li>
+                </ul>
+            </span>
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+            -- Introduction
+            ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;" data-auto-animate>
+                <p style="color: #cb4b16; font-size: 50px; margin-top: 0px">Database Performance</p>
+                <p style="font-size: 40px; font-style: italic">"Doesn't the DBA take care of this?"</p>
+                <aside class="notes">Story about: When I worked as an Oracle DBA - DNB project.</aside>
+            </section>
+            <section data-background="images/performance-dialog.png" data-background-size="70%">
+                <aside class="notes">Teams dialog which came in while I was creating this presentation.</aside>
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+           -- An example
+           ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Database Performance</p>
+                <p style="font-style: italic; margin-top: 0px">Avoiding the big mistakes</p>
+                <p class="r-fit-text" style="margin-bottom: 0px"><b>Example Code</b></p>
+                <p class="r-fit-text" style="margin-top: 0px">from production</p>
+            </section>
+            <section style="text-align: left; font-size: 30px">
+                <pre>
+                <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
+                    public List< Hamster > getHamsters(List< Long > hamsterIds) throws Exception {
+                        List< Hamster > hamsters = new ArrayList<>();
+                        for (Long hamsterId : hamsterIds) {
+                            String sql = "select * from hamster where id = ";
+                            JdbcCursorItemReader< Hamster > itemReader = new JdbcCursorItemReader<>();
+                            itemReader.setDataSource(this.dataSource);
+                            itemReader.setSql(sql + hamsterId);
+                            itemReader.setRowMapper(new HamsterRowMapper());
+                            ExecutionContext executionContext = new ExecutionContext();
+                            itemReader.open(executionContext);
+
+                            Hamster hamster = itemReader.read();
+                            hamsters.add(hamster);
+                            itemReader.close();
+                        }
+                        return hamsters;
+                    }
+                </code>
+                </pre>
+                <aside class="notes">A procedure which takes a list of hamster IDs, and finds the corresponding Hamsters in the DB.<br>
+                Seems to work just fine. Anyone want to take a go on what's wrong with this code?</aside>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="bash" data-trim data-line-numbers>
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.6.1)
+
+2021-12-13 13:00:34.158  INFO 36410 --- [           main] c.tietoevry.hamster.HamsterApplication   : Starting HamsterApplication using Java 11....
+2021-12-13 13:00:34.160  INFO 36410 --- [           main] c.tietoevry.hamster.HamsterApplication   : No active profile set, falling back to ...
+2021-12-13 13:00:34.692  INFO 36410 --- [           main] c.tietoevry.hamster.HamsterApplication   : Started HamsterApplication in 0.751 sec ...
+2021-12-13 13:00:34.704  INFO 36410 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-12-13 13:00:35.059  INFO 36410 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+com.tietoevry.hamster.dao.WorseHamsterDaoImpl     : 10.257853952, Count: 5000
+2021-12-13 13:00:44.965  INFO 36410 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2021-12-13 13:00:44.986  INFO 36410 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
+PARSING IN CURSOR #139940598829784 len=49 dep=0 uid=112 oct=3 lid=112 tim=44724503924 hv=2439730243 ad='869704b0' sqlid='bbbkck68qqp23'
+select /* WorseDao */ * from hamster where id = 1
+END OF STMT
+PARSE #139940598829784:c=1475,e=2172,p=0,cr=0,cu=0,mis=1,r=0,dep=0,og=1,plh=3304116072,tim=44724503916
+EXEC #139940598829784:c=79,e=63,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=1,plh=3304116072,tim=44724504072
+WAIT #139940598829784: nam='SQL*Net message to client' ela= 9 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44724504138
+FETCH #139940598829784:c=90,e=91,p=0,cr=4,cu=0,mis=0,r=1,dep=0,og=1,plh=3304116072,tim=44724504262
+STAT #139940598829784 id=1 cnt=1 pid=0 pos=1 obj=3516861 op='TABLE ACCESS BY INDEX ROWID HAMSTER (cr=4 pr=0 pw=0 str=1 time=90 us cost=3 size=51 card=1)'
+STAT #139940598829784 id=2 cnt=1 pid=1 pos=1 obj=3516862 op='INDEX UNIQUE SCAN BIG_TABLE_PK (cr=3 pr=0 pw=0 str=1 time=54 us cost=2 size=0 card=1)'
+WAIT #139940598829784: nam='SQL*Net message from client' ela= 44439 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44724548931
+CLOSE #139940598829784:c=13,e=13,dep=0,type=0,tim=44724549014
+=====================
+PARSING IN CURSOR #139940598829784 len=49 dep=0 uid=112 oct=3 lid=112 tim=44724550148 hv=685173995 ad='65fe8578' sqlid='2sbfgpsnddv7b'
+select /* WorseDao */ * from hamster where id = 2
+END OF STMT
+PARSE #139940598829784:c=611,e=1054,p=0,cr=0,cu=0,mis=1,r=0,dep=0,og=1,plh=3304116072,tim=44724550140
+EXEC #139940598829784:c=53,e=42,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=1,plh=3304116072,tim=44724550256
+WAIT #139940598829784: nam='SQL*Net message to client' ela= 9 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44724550319
+FETCH #139940598829784:c=74,e=73,p=0,cr=4,cu=0,mis=0,r=1,dep=0,og=1,plh=3304116072,tim=44724550427
+STAT #139940598829784 id=1 cnt=1 pid=0 pos=1 obj=3516861 op='TABLE ACCESS BY INDEX ROWID HAMSTER (cr=4 pr=0 pw=0 str=1 time=54 us cost=3 size=51 card=1)'
+STAT #139940598829784 id=2 cnt=1 pid=1 pos=1 obj=3516862 op='INDEX UNIQUE SCAN BIG_TABLE_PK (cr=3 pr=0 pw=0 str=1 time=24 us cost=2 size=0 card=1)'
+WAIT #139940598829784: nam='SQL*Net message from client' ela= 1329 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44724551903
+CLOSE #139940598829784:c=14,e=14,dep=0,type=0,tim=44724551968
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left;">
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">PreparedStatement</p>
+                <p style="font-style: italic; margin-top: 0px">Missing bind variables causes <span style="color: #cb4b16">hard parsing</span></p>
+                <span style="font-size: 26px">
+                    <ul>
+                        <li>Soft parse vs hard parse</li>
+                        <li>Hard parse:</li>
+                        <ul style="list-style-type: circle; font-size: 22px">
+                            <li>CPU intensive</li>
+                            <li>Contention towards internal structures</li>
+                        </ul>
+                        <li>PreparedStatement to avoid SQL Injection</li>
+                    </ul><br>
+                    <pre>
+                    <code lang="java" data-trim style="font-size: 20px">
+                        String sql = "select * from hamster where id = ?";
+
+                        ...
+
+                        itemReader.setPreparedStatementSetter(ps -> ps.setLong(1, hamsterId));
+                    </code></pre>
+                </span>
+            </section>
+            <section style="text-align: left; font-size: 30px">
+                <pre>
+                <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
+public List< Hamster > getHamsters(List< Long > hamsterIds) throws Exception {
+   List< Hamster > hamsters = new ArrayList<>();
+   for (Long hamsterId : hamsterIds) {
+      String sql = "select * from hamster where id = ?";
+      JdbcCursorItemReader< Hamster > itemReader = new JdbcCursorItemReader<>();
+      itemReader.setDataSource(this.dataSource);
+      itemReader.setSql(sql);
+
+      itemReader.setPreparedStatementSetter(ps -> ps.setLong(1, hamsterId));
+
+      itemReader.setRowMapper(new HamsterRowMapper());
+      ExecutionContext executionContext = new ExecutionContext();
+      itemReader.open(executionContext);
+
+      Hamster hamster = itemReader.read();
+      hamsters.add(hamster);
+      itemReader.close();
+   }
+   return hamsters;
+}
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="bash" data-trim data-line-numbers>
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.6.1)
+
+2021-12-13 13:08:59.465  INFO 36592 --- [           main] c.tietoevry.hamster.HamsterApplication   : Starting HamsterApplication using Java ...
+2021-12-13 13:08:59.467  INFO 36592 --- [           main] c.tietoevry.hamster.HamsterApplication   : No active profile set, falling back to ...
+2021-12-13 13:09:00.021  INFO 36592 --- [           main] c.tietoevry.hamster.HamsterApplication   : Started HamsterApplication in 0.768 sec ...
+2021-12-13 13:09:00.033  INFO 36592 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-12-13 13:09:00.264  INFO 36592 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+com.tietoevry.hamster.dao.WorseHamsterDaoImpl     : 5.831844564, Count: 5000
+com.tietoevry.hamster.dao.BetterHamsterDaoImpl    : 5.203327186, Count: 5000
+2021-12-13 13:09:11.071  INFO 36592 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2021-12-13 13:09:11.094  INFO 36592 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+                </code>
+                </pre>
+                <aside class="notes">Wait a second? Why did WorseHamsterDaoImpl take only 5,8 sec this time?</aside>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
+PARSING IN CURSOR #139940598829784 len=52 dep=0 uid=112 oct=3 lid=112 tim=44730739200 hv=717000298 ad='848dd3c0' sqlid='bux41hnpbt3ma'
+select /* BetterDao */ * from hamster where id = :1
+END OF STMT
+PARSE #139940598829784:c=59,e=61,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=1,plh=3304116072,tim=44730739193
+BINDS #139940598829784:
+
+ Bind#0
+  oacdty=02 mxl=22(22) mxlc=00 mal=00 scl=00 pre=00
+  oacflg=03 fl2=1000000 frm=01 csi=873 siz=24 off=0
+  kxsbbbfp=7f4675aea1d8  bln=22  avl=02  flg=05
+  value=2
+EXEC #139940598829784:c=70,e=69,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=1,plh=3304116072,tim=44730739323
+WAIT #139940598829784: nam='SQL*Net message to client' ela= 7 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44730739364
+FETCH #139940598829784:c=42,e=42,p=0,cr=4,cu=0,mis=0,r=1,dep=0,og=1,plh=3304116072,tim=44730739433
+STAT #139940598829784 id=1 cnt=1 pid=0 pos=1 obj=3516861 op='TABLE ACCESS BY INDEX ROWID HAMSTER (cr=4 pr=0 pw=0 str=1 time=35 us cost=3 size=51 card=1)'
+STAT #139940598829784 id=2 cnt=1 pid=1 pos=1 obj=3516862 op='INDEX UNIQUE SCAN BIG_TABLE_PK (cr=3 pr=0 pw=0 str=1 time=14 us cost=2 size=0 card=1)'
+WAIT #139940598829784: nam='SQL*Net message from client' ela= 1243 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44730740882
+CLOSE #139940598829784:c=13,e=34,dep=0,type=0,tim=44730741026
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
+SQL> select (case when sql_text like 'select * from hamster where id =%'
+                  then 'select * from hamster where id ='
+                  else 'other'
+             end) queries, count(*)
+     from v$sql
+     group by (case when sql_text like 'select * from hamster where id =%'
+                    then 'select * from hamster where id ='
+                    else 'other'
+               end);
+
+QUERIES                            COUNT(*)
+-------------------------------- ----------
+other                                   250
+select * from hamster where id =       5001
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Chatty Code</p>
+                <p style="font-style: italic; margin-top: 0px">Loops might generate row-by-row processing (slow-by-slow)</span></p>
+                <pre>
+                    <code lang="java" data-trim style="font-size: 18px">
+  for (Long hamsterId : hamsterIds) {
+      String sql = "select * from hamster where id = ?";
+      JdbcCursorItemReader< Hamster > itemReader = new JdbcCursorItemReader<>();
+      itemReader.setDataSource(this.dataSource);
+      itemReader.setSql(sql);
+
+      itemReader.setPreparedStatementSetter(ps -> ps.setLong(1, hamsterId));
+
+      itemReader.setRowMapper(new HamsterRowMapper());
+      ExecutionContext executionContext = new ExecutionContext();
+      itemReader.open(executionContext);
+
+      Hamster hamster = itemReader.read();
+      hamsters.add(hamster);
+      itemReader.close();
+   }
+                    </code></pre>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Chatty Code</p>
+                <p style="font-style: italic; margin-top: 0px">Loops might generate row-by-row processing (slow-by-slow)</span></p>
+                <span>
+                    <ul>
+                        <li>Expected: Linear Performance: O(n)</li>
+                        <li>For every iteration:
+                            <ul style="list-style-type: circle">
+                                <li>Network Latency</li>
+                                <li>Soft parse (CPU)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </span>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Chatty Code</p>
+                <p style="font-style: italic; margin-top: 0px">Loops might generate row-by-row processing (slow-by-slow)</span></p>
+                <span>
+                    <ul>
+                        <li>Context Switching</li>
+                        <li>When load increases - contention could give O(n2) - eventually <span style="color: #cb4b16;">coherence delays</span></li>
+                    </ul>
+                </span>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="sql" data-trim data-line-numbers>
+CREATE GLOBAL TEMPORARY TABLE hamsterids (
+      id  NUMBER
+) ON COMMIT DELETE ROWS;
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left; font-size: 30px">
+                <pre>
+                <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
+@Transactional
+public List< Hamster > getHamsters(List< Long > hamsterIds) throws Exception {
+
+   List< Hamster > hamsters = new ArrayList<>();
+   JdbcTemplate template = new JdbcTemplate(dataSource);
+
+   final String INSERT_EMP_QUERY = "insert into hamsterids (id) values (?)";
+   List< Object[] > idList = new ArrayList< Object[] >();
+   for(Long id : hamsterIds) {
+       idList.add(new Object[] {id});
+   }
+   template.batchUpdate(INSERT_EMP_QUERY, idList);
+
+   final String SELECT_QUERY =
+      "select * from hamster where id in (select id from hamsterids)";
+
+   hamsters = template.query(SELECT_QUERY, new HamsterRowMapper());
+
+   return hamsters;
+}
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="bash" data-trim data-line-numbers>
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.6.1)
+
+2021-12-13 13:23:30.354  INFO 36814 --- [           main] c.tietoevry.hamster.HamsterApplication   : Starting HamsterApplication using Java 11...
+2021-12-13 13:23:30.356  INFO 36814 --- [           main] c.tietoevry.hamster.HamsterApplication   : No active profile set, falling back to def...
+2021-12-13 13:23:30.880  INFO 36814 --- [           main] c.tietoevry.hamster.HamsterApplication   : Started HamsterApplication in 0.731 sec ...
+2021-12-13 13:23:30.891  INFO 36814 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-12-13 13:23:31.108  INFO 36814 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+com.tietoevry.hamster.dao.WorseHamsterDaoImpl     : 5.7151248, Count: 5000
+com.tietoevry.hamster.dao.BetterHamsterDaoImpl    : 5.274748113, Count: 5000
+com.tietoevry.hamster.dao.BestHamsterDaoImpl      : 0.464441673, Count: 5000
+2021-12-13 13:23:42.350  INFO 36814 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2021-12-13 13:23:42.385  INFO 36814 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left;">
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Can we do any better?</p>
+                <p style="font-style: italic; margin-top: 0px">How do JDBC run a SELECT query (with PreparedStatement)?</span></p>
+                <ul>
+                    <li>Parse</li>
+                    <li>Bind</li>
+                    <li>Execute</li>
+                    <li>Fetch <span class="fragment" style="color: #cb4b16">(default FetchSize = 10)</span></li>
+                </ul>
+            </section>
+            <section style="text-align: left; font-size: 30px">
+                <pre>
+                <code class="fullscreen-box" lang="java" data-trim data-line-numbers>
+@Transactional
+public List< Hamster > getHamsters(List< Long > hamsterIds) throws Exception {
+
+   List< Hamster > hamsters = new ArrayList<>();
+   JdbcTemplate template = new JdbcTemplate(dataSource);
+
+   final String INSERT_EMP_QUERY = "insert into hamsterids (id) values (?)";
+   List< Object[] > idList = new ArrayList< Object[] >();
+   for(Long id : hamsterIds) {
+       idList.add(new Object[] {id});
+   }
+   template.batchUpdate(INSERT_EMP_QUERY, idList);
+
+   final String SELECT_QUERY =
+      "select * from hamster where id in (select id from hamsterids)";
+
+   template.setFetchSize(1000);   # Getting 1000 rows at every fetch
+
+   hamsters = template.query(SELECT_QUERY, new HamsterRowMapper());
+
+   return hamsters;
+}
+                </code>
+                </pre>
+                <aside class="notes">Line 17</aside>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="bash" data-trim data-line-numbers>
+PARSING IN CURSOR #139940598828144 len=75 dep=0 uid=112 oct=3 lid=112 tim=44734438409 hv=3198350253 ad='7f1b1b08' sqlid='d1u0mw2za5wxd'
+select /* BestDao */ * from hamster where id in (select id from hamsterids)
+END OF STMT
+PARSE #139940598828144:c=5068,e=6229,p=0,cr=8,cu=0,mis=1,r=0,dep=0,og=1,plh=788792483,tim=44734438401
+EXEC #139940598828144:c=205,e=206,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=1,plh=788792483,tim=44734438666
+WAIT #139940598828144: nam='SQL*Net message to client' ela= 7 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44734438711
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 111 driver id=1413697536 #bytes=8110 p3=0 obj#=-1 tim=44734453888
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 50 driver id=1413697536 #bytes=8092 p3=0 obj#=-1 tim=44734467396
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 150 driver id=1413697536 #bytes=8103 p3=0 obj#=-1 tim=44734480829
+FETCH #139940598828144:c=52404,e=52664,p=0,cr=1033,cu=0,mis=0,r=1000,dep=0,og=1,plh=788792483,tim=44734491405
+WAIT #139940598828144: nam='PGA memory operation' ela= 168 p1=0 p2=0 p3=0 obj#=-1 tim=44734491640
+WAIT #139940598828144: nam='SQL*Net message from client' ela= 2205 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44734493892
+WAIT #139940598828144: nam='SQL*Net message to client' ela= 9 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44734494067
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 54 driver id=1413697536 #bytes=8119 p3=0 obj#=-1 tim=44734508154
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 51 driver id=1413697536 #bytes=8085 p3=0 obj#=-1 tim=44734523200
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 53 driver id=1413697536 #bytes=8099 p3=0 obj#=-1 tim=44734538356
+FETCH #139940598828144:c=51208,e=52143,p=0,cr=1026,cu=0,mis=0,r=1000,dep=0,og=1,plh=788792483,tim=44734546087
+WAIT #139940598828144: nam='SQL*Net message from client' ela= 1615 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44734547772
+WAIT #139940598828144: nam='SQL*Net message to client' ela= 7 driver id=1413697536 #bytes=1 p3=0 obj#=-1 tim=44734547869
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 135 driver id=1413697536 #bytes=8121 p3=0 obj#=-1 tim=44734563157
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 113 driver id=1413697536 #bytes=8091 p3=0 obj#=-1 tim=44734575521
+WAIT #139940598828144: nam='SQL*Net more data to client' ela= 112 driver id=1413697536 #bytes=8097 p3=0 obj#=-1 tim=44734589518
+FETCH #139940598828144:c=52256,e=53688,p=0,cr=1026,cu=0,mis=0,r=1000,dep=0,og=1,plh=788792483,tim=44734601501
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left; font-size: 30px; width: 100% !important;">
+                <pre>
+                <code class="fullscreen-box" lang="bash" data-trim data-line-numbers>
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.6.1)
+
+2021-12-13 13:23:30.354  INFO 36814 --- [           main] c.tietoevry.hamster.HamsterApplication   : Starting HamsterApplication using Java 11...
+2021-12-13 13:23:30.356  INFO 36814 --- [           main] c.tietoevry.hamster.HamsterApplication   : No active profile set, falling back to def...
+2021-12-13 13:23:30.880  INFO 36814 --- [           main] c.tietoevry.hamster.HamsterApplication   : Started HamsterApplication in 0.731 sec ...
+2021-12-13 13:23:30.891  INFO 36814 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-12-13 13:23:31.108  INFO 36814 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+com.tietoevry.hamster.dao.WorseHamsterDaoImpl     : 5.669287764, Count: 5000
+com.tietoevry.hamster.dao.BetterHamsterDaoImpl    : 5.053222255, Count: 5000
+com.tietoevry.hamster.dao.BestHamsterDaoImpl      : 0.454341871, Count: 5000
+com.tietoevry.hamster.dao.BestHamsterDaoImpl      : 0.051736636, Count: 5000
+2021-12-13 13:23:42.350  INFO 36814 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2021-12-13 13:23:42.385  INFO 36814 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">PreparedStatement</p>
+                <p style="font-style: italic; margin-top: 0px">Should you always use PreparedStatement?</p><br>
+                <pre>
+                <code class="fullscreen-box" lang="sql" data-trim data-line-numbers>
+                    select status, count(*) cnt
+                    from order detail group by status order by 2 desc;
+
+                    STATUS CNT
+                    ------ -------
+                    C      1175234                  => Completed
+                    S         1035                  => Sent
+                    R          732                  => Ready (to be sent)
+                    N           91                  => New
+                </code>
+                </pre>
+                <aside class="notes">What happens if first search is on 'C'? What about 'S'?</aside>
+            </section>
+            <section style="text-align: left;">
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px"><b>Demo Summary</b></p>
+                <p style="font-style: italic; margin-top: 0px">Quote from Andrew Holdsworth (Database Expert):</p><br>
+                <quote style="font-size: 40px">
+                    "Good performance is rarely an accident – <br>Most people get the systems they deserve."
+                </quote>
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+             -- Execution Plans
+             ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">SQL Performance</p>
+                <p style="font-style: italic; margin-top: 0px">Databases need to choose a strategy for getting data</p>
+                <span>
+                        <ul>
+                            <li>Database generates an <span style="color: #cb4b16">execution plan</span>.</li>
+                            <li>The execution plan defines <span style="color: #cb4b16">ACCESS PATH</span>s.</li>
+                            <li>This is a developer responsibility.</li>
+                        </ul>
+                    </span>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">SQL Performance</p>
+                <p style="font-style: italic; margin-top: 0px">Some simple Access Methods:</p>
+                <span>
+                    <ul>
+                        <li>Table Scan</li>
+                        <li>Index Scan (Unique Index)</li>
+                        <li>Index Scan (Nonunique Index)</li>
+                    </ul>
+                </span>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Access Paths</p>
+                <p style="font-style: italic; margin-top: 0px">Full Table Scan</p>
+                <span>
+                    <ul>
+                        <li>If no search column.</li>
+                        <li>If no proper index for search column(s)</li>
+                        <li>If possible index exists, but <span style="color: #cb4b16">optimizer</span> suggest TABLE SCAN will be cheaper.</li>
+                    </ul>
+                </span>
+                <pre>
+                <code class="fullscreen-box" lang="sql" data-trim data-line-numbers>
+                    select * from employees;
+                    select * from employees where last_name like 'smith%'; # No or "inefficient" index
+                </code>
+                </pre>
+                <p>Remember! Table Scans are not evil! It depends.</p>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Access Paths</p>
+                <p style="font-style: italic; margin-top: 0px">Index Scan (Unique B-Tree Index)</p>
+                <span>
+                    <ul>
+                        <li>Equality search (0 or 1 row)</li>
+                        <li>like, <, <=, >, >=, <>, between ( 0 to MANY rows) = RANGE SCAN</li>
+                    </ul>
+                </span>
+                <pre>
+                <code class="fullscreen-box" lang="sql" data-trim data-line-numbers>
+                    select * from employees where id = 1;
+                    select * from employees where email like '%@gmail.com';
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Access Paths</p>
+                <p style="font-style: italic; margin-top: 0px">Index Scan (Nonunique B-Tree Index)</p>
+                <span>
+                    <ul>
+                        <li>=, like, <, <=, >, >=, <>, between ( 0 to MANY rows) = RANGE SCAN</li>
+                    </ul>
+                </span>
+                <pre>
+                <code class="fullscreen-box" lang="sql" data-trim data-line-numbers>
+                    select * from employees where last_name like 'smith%';
+                    select * from members where age > 18;
+                </code>
+                </pre>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">SQL Performance</p>
+                <p style="font-style: italic; margin-top: 0px">Queries accessing more than one table: JOINS</p>
+                <span style="font-size: 26px">
+                    <ul>
+                        <li>Join order</li>
+                        <li>Join Type:</li>
+                        <ul style="list-style-type: circle; font-size: 22px">
+                            <li>Nested Loop</li>
+                            <li>Hash Joins</li>
+                        </ul>
+                    </ul>
+                    </span>
+            </section>
+
+        </section>
+        <!-- --------------------------------------------------------
+             -- Performance Testing
+             ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Performance Testing</p>
+                <p style="font-style: italic; margin-top: 0px">How do we test performance?</p>
+            </section>
+            <section>
+                <p style="font-size: 40px; margin-top: 0px">Software Development Life Cycle (SDLC)</p>
+                <p style="font-style: italic; margin-top: 0px">Traditional</p>
+                <img class="r-stretch" style="border: none" src="svn/development-cycle-old-school.svg" />
+            </section>
+            <section>
+                <p style="font-size: 40px">"If TESTING is just a phase,<br> then you are most probably doing it wrong."</p>
+                <p style="text-align: right; font-style: italic; font-size: 22px">Cary Millsap</p>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Performance Testing</p>
+                <p style="font-style: italic; margin-top: 0px">How do we test performance?</p>
+                <span>
+                    <ul style="font-size: 26px">
+                        <li>Unit testing
+                            <ul style="list-style-type: circle">
+                                <li>Gives an indication on response times</li>
+                                <li>Execution plans</li>
+                            </ul>
+                        </li>
+                        <li>Load testing</li>
+                        <ul style="list-style-type: circle">
+                                <li>Data amounts</li>
+                                <li>Queuing and Coherency</li>
+                            </ul>
+                    </ul>
+                </span>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Performance Testing</p>
+                <p style="font-style: italic; margin-top: 0px">How do we test performance?</p>
+                <span>
+                    <ul style="font-size: 26px">
+                        <li>Test system must be "production-like"
+                            <ul style="list-style-type: circle">
+                                <li>Amounts of data</li>
+                                <li>Number of concurrent users</li>
+                                <li>Random vs deterministic arrivals</li>
+                            </ul>
+                        </li>
+                        <li>Test as early as possible.</li>
+                        <li>Use POCs for expected bottlenecks (FAQs)</li>
+                        <li>Load testing: Try to break your system</li>
+                    </ul>
+                </span>
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+             -- Connection Pools
+             ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
+                <p style="font-style: italic; margin-top: 0px">Why do we use connection pools?</p>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
+                <p style="font-style: italic; margin-top: 0px">Why do we use connection pools?</p>
+                <span style="font-size: 26px">
+                <ul>
+                    <li>Creating a new connection requires resources.</li>
+                    <ul style="list-style-type: circle">
+                        <li>OS spoons a new process (fork).</li>
+                        <li>A network socket needs to be opened.</li>
+                        <li>The user is authenticated.</li>
+                    </ul>
+                    <li>Connection pool keeps a pool of - already created - connections ready for use.</li>
+                </ul>
+                </span>
+            </section>
+            <section>
+                <img class="stretch" src="images/cp-postgres.png" style="border: none" alt="Connection Pool picture"/>
+                <aside class="notes">Application Server: Client + Connection pool</aside>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
+                <p style="font-style: italic; margin-top: 0px">Standard Configuration Settings (the wrong way)</p>
+                <p style="font-size: 22px">Note! Parameter examples below is from HikariCP</p>
+                <span style="font-size: 26px">
+                <ul>
+                    <li>maximumPoolSize (Typical: 20)</li>
+                    <li>minimumIdle (Typical: 5)</li>
+                </ul>
+                </span>
+                <p style="font-size: 22px">Note! These typical settings might be VERY wrong!</p>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
+                <p style="font-style: italic; margin-top: 0px">Standard Configuration Settings (the wrong way)</p>
+                <span style="font-size: 26px">
+                    <p>Example:</p>
+                    <ul>
+                        <li>maximumPoolSize = 20</li>
+                        <li>minimumIdle = 5</li>
+                        <li>Number of Application Servers = 12</li>
+                        <li>Cores on the database server = 8</li>
+                    </ul>
+                    <p><b>Question:<br> What happens when the load peeks?</b></p>
+                </span>
+                <aside class="notes"></aside>
+            </section>
+            <section data-auto-animate>
+                <span style="font-size: 22px">
+                <div class="grid-container">
+                    <div class="item-left" style="text-align: left;"><p>Example:</p>
+                            <ul>
+                                <li>maximumPoolSize = 20</li>
+                                <li>minimumIdle = 5</li>
+                                <li>Number of Application Servers = 12</li>
+                                <li>Cores on the database server = 8</li>
+                            </ul>
+                            <p><b>Question:<br> What happens when the load peeks?</b></p>
+                    </div>
+                    <div class="item-right-top" style="text-align: left;">
+                        <p style="color: #cb4b16">Low loads (default):</p>
+                        <ul>
+                            <li>12 servers * 5 minimumIdle = 60 connections</li>
+                            <li>Cores on the database server = 8</li>
+                        </ul>
+                    </div>
+                </div>
+                </span>
+            </section>
+            <section data-auto-animate>
+                <span style="font-size: 22px">
+                <div class="grid-container">
+                    <div class="item-left" style="text-align: left;"><p>Example:</p>
+                            <ul>
+                                <li>maximumPoolSize = 20</li>
+                                <li>minimumIdle = 5</li>
+                                <li>Number of Application Servers = 12</li>
+                                <li>Cores on the database server = 8</li>
+                            </ul>
+                            <p><b>Question:<br> What happens when the load peeks?</b></p>
+                    </div>
+                    <div class="item-right-top" style="text-align: left;">
+                        <p style="color: #cb4b16">Low loads (default):</p>
+                        <ul>
+                            <li>12 servers * 5 minimumIdle = 60 connections</li>
+                            <li>Cores on the database server = 8</li>
+                        </ul>
+                    </div>
+                     <div class="item-right-bottom" style="text-align: left;">
+                        <p style="color: #cb4b16">High loads:</p>
+                        <ul>
+                            <li>12 servers * 20 max = 240 connections</li>
+                            <li>Cores on the database server = 8</li>
+                        </ul>
+                    </div>
+                </div>
+                </span>
+                <aside class="notes">What does the logs on the application server tell you during peak times?<br>
+                    The logs indicates that the application is waiting for database connections.
+                    So we turn up maximumPoolSize.
+                </aside>
+            </section>
+            <section>
+                <img class="stretch" src="images/cpu-costs.png">
+                <p style="font-size: 18px">Source: <a href="http://ithare.com/infographics-operation-costs-in-cpu-clock-cycles/">http://ithare.com/infographics-operation-costs-in-cpu-clock-cycles/</a></p>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
+                <p style="font-style: italic; margin-top: 0px">Sizing</p>
+                <span style="font-size: 26px">
+                    <p style="alignment: center">"The question is not how big but rather <span style="color: #cb4b16 ">how small</span>"</p>
+                </span>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
+                <p style="font-style: italic; margin-top: 0px">Sizing</p>
+                <p style="text-align: left; font-size: 26px">General Rule: </p>
+                <p style="text-align: center; font-size: 30px; color: #cb4b16">minimumConnections = maximumConnections </p>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
+                <p style="font-style: italic; margin-top: 0px">Sizing</p>
+                <p style="text-align: left; font-size: 26px">General Rule: </p>
+                <p style="text-align: center; font-size: 30px; color: #cb4b16">minimumConnections = maximumConnections </p>
+            </section>
+            <section>
+                <img class="stretch" src="images/cp-postgres.png" style="border: none" alt="Connection Pool picture"/>
+                <p style="font-size: 23px">idle -> <span style="color: #cb4b16"><b>A</b></span> -> idle -> Query (S) -> idle -> Fetch -> idle -> Fetch -> Query (I) -> idle -> <span style="color: #cb4b16"><b>R</b></span> -> idle </p>
+                <p style="font-style: italic; font-size: 18px">(A = Aquire Connection, R = Releasing Connection)</p>
+                <aside class="notes">
+                    Between A and R, no other can use the connection.<br>
+                    During idle time the database is not busy. The application is running on CPU.
+                </aside>
+            </section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Connection Pooling</p>
+                <p style="font-style: italic; margin-top: 0px">Sizing</p>
+                <p style="text-align: left; ">Assume:</p>
+                <ul>
+                    <li>On average 50 % idle during allocation.</li>
+                    <li>Available cores on database server = 8</li>
+                </ul>
+                <p style="text-align: center; color: #cb4b16">How many connections could database handle?</p>
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+             -- Database Independence
+             ------------------------------------------------------------- -->
+        <section>
+            <section style="text-align: left;" data-auto-animate>
+                <p data-id="trad-prog" style="font-size: 50px; color: #cb4b16; margin-bottom: 0px">Database Independence</p>
+                <p style="font-style: italic; margin-top: 0px">This is a myth</p>
+                <span style="font-size: 26px">
+                        <ul>
+                            <li>There is really know such thing.<br>
+                                Database are implemented differently, and behaves differently.</li>
+                            <li>If your application is database independant, you most probably have bugs.</li>
+                        </ul>
+                        </span>
+            </section>
+        </section>
+        <!-- --------------------------------------------------------
+			 -- Next
+			 ------------------------------------------------------------- -->
+        <section data-background="black">
+            <p style="font-style: italic; margin-bottom: 0px">Next</p>
+            <p style="font-size: 50px; margin-top: 0px" ><a href="perf-03-performance-java.html"><b>Java Performance</b></a></p>
+            <p style="font-size: 18px"><a href="index.html">Home</a></p>
+        </section>
+    </div>
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/markdown/markdown.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+        hash: true,
+        transition: 'fade',
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ],
+
+        dependencies: [
+            // ...
+            { src: 'plugin/fullscreen-code/jquery-3.1.1.min.js' },
+            { src: 'plugin/fullscreen-code/reveal.js-fullscreen-code.js' }
+        ]
+    });
+</script>
+</body>
+</html>
+
