@@ -38,8 +38,7 @@
                    <ul>
                       <li>Smal REST applications keeping track of "Courses" and "Semesters".</li>
                       <li>Based on <b>Spring Boot</b> and <b>Spring WebMVC</b>.</li>
-                      <li>We'll use an H2 database</li>
-                      <li>We'll use Spring Data and JPA (JpaRepository): Hibernate (ORM API)</li>
+                      <li>We'll use JSP and JSTL (instead of Thymeleaf)</li>
                       <li><span style="font-style:italic;">Code: ws-03-rest-store-part2.tar.gz (see course overview)</span></li>
                    </ul>
                 </span>
@@ -53,6 +52,65 @@
                 <img src="images/simple-rest-store-2.png" alt="data model simple" style="border: none; box-shadow: none;" />
             </section>
 
+            <section style="text-align: left;">    
+               <p style="font-style: italic; margin-bottom: 0px">Dependency: <b>tomcat-embed-jasper</b> (scope: provided)</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Spring Boot, WEB and JSP</b></p>
+               <span style="font-size: 26px">
+                  <ul>
+                     <li>JSP has limitations on its own,<br> and even more so when combined with Spring Boot.</li>
+                     <li>That's why we used Thymeleaf earlier.</li>
+                     <li>Today I'll show how you can use JSP together with Spring Boot.</li>
+                  </ul>
+               </span>
+            </section>
+
+            <section style="text-align: left;">    
+               <p style="font-style: italic; margin-bottom: 0px">Maven Dependencies</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: ws-03-rest-store-part2.tar.gz</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers="4,9,15" style="line-height: 1.4">
+<dependencies>
+   <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+   </dependency>
+
+   <dependency>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-jasper</artifactId>
+      <scope>provided</scope>
+   </dependency>
+
+   <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+   </dependency>
+
+   ...
+
+</dependencies>
+                  </code>
+                  </pre>
+            </section>
+
+            <section style="text-align: left;">    
+               <p style="font-style: italic; margin-bottom: 0px">File: application.properties</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: ws-03-rest-store-part2.tar.gz</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4">
+server.port=8200
+
+spring.mvc.view.prefix=/WEB-INF/jsp/
+spring.mvc.view.suffix=.jsp
+
+...
+                  </code>
+                  </pre>
+                  <span style="font-size: 26px">
+                     <p>Path: src/main/webapp/WEB-INF/jsp</p>
+                  </span>
+            </section>
+
         </section>
 
         <!-- --------------------------------------------------------
@@ -60,43 +118,731 @@
             ------------------------------------------------------------- -->
          <section>
                <section style="text-align: left;" data-auto-animate="">
-                <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Spring REST Client: RestTemplate</p>
-                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Client: Consuming a REST WebService</b></p>
+                <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Spring REST Client: <b>RestTemplate</b></p>
+                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Client: Consuming a REST WebService</b></p>
 
                 <span style="font-size: 24px;">
                    <ul>
                       <li>Alternative: <b>WebFlux</b> project comes with <b>WebClient</b>: <br>
-                        Provide a traditional synchronous API, but it also supports an efficient nonblocking and asynchronous approach.</li>
+                        <ul style="list-style-type: circle;">
+                           <li>Provides a traditional synchronous API, but it also supports an efficient nonblocking and asynchronous approach.</li>
+                        </ul>
+                     </li>
                       <li>Deprecation Notice: RestTemplate will be deprecated in future versions.</li>
                    </ul>
                    <p>Source: <a href="https://www.baeldung.com/rest-template">https://www.baeldung.com/rest-template</a></p>
                 </span>
              </section>
+
+             <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">File: SemesterClientConfig.java (Bean: RestTemplate)</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Client: Consuming a REST WebService</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="7-8,10-13" style="line-height: 1.4">
+package no.hvl.dat152.semester.client;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
+
+@Configuration
+public class SemesterClientConfig {
+
+   @Bean
+   public RestTemplate restTemplate() {
+      return new RestTemplate();
+   }
+}
+               </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">File: SemesterService.java</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Client: Consuming a REST WebService</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="12-13" style="line-height: 1.4">
+package no.hvl.dat152.semester.client.service;
+
+import ...
+
+@Service
+@PropertySource("classpath:application.properties")
+public class SemesterService {
+
+   @Value("${rest.api.url.semesters")
+   private String BASE_URL;
+   
+   @Autowired
+   RestTemplate template;
+   
+   public List< Semester> getAll(){
+      ResponseEntity< Semester[]> response = 
+                        template.getForEntity(BASE_URL, Semester[].class);
+      return Arrays.asList(response.getBody());
+   }
+}
+               </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">File: SemesterService.java</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Client: Consuming a REST WebService</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="5-6,9-10" style="line-height: 1.4">
+package no.hvl.dat152.semester.client.service;
+
+import ...
+
+@Service
+@PropertySource("classpath:application.properties")
+public class SemesterService {
+
+   @Value("${rest.api.url.semesters")
+   private String BASE_URL;
+   
+   @Autowired
+   RestTemplate template;
+   
+   public List< Semester> getAll(){
+      ResponseEntity< Semester[]> response = 
+                           template.getForEntity(BASE_URL, Semester[].class);
+      return Arrays.asList(response.getBody());
+   }
+}
+               </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">File: application.properties</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Client: Consuming a REST WebService</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="4-7" style="line-height: 1.4">
+...
+
+# REST APIs
+rest.api.port=8299
+rest.api.server=localhost
+rest.api.url.base=http://${rest.api.server}:${rest.api.port}
+rest.api.url.semesters=${rest.api.url.base}/semesters
+rest.api.url.students=${rest.api.url.base}/students
+               </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">File: SemesterService.java</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Client: Consuming a REST WebService</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="15-19" style="line-height: 1.4">
+package no.hvl.dat152.semester.client.service;
+
+import ...
+
+@Service
+@PropertySource("classpath:application.properties")
+public class SemesterService {
+
+   @Value("${rest.api.url.semesters")
+   private String BASE_URL;
+   
+   @Autowired
+   RestTemplate template;
+   
+   public List< Semester> getAll(){
+      ResponseEntity< Semester[]> response = 
+                           template.getForEntity(BASE_URL, Semester[].class);
+      return Arrays.asList(response.getBody());
+   }
+}
+               </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">File: SemesterClientApplicationTests.java</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>JUnit5: Consuming a REST WebService</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="1-5" style="line-height: 1.4">
+@SpringBootTest
+class SemesterClientApplicationTests {
+   
+   @Autowired
+   SemesterService service;
+   
+   @Test
+   @DisplayName("Check Count Semesters")
+   public void checkCountSemesters() throws Exception {
+      int expectedValue=2;
+      
+      List< Semester> list = service.getAll();
+            
+      assertEquals(expectedValue, list.size());
+   }
+   
+}
+               </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">File: SemesterClientApplicationTests.java</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>JUnit5: Consuming a REST WebService</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="7-15" style="line-height: 1.4">
+@SpringBootTest
+class SemesterClientApplicationTests {
+   
+   @Autowired
+   SemesterService service;
+   
+   @Test
+   @DisplayName("Check Count Semesters")
+   public void checkCountSemesters() throws Exception {
+      int expectedValue=2;
+      
+      List< Semester> list = service.getAll();
+            
+      assertEquals(expectedValue, list.size());
+   }
+   
+}
+               </code>
+               </pre>
+            </section>
+
          </section>
 
         <!-- --------------------------------------------------------
-            -- ExceptionHandling
+            -- Client: SemesterController
             ------------------------------------------------------------- -->
-        <section>
-            <p>ExceptionHandling: To be continues</p>
-        </section>
+         <section>
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">File: SemesterController.java</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Spring MVC and JSTL (repetition)</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="1-2,5,7-8" style="line-height: 1.4">
+@Controller
+@RequestMapping(SemesterController.BASE_URL)
+public class SemesterController {
+   
+   final static String BASE_URL = "/semesters";
+   
+   @Autowired
+   private SemesterService service;
+   
+   @GetMapping
+   public String getAllSemesters(Model model) {
+      model.addAttribute("items", service.getAll());
+         return "semesters";
+   }
+}   
+               </code>
+               </pre>
+            </section>
 
-        <!-- --------------------------------------------------------
-            -- HAETOS
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">File: SemesterController.java</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Spring MVC and JSTL (repetition)</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="10-14" style="line-height: 1.4">
+@Controller
+@RequestMapping(SemesterController.BASE_URL)
+public class SemesterController {
+   
+   final static String BASE_URL = "/semesters";
+   
+   @Autowired
+   private SemesterService service;
+   
+   @GetMapping
+   public String getAllSemesters(Model model) {
+      model.addAttribute("items", service.getAll());
+      return "semesters";
+   }
+}   
+               </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">File: webapp/WEB-INF/jsp/<b>semesters.jsp</b></p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Spring MVC and JSTL (repetition)</b></p>
+               <span style="font-size: 26px">
+                  <p>We'll look at this file in Eclipse.</p>
+               </span>
+            </section>
+
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- SemesterController: viewsemester
             ------------------------------------------------------------- -->
-        <section>
-            <p>HAETOS: To be continues</p>
-        </section>
+         <section>
 
-        <!-- --------------------------------------------------------
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Extending SemesterService</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>File: SemesterService.java</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="1-8" style="line-height: 1.4; font-size: 14px;">
+@Service
+@PropertySource("classpath:application.properties")
+public class SemesterService {
+
+   @Value("${rest.api.url.semesters}")
+   private String BASE_URL;
+
+   @Autowired
+   RestTemplate template;
+
+   ...
+
+   public Optional< Semester> getSemesterById(Long id){		
+      String url = BASE_URL + "/{id}";
+      Map< String, Long> params = new HashMap< String,Long>();
+      params.put("id", id);
+      
+      return Optional.of(template.getForObject(url, Semester.class, params));
+   } 
+
+   ...
+}
+               </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Extending SemesterService</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" >RestTemplate.<b>getForObject()</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="13-19" style="line-height: 1.4; font-size: 14px;">
+@Service
+@PropertySource("classpath:application.properties")
+public class SemesterService {
+
+   @Value("${rest.api.url.semesters}")
+   private String BASE_URL;
+
+   @Autowired
+   RestTemplate template;
+
+   ...
+
+   public Optional< Semester> getSemesterById(Long id){		
+      String url = BASE_URL + "/{id}";
+      Map< String, Long> params = new HashMap< String,Long>();
+      params.put("id", id);
+      
+      return Optional.of(template.getForObject(url, Semester.class, params));
+   } 
+
+   ...
+}
+               </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Adding a service class for Courses</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>File: CourseService.java</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="1-6" style="line-height: 1.4; font-size: 14px;">
+@Service
+@PropertySource("classpath:application.properties")
+public class CourseService {
+   
+   @Value("${rest.api.url.courses}")
+   private String BASE_URL;
+   
+   @Autowired
+   RestTemplate template;
+   
+   public List< Course> getAll(){		
+      ResponseEntity< Course[]> response = template.getForEntity(BASE_URL, Course[].class);
+      List< Course> courses = Arrays.asList(response.getBody());
+      
+      return courses;
+   }
+}  
+               </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Adding a service class for Courses</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" >RestTemplate.<b>getForEntity()</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="8-16" style="line-height: 1.4; font-size: 14px;">
+@Service
+@PropertySource("classpath:application.properties")
+public class CourseService {
+   
+   @Value("${rest.api.url.courses}")
+   private String BASE_URL;
+   
+   @Autowired
+   RestTemplate template;
+   
+   public List< Course> getAll(){		
+      ResponseEntity< Course[]> response = template.getForEntity(BASE_URL, Course[].class);
+      List< Course> courses = Arrays.asList(response.getBody());
+      
+      return courses;
+   }
+}  
+               </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">/viewsemester?id={id}</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>File: SemesterController.java</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="1-5,17" style="line-height: 1.4; font-size: 16px;">
+@GetMapping("/viewsemester")
+public String viewSemester(Model model, @RequestParam("id") String id) {
+   Optional< Semester> object = semesterService.getSemesterById(Long.valueOf(id));
+   Semester semester = object.get();
+   model.addAttribute("semester", semester);
+
+   return "semester";
+}   
+               </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">File: <b>semester.jsp</b></p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>/viewsemester?id={id}</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="1-5,17" style="line-height: 1.4; font-size: 16px;">
+<h3>Semesters</h3>
+<table border=1>
+   <tr>
+      <th>Id</th>
+      <th>Year</th>
+      <th>Period</th>
+   </tr>
+   <tr>
+      <td>${semester.id}</td>
+      <td>${semester.studyYear}</td>
+      <td>${semester.studyPeriod.equals('A')? 'Autumn' : 'Spring'}</td>
+   </tr>
+</table>
+<p><a href="/updatesemester?id=${semester.id}">Edit</a> | 
+   <a href="/deletesemester?id=${semester.id}">Delete</a> |
+   <a href="/viewsemesters">Home</a>
+</p> 
+               </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">REST repsonse: /semesters/{id} (id=3)</b></p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Semester includes a list of courses</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="5-11" style="line-height: 1.4; font-size: 16px;">
+{
+   "id": 3,
+   "studyYear": "2022",
+   "studyPeriod": "A",
+   "courses": [   {
+      "id": 1,
+      "shortName": "DAT108",
+      "courseName": "Web Programming",
+      "studyPoints": 10,
+      "studyYear": 0
+   }]
+}
+               </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">/viewsemester?id={id}</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>File: SemesterController.java</b></p>
+               <pre>
+               <code lang="java" data-trim data-line-numbers="7-15" style="line-height: 1.4; font-size: 16px;">
+@GetMapping("/viewsemester")
+public String viewSemester(Model model, @RequestParam("id") String id) {
+   Optional< Semester> object = semesterService.getSemesterById(Long.valueOf(id));
+   Semester semester = object.get();
+   model.addAttribute("semester", semester);
+   
+   List< Course> courses = semester.getCourses();
+   if (courses.size()>0) {
+      model.addAttribute("courses", courses);
+   }
+   
+   List< Course> availableCourses = courseService.getAll();
+   if (courses.size()>0) {
+      model.addAttribute("availableCourses", availableCourses);
+   }
+
+   return "semester";
+}   
+               </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Receiving several attributes</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" >Refactoring <b>semester.jsp</b></p>
+               <span style="font-size: 26px">
+                  <p>We'll look at this file in Eclipse.</p>
+               </span>
+            </section>
+
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- The postForObject() API
+            ------------------------------------------------------------- -->
+         <section>
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Continuing with <b>RestTemplate</b></p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>The postForObject() API</b></p>
+               <pre>
+                  <code lang="java" data-trim style="line-height: 1.4; font-size: 14px;">
+T postForObject(URI url, Object request, Class< T> responseType) 
+                  </code>
+               </pre>
+               <pre>
+                  <code lang="java" data-trim style="line-height: 1.4; font-size: 14px;">
+T postForObject(String url, Object request, Class< T> responseType, Map< String,?> uriVariables)
+                  </code>
+               </pre>
+               <pre>
+                  <code lang="java" data-trim style="line-height: 1.4; font-size: 14px;">
+T postForObject(String url, Object request, Class< T> responseType, Object... uriVariables) 
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Refactoring <b>SemesterService.java</b></p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>The postForObject() API</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers="1-9" style="line-height: 1.4; font-size: 14px;">
+@Service
+@PropertySource("classpath:application.properties")
+public class SemesterService {
+   
+   @Value("${rest.api.url.semesters}")
+   private String BASE_URL;
+   
+   @Autowired
+   RestTemplate template;
+
+   ...
+
+   public Semester save(String year, String period) throws URISyntaxException {
+      URI uri = new URI(BASE_URL);
+
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_JSON);
+      HttpEntity< Semester> request = new HttpEntity<>(new Semester(year, period), headers);
+
+      Semester semester = template.postForObject(uri, request, Semester.class);
+      
+      return semester;
+   }
+}
+                  </code>
+                  </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Refactoring <b>SemesterService.java</b></p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>The postForObject() API</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers="13-23" style="line-height: 1.4; font-size: 14px;">
+@Service
+@PropertySource("classpath:application.properties")
+public class SemesterService {
+   
+   @Value("${rest.api.url.semesters}")
+   private String BASE_URL;
+   
+   @Autowired
+   RestTemplate template;
+
+   ...
+
+   public Semester save(String year, String period) throws URISyntaxException {
+      URI uri = new URI(BASE_URL);
+
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_JSON);
+      HttpEntity< Semester> request = new HttpEntity<>(new Semester(year, period), headers);
+
+      Semester semester = template.postForObject(uri, request, Semester.class);
+      
+      return semester;
+   }
+}
+                  </code>
+                  </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Refactoring <b>SemesterController.java</b></p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>/addsemester (GET and POST)></b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers="1-4" style="line-height: 1.4; font-size: 14px;">
+@GetMapping("/addsemester")
+public String createSemester() {
+   return "addsemester";
+}
+
+@PostMapping("/addsemester")
+public RedirectView createSemesterSave(@RequestParam String studyYear, @RequestParam String studyPeriod,
+                                       RedirectAttributes redirectAttr) throws URISyntaxException {
+   
+   Optional< Semester> semester = Optional.of(semesterService.save(studyYear, studyPeriod));
+   
+   if (!semester.isPresent()) {
+      redirectAttr.addFlashAttribute("errmsg","A error occured when trying to save Semester.");
+      return new RedirectView("/addsemesters");
+   }
+   redirectAttr.addFlashAttribute("addSemesterSuccess", true);
+   redirectAttr.addFlashAttribute("newSemesterId", semester.get().getId());
+   
+   return new RedirectView("/viewsemesters");
+   
+}
+                  </code>
+                  </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Refactoring <b>SemesterController.java</b></p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>/addsemester (GET and POST)></b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4; font-size: 14px;">
+<form action="/addsemester" method="POST">
+   <table border=0><tbody>
+         <tr>
+            <td>Year</td>
+            <td><input type="text" name="studyYear" value="${studyYear}" /></td>
+         </tr>
+         <tr>
+            <td>Period</td>
+            <td><input type="text" name="studyPeriod" value="${studyPeriod}" /> </td>
+         </tr>
+      </tbody>
+   </table>
+   <p><input type="submit" name="saveitembutton" value="Save" /> 
+      <input class="button" type="button" onclick="window.location.replace('/viewsemesters')" value="Cancel" /></p>
+</form>
+                  </code>
+                  </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Refactoring <b>SemesterController.java</b></p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>/addsemester (GET and POST)></b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers="6-22" style="line-height: 1.4; font-size: 14px;">
+@GetMapping("/addsemester")
+public String createSemester() {
+   return "addsemester";
+}
+
+@PostMapping("/addsemester")
+public RedirectView createSemesterSave(@RequestParam String studyYear, 
+                                       @RequestParam String studyPeriod,
+                                       RedirectAttributes redirectAttr) throws URISyntaxException {
+   
+   Optional< Semester> semester = Optional.of(semesterService.save(studyYear, studyPeriod));
+   
+   if (!semester.isPresent()) {
+      redirectAttr.addFlashAttribute("errmsg","A error occured when trying to save Semester.");
+      return new RedirectView("/addsemesters");
+   }
+   redirectAttr.addFlashAttribute("addSemesterSuccess", true);
+   redirectAttr.addFlashAttribute("newSemesterId", semester.get().getId());
+   
+   return new RedirectView("/viewsemesters");
+   
+}
+                  </code>
+                  </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Checking flashAttributes</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" >Refactoring <b>semesters.jsp</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers="6-22" style="line-height: 1.4; font-size: 14px;">
+<c:if test="${addSemesterSuccess}">
+   <div>Successfully added Item with ID: ${newSemesterId}</div>
+</c:if>
+                  </code>
+                  </pre>
+            </section>
+
+         </section>
+         <!-- --------------------------------------------------------
+            -- The RestTemplate.put (UPDATE)
+            ------------------------------------------------------------- -->
+         <section>
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Continuing with <b>RestTemplate - The put() API</b></p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Refactoring: SemesterService.java</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers="8" style="line-height: 1.4; font-size: 14px;">
+public Semester update(Semester semester) throws URISyntaxException {
+   URI uri = new URI(BASE_URL + "/" + semester.getId());
+   
+   HttpHeaders headers = new HttpHeaders();
+   headers.setContentType(MediaType.APPLICATION_JSON);
+   HttpEntity< Semester> request = new HttpEntity<>(semester, headers);
+
+   template.put(uri, request);
+   
+   return semester;
+}
+                  </code>
+                  </pre>
+                  <span style="font-size: 24px; font-style:italic">
+                     <p><b>Disadvantage:</b> put() returns "void"</p>
+                 </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Continuing with <b>RestTemplate - The exchange() API</b></p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Refactoring: SemesterService.java</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers="1,5-6,9,11" style="line-height: 1.4; font-size: 14px;">
+public ResponseEntity< Semester> updateV2(Semester semester) throws URISyntaxException {
+   URI uri = new URI(BASE_URL + "/" + semester.getId());
+   
+   HttpEntity< Semester> request = new HttpEntity<>(semester);
+   ResponseEntity< Semester> response = 
+                              template.exchange(uri, HttpMethod.PUT, request, Semester.class);
+   
+   if (response.getStatusCode().equals(HttpStatus.CREATED)) {
+      return ResponseEntity.ok().body(semester);
+   }
+   return ResponseEntity.notFound().build();
+}
+                  </code>
+                  </pre>
+            </section>
+         </section>
+
+         <!-- --------------------------------------------------------
             -- Next
             ------------------------------------------------------------- -->
-        <section>
+         <section>
             <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
             <p style="font-style: italic; margin-bottom: 0px">Next</p>
-            <p style="font-size: 0px; margin-top: 0px" ><a href="ws-04-restfull-store-part2.html"><b>Web Services: Rest Store</b></a></p>
+            <p style="font-size: 0px; margin-top: 0px" ><a href="ws-04-restfull-store-part3.html"><b>Web Services: Rest Store - Part 3</b></a></p>
             <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
-        </section>
+         </section>
 
     </div>
 </div>

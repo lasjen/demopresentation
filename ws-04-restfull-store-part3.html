@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>HVL: Dat152</title>
+    <meta name="description" content="Page for dat152 presentations">
+    <meta name="author" content="Lasse Jenssen">
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/white.css">
+    <link rel="stylesheet" href="dist/theme/robot-lung.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/zenburn.css">
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+
+        <section data-background="white">
+            <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
+            <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Building a RESTFull Store WebService - Part 2</b></p>
+            <p style="font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
+            <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
+        </section>
+        <!-- --------------------------------------------------------
+            -- Introduction
+            ------------------------------------------------------------- -->
+        <section>
+        
+            <section style="text-align: left;">    
+                <p style="font-style: italic; margin-bottom: 0px">REST Store Web Service</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: ws-03-rest-store-part3.tar.gz</b></p>
+                <span style="font-size: 28px">
+                   <ul>
+                      <li>Smal REST applications keeping track of "Courses" and "Semesters".</li>
+                      <li>Based on <b>Spring Boot</b> and <b>Spring WebMVC</b>.</li>
+                      <li>We'll use JSP and JSTL (instead of Thymeleaf)</li>
+                      <li><span style="font-style:italic;">Code: ws-03-rest-store-part3.tar.gz (see course overview)</span></li>
+                   </ul>
+                </span>
+             </section>
+
+            <section>
+                <img src="images/simple-rest-store.png" alt="data model" style="border: none; box-shadow: none;" />
+            </section>
+
+            <section>
+                <img src="images/simple-rest-store-2.png" alt="data model simple" style="border: none; box-shadow: none;" />
+            </section>
+
+         </section>
+         
+         <!-- --------------------------------------------------------
+            -- ExceptionHandling
+            ------------------------------------------------------------- -->
+         <section>
+            <p>ExceptionHandling: To be continues</p>
+         </section>
+
+        <!-- --------------------------------------------------------
+            -- HAETOS
+            ------------------------------------------------------------- -->
+         <section>
+            <p>HAETOS: To be continues</p>
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- Next
+            ------------------------------------------------------------- -->
+         <section>
+            <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
+            <p style="font-style: italic; margin-bottom: 0px">Congratulation: Web Frameworks is completed</p>
+            <p style="font-size: 0px; margin-top: 0px" >Well ... only the mandatory exercise and exam left ;-)</p>
+            <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
+         </section>
+
+    </div>
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/markdown/markdown.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+        hash: true,
+        transition: 'fade',
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+    });
+</script>
+</body>
+</html>
