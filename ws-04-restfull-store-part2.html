@@ -117,7 +117,7 @@ spring.mvc.view.suffix=.jsp
             -- Client: RestTemplate
             ------------------------------------------------------------- -->
          <section>
-               <section style="text-align: left;" data-auto-animate="">
+            <section style="text-align: left;" data-auto-animate="">
                 <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Spring REST Client: <b>RestTemplate</b></p>
                 <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Client: Consuming a REST WebService</b></p>
 
@@ -132,7 +132,24 @@ spring.mvc.view.suffix=.jsp
                    </ul>
                    <p>Source: <a href="https://www.baeldung.com/rest-template">https://www.baeldung.com/rest-template</a></p>
                 </span>
-             </section>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate="">
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">We'll look at 5 procedures</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" >Spring REST Client: <b>RestTemplate</b></p>
+
+               <span style="font-size: 24px;">
+                  <ul>
+                     <li>getForObject()</p>
+                     <li>getForEntity()</li>
+                     <li>postForObject()</li>
+                     <li>postForLocation()</li>
+                     <li style="color:darkgray">postForEntity()</li>
+                     <li>put()</li>
+                     <li>delete()</li>
+                     <li>exchange()</li>
+               </span>
+           </section>
 
              <section style="text-align: left;" data-auto-animate>
                <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">File: SemesterClientConfig.java (Bean: RestTemplate)</p>
@@ -834,6 +851,21 @@ public ResponseEntity< Semester> updateV2(Semester semester) throws URISyntaxExc
             </section>
          </section>
 
+          <!-- --------------------------------------------------------
+            -- The RestTemplate.postForLocation (Locations)
+            ------------------------------------------------------------- -->
+         <section>
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Starting to become restful (but not quite there yet)</b></p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>postForLocation</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers="1,5-6,9,11" style="line-height: 1.4; font-size: 14px;">
+HttpEntity< Semester> request = new HttpEntity<>(new Semester("2024","A"));
+URI location = restTemplate.postForLocation(fooResourceUrl, request);
+                  </code>
+                  </pre>
+            </section>
+         </section>
          <!-- --------------------------------------------------------
             -- Next
             ------------------------------------------------------------- -->
