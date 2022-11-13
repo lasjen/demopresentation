@@ -1,0 +1,948 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>HVL: Dat152</title>
+    <meta name="description" content="Page for dat152 presentations">
+    <meta name="author" content="Lasse Jenssen">
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/white.css">
+    <link rel="stylesheet" href="dist/theme/robot-lung.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/zenburn.css">
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+         <!-- --------------------------------------------------------
+            -- FrontPage
+            ------------------------------------------------------------- -->
+         <section data-background="white">
+            <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
+            <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Building a RESTFull Store WebService - Part 3<br>(Spring HATEOAS and Spring Security)</b></p>
+            <p style="font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
+            <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- Agenda
+            ------------------------------------------------------------- -->
+         <section style="text-align: left;">    
+            <p style="font-style: italic; margin-bottom: 0px">Agenda</p>
+            <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Last Lecture: Web Frameworks</b></p>
+            <span style="font-size: 28px">
+               <ul>
+                  <li>Part 1: (Spring) <b>HATEOAS</b> - <br>Hypermedia As The Engine Of Application State. (REST Web Service)</li>
+                  <li>Part 2: (Spring) <b>Security</b> (Web Application)</li>
+               </ul>
+            </span>
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- Introduction
+            ------------------------------------------------------------- -->
+         <section>
+        
+            <section style="text-align: left;">    
+                <p style="font-style: italic; margin-bottom: 0px">REST Store Web Service</p>
+                <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: ws-03-rest-store-part3.tar.gz</b></p>
+                <span style="font-size: 28px">
+                   <ul>
+                      <li>Smal REST applications keeping track of "Courses" and "Semesters".</li>
+                      <li>Based on <b>Spring Boot</b> and <b>Spring WebMVC</b>.</li>
+                      <li>We'll use JSP and JSTL (instead of Thymeleaf)</li>
+                      <li><span style="font-style:italic;">Code: ws-03-rest-store-part3.tar.gz (see course overview)</span></li>
+                   </ul>
+                </span>
+             </section>
+
+            <section>
+                <img src="images/simple-rest-store.png" alt="data model" style="border: none; box-shadow: none;" />
+            </section>
+
+            <section>
+                <img src="images/simple-rest-store-2.png" alt="data model simple" style="border: none; box-shadow: none;" />
+            </section>
+
+            <section>         
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Sources</b></p>
+               <span style="font-size: 24px">
+                  <p>What is REST and when is my service truly RESTful?</p>
+                  <p>Link: <a href="https://allaroundjava.com/what-is-rest-when-is-service-restful/">https://allaroundjava.com/what-is-rest-when-is-service-restful/</a></p>
+                  <br>
+                  <p>Spring HATEOAS Documention</p>
+                  <p>Link: <a href="https://spring.io/projects/spring-hateoas">https://spring.io/projects/spring-hateoas</a></p>
+               </span>   
+         </section>
+
+         </section>
+         <!-- --------------------------------------------------------
+               -- REST Architectual Constraints
+               ------------------------------------------------------------- -->
+         <section>
+            <section style="text-align: left;">
+               <p style="font-style: italic; margin-bottom: 0px">Six architectual constraints for a truly (REPITITION)</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>RESTFul WebService (API)</b></p><br>
+            </section>
+            
+            <section style="text-align: left;">
+               <p style="font-style: italic; margin-bottom: 0px">First architectual constraints </p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Client - Server Architecture</b></p>
+
+               <p>Enforces <b>Separation of concerns</b>.</p>
+               <p>Separating the user interface concerns from the data storage concerns.</p>
+            </section>
+            <section style="text-align: left;">
+               <p style="font-style: italic; margin-bottom: 0px">Second architectual constraints </p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Statelessness</b></p>
+
+               <p>No session information is retained by the server.</p>
+               <p>The client application must entirely keep the session state.</p>
+            </section>
+            <section style="text-align: left;">
+               <p style="font-style: italic; margin-bottom: 0px">Third architectual constraints </p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Cacheability</b></p>
+
+               <p>A response should implicitly or explicitly label itself as cacheable or non-cacheable.</p>
+            </section>
+            <section style="text-align: left;">
+               <p style="font-style: italic; margin-bottom: 0px">Fourth architectual constraints </p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Layered System</b></p>
+
+               <p>A client cannot ordinarily tell whether it is connected directly to the end server or to an intermediary along the way (for instance proxy or load balancer).</p>
+            </section>
+            <section style="text-align: left;">
+               <p style="font-style: italic; margin-bottom: 0px">Fifth architectual constraints </p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Code on demand (optional)</b></p>
+
+               <p>Servers can temporarily extend or customize the functionality of a client by transferring executable code: for example, compiled components such as Java applets, or client-side scripts such as JavaScript.</p>
+            </section>
+            <section style="text-align: left;">
+               <p style="font-style: italic; margin-bottom: 0px">Sixth architectual constraints </p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Uniform Interface</b></p>
+
+               <ul style="font-size: 26px; list-style-type: bullet;line-height: 1.6" >
+                  <li>Identification of Resources (<b>URI</b>)</li>
+                  <li>Manipulation of resources through <b>representations</b> (Usually JSON objects).</li>
+                  <li><b>Self-descriptive</b> messages. For instance:
+                     <ul style="list-style-type:circle; font-size: 22px">
+                        <li>Request type and protocol: <code>GET / HTTP/1.1</code></li>
+                        <li>Protocol and response status: <code>HTTP/1.1 200 OK</code></li>
+                        <li>Media type: <code>Content-Type: text/html</code></li>
+                     </ul>
+                  </li>
+                  <li><b>Hypermedia</b> as the engine of application state (HATEOAS).</li>
+               </ul>
+            </section>
+            <section>
+               <p style="font-style: italic; margin-bottom: 0px">HATEOAS</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Hypermedia as the engine of application state</b></p>
+            </section>
+         </section>
+         <!-- --------------------------------------------------------
+            -- Richardson Maturity model
+            ------------------------------------------------------------- -->
+         <section>
+            <section>
+               <p style="font-style: italic; margin-bottom: 0px">When is a service RESTFul enough?</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Richardson Maturity model</b></p>
+            </section>
+
+            <section  style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Level 0 - Single URI over a single HTTP method</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Richardson Maturity model</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>All the calls to our service are done through a single HTTP method (typically POST).</li>
+                     <li>All the calls are done through the same URI.</li>
+                     <br>
+                     <li>Resembles SOAP style remote procedure calls the most, although it's neither SOAP nor REST.</li>
+                  </ul>
+               </span>
+               <pre>
+                  <code lang="java"  style="text-align:center" data-trim>
+                     POST http://localhost:8080/semesters
+                  </code>
+               </pre>
+            </section>
+
+            <section  style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Level 1 - Multiple URIs over a single HTTP method</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Richardson Maturity model</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>This level introduces unique ids through URIs</li>
+                  </ul>
+               </span>
+               <pre>
+                  <code lang="java"  style="text-align:center" data-trim>
+                     POST http://localhost:8080/semesters/1
+                  </code>
+               </pre>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>All the operation on a semester would be operated on this unique URI on a single HTTP method</li>
+                  </ul>
+               </span>
+            </section>
+
+            <section  style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Level 2 - Multiple URIs over multiple HTTP methods</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Richardson Maturity model</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>This level makes use of the Uniform interface REST principle.</li>
+                     <li>Ensures all the operations we can perform on a resource are tied to proper interface methods</li>
+                     <li>Most popular level (and the level we have been on so far)</li>
+                  </ul>
+               </span>
+               <pre>
+                  <code lang="java"  style="text-align:left" data-line-numbers data-trim>
+                     GET http://localhost:8080/semesters
+                     GET http://localhost:8080/semesters/1
+                     POST http://localhost:8080/semesters
+                     PUT http://localhost:8080/semesters/1
+                     DELETE http://localhost:8080/semesters/1
+                  </code>
+               </pre>
+            </section>
+
+            <section  style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Level 3 - Hypermedia Links</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Richardson Maturity model</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>Adds <b>Hypermedia Links</b> to Level 2 services so that they are <b>self-descriptive</b>.</li>
+                     <li>HATEOAS -> Hypermedia As The Engine Of Application State</li>
+                  </ul>
+               </span>
+               <pre>
+                  <code lang="java"  style="text-align:left" data-line-numbers data-trim>
+{
+   "id" : "1",
+   "studyYear" : "2022",
+   "studyPeriod" : "A",
+   "_links" : {
+      "self" : {
+         "href" : "http://localhost:8080/semesters/1"
+      },
+      "semesters" : { 
+         "href" : "http://localhost:8080/semesters" 
+      }
+   }
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section  style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Could also include TEMPLATES</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>Richardson Maturity model</b></p>
+               <pre>
+                  <code lang="java"  style="text-align:left" data-line-numbers data-trim>
+{
+   "id" : "1",
+   "studyYear" : "2022",
+   "studyPeriod" : "A",
+   ...,
+   "_templates" : {
+      "default" : {
+        "method" : "put",
+        "properties" : [ {
+          "name" : "studyYear",
+          "required" : true
+        }, {
+          "name" : "studyPeriod",
+          "required" : true
+        } ]
+      }
+   }
+}
+                  </code>
+               </pre>
+            </section>
+
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- RESTFull Services - Spring HATEOAS
+            ------------------------------------------------------------- -->
+            <section>
+               <section style="text-align: left;">    
+                  <p style="font-style: italic; margin-bottom: 0px">Hypermedia As The Engine of Application State</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Spring HATEOAS</b></p>
+                  <span style="font-size: 28px">
+                     <ul>
+                        <li>Provides some APIs to ease creating REST representations that follow the HATEOAS principle<br>
+                           (when working with Spring and especially Spring MVC).</li>
+                        <li><b>Source</b>: An Introduction to Spring HATEOAS, Baeldung:<br>
+                           <a href="https://www.baeldung.com/spring-hateoas-tutorial">https://www.baeldung.com/spring-hateoas-tutorial</a></li>
+                     </ul>
+                  </span>
+               </section>
+   
+               <section  style="text-align: left;" data-auto-animate>
+                  <p style="font-style: italic; margin-bottom: 0px">Maven Dependencies: with Spring Boot</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" >Preparing for <b>Spring HATEOAS</b></p>
+                  <pre>
+                     <code lang="java"  style="text-align:left" data-line-numbers data-trim>
+   <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-hateoas</artifactId>
+   </dependency>
+                     </code>
+                  </pre>
+               </section>
+   
+               <section  style="text-align: left;" data-auto-animate>
+                  <p style="font-style: italic; margin-bottom: 0px">Maven Dependencies: with Spring Framework</p>
+                  <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" >Preparing for <b>Spring HATEOAS</b></p>
+                  <pre>
+                     <code lang="java"  style="text-align:left" data-line-numbers data-trim>
+   <dependency>
+      <groupId>org.springframework.hateoas</groupId>
+      <artifactId>spring-hateoas</artifactId>
+      <version>1.4.1</version>
+   </dependency>
+   <dependency>
+      <groupId>org.springframework.plugin</groupId>
+      <artifactId>spring-plugin-core</artifactId>
+      <version>1.2.0.RELEASE</version>
+   </dependency>
+                     </code>
+                  </pre>
+               </section>
+   
+            </section>
+
+         <!-- --------------------------------------------------------
+            -- Assembler 
+            ------------------------------------------------------------- -->
+         <section>
+            <section  style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">A class that transform a Semester</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>SemesterModelAssembler</b></p>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li><b>Input</b>: Semester</li>
+                     <li><b>Output</b>: EntityModel< Semester></li>
+                     <br>
+                     
+                  </ul>
+                  <p>We'll be using Spring HATEOAS to do the magic.</p>
+               </span>
+            </section>
+
+            <section  style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">A class that transform a Semester</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>SemesterModelAssembler</b></p>
+               <p style="font-size=24px"><b>Input</b> (as an object, but shown as JSON below):</p>
+               <pre>
+                  <code lang="java" data-line-numbers data-trim>
+{
+   "id" : "1",
+   "studyYear" : "2022",
+   "studyPeriod" : "A",
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">A class that transform a Semester</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>SemesterModelAssembler</b></p>
+               <p style="font-size=24px"><b>Output</b> (as an object, but shown as JSON below):</p>
+               <pre>
+                  <code lang="java" style="text-align:left" data-line-numbers data-trim>
+{
+   "id" : "1",
+   "studyYear" : "2022",
+   "studyPeriod" : "A",
+   "_links" : {
+      "self" : {
+         "href" : "http://localhost:8299/semesters/1"
+      },
+      "semesters" : { 
+         "href" : "http://localhost:8299/semesters" 
+      }
+   }
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px"><b>RepresentationModelAssembler</b> interface</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>SemesterModelAssembler</b></p>
+               <pre>
+                  <code lang="java" style="font-size: 14px;" data-line-numbers="1,3-5, 7-8" data-trim>
+import org.springframework.hateoas.server.RepresentationModelAssembler;
+
+@Component
+public class SemesterModelAssembler 
+                  implements RepresentationModelAssembler< Semester, EntityModel< Semester>> {
+
+   @Override
+   public EntityModel< Semester> toModel(Semester semester) {
+
+      return  EntityModel.of(semester,
+         linkTo(SemesterController.class, 
+                  (SemesterController.class).getMethod("getSemester", Long.class )
+               ).withSelfRel(),
+         linkTo(SemesterController.class,
+                  (SemesterController.class).getMethod("getAllSemesters")
+               ).withRel("semesters")
+      );
+   }
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px"><b>EntityModel.of()</b> method</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>SemesterModelAssembler</b></p>
+               <pre>
+                  <code lang="java" style="font-size: 14px;" data-line-numbers="11" data-trim>
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+@Component
+public class SemesterModelAssembler 
+                  implements RepresentationModelAssembler< Semester, EntityModel< Semester>> {
+
+   @Override
+   public EntityModel< Semester> toModel(Semester semester) {
+
+      return  EntityModel.of(semester,
+         linkTo(SemesterController.class, 
+                  (SemesterController.class).getMethod("getSemester", Long.class )
+               ).withSelfRel(),
+         linkTo(SemesterController.class,
+                  (SemesterController.class).getMethod("getAllSemesters")
+               ).withRel("semesters")
+      );
+   }
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px"><b>WebMvcLinkBuilder.linkTo()</b> method</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>SemesterModelAssembler</b></p>
+               <pre>
+                  <code lang="java" style="font-size: 14px;" data-line-numbers="1,12-17" data-trim>
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+@Component
+public class SemesterModelAssembler 
+                  implements RepresentationModelAssembler< Semester, EntityModel< Semester>> {
+
+   @Override
+   public EntityModel< Semester> toModel(Semester semester) {
+
+      return  EntityModel.of(semester,
+         linkTo(SemesterController.class, 
+                  (SemesterController.class).getMethod("getSemester", Long.class )
+               ).withSelfRel(),
+         linkTo(SemesterController.class,
+                  (SemesterController.class).getMethod("getAllSemesters")
+               ).withRel("semesters")
+      );
+   }
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Testing Assembler</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>SemesterModelAssembler</b></p>
+               <pre>
+                  <code lang="java" style="font-size: 14px;" data-line-numbers data-trim>
+@Autowired
+TestRestTemplate template;
+
+@Autowired
+SemesterModelAssembler assembler;
+   
+final String baseUri = "/semesters";
+
+@Test
+public void testSemesterModelAssembler() throws Exception {
+   Semester semester = template.getForObject(baseUri + "/3", Semester.class);
+   
+   EntityModel< Semester> model = assembler.toModel(semester);
+   
+   assertTrue(model.hasLinks());
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px"><b>WebMvcLinkBuilder.methodOn()</b> method</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" ><b>SemesterModelAssembler</b></p>
+               <pre>
+                  <code lang="java" style="font-size: 14px;" data-line-numbers="11-18" data-trim>
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+@Component
+public class SemesterModelAssembler 
+                  implements RepresentationModelAssembler< Semester, EntityModel< Semester>> {
+
+   @Override
+   public EntityModel< Semester> toModel(Semester semester) {
+
+      return EntityModel.of(semester, 
+            linkTo(
+               methodOn(SemesterController.class).getSemester(semester.getId())
+            ).withSelfRel(),
+            linkTo(
+               methodOn(SemesterController.class).getAllSemesters()
+            ).withRel("semesters")
+         );
+   }
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Back to the controller class (Method without HATEOAS)</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" >File: <b>SemesterController.java</b></p>
+               <pre>
+                  <code lang="java" style="font-size: 14px;" data-line-numbers data-trim>
+@GetMapping("/{id}")
+public ResponseEntity< Semester> getSemester(@PathVariable("id") Long id) {
+   
+      Optional< Semester> semester = repository.findById(id);
+
+      return semester
+            .map( s -> ResponseEntity.ok().body(s) )  
+            .orElseGet( () -> ResponseEntity.notFound().build() );   
+   
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Using the SemesterModelAssembler</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" >File: <b>SemesterController.java</b></p>
+               <pre>
+                  <code lang="java" style="font-size: 14px;" data-line-numbers data-trim>
+@RestController
+@RequestMapping(SemesterController.BASE_URL)
+public class SemesterController {
+   
+   final static String BASE_URL = "/semesters";
+   
+   @Autowired
+   private SemesterRepository repository;
+   
+   @Autowired 
+   private SemesterModelAssembler assembler;
+
+   ...
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Using the SemesterModelAssembler</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" >File: <b>SemesterController.java</b></p>
+               <pre>
+                  <code lang="java" style="font-size: 14px;" data-line-numbers="10-11" data-trim>
+@RestController
+@RequestMapping(SemesterController.BASE_URL)
+public class SemesterController {
+   
+   final static String BASE_URL = "/semesters";
+   
+   @Autowired
+   private SemesterRepository repository;
+   
+   @Autowired 
+   private SemesterModelAssembler assembler;
+
+   ...
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Using the SemesterModelAssembler</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" >File: <b>SemesterController.java</b></p>
+               <pre>
+                  <code lang="java" style="font-size: 14px;" data-line-numbers data-trim>
+@GetMapping("/{id}")
+public ResponseEntity< EntityModel< Semester>> getSemester(@PathVariable Long id){
+   
+   Optional< Semester> semester = repository.findById(id);
+      
+   return semester
+      .map( s -> ResponseEntity.ok().body(assembler.toModel(s)) )   
+      .orElseGet( () -> ResponseEntity.notFound().build() );   
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Using the SemesterModelAssembler</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" >File: <b>SemesterController.java</b></p>
+               <pre>
+                  <code lang="java" style="font-size: 14px;" data-line-numbers="7" data-trim>
+@GetMapping("/{id}")
+public ResponseEntity< EntityModel< Semester>> getSemester(@PathVariable Long id){
+   
+   Optional< Semester> semester = repository.findById(id);
+      
+   return semester
+      .map( s -> ResponseEntity.ok().body(assembler.toModel(s)) )   
+      .orElseGet( () -> ResponseEntity.notFound().build() );   
+}
+                  </code>
+               </pre>
+               <span style="font-size: 24px">
+                  <ul>
+                     <li>Demo: SoapUI</li>
+                  </ul>
+               </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Old: getAllSemesters</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" >File: <b>SemesterController.java</b></p>
+               <pre>
+                  <code lang="java" style="font-size: 14px;" data-line-numbers data-trim>
+@GetMapping
+public ResponseEntity< List< Semester>> getAllSemesters() {
+   List< Semester> semesters = new ArrayList<>();
+   repository.findAll().forEach(semesters::add);
+   
+   return ResponseEntity.ok().body(semesters);
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">New: getAllSemesters</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" >File: <b>SemesterController.java</b></p>
+               <pre>
+                  <code lang="java" style="font-size: 14px;" data-line-numbers data-trim>
+@GetMapping
+public ResponseEntity< CollectionModel< EntityModel< Semester>>> getAllSemesters() {
+   
+   List< Semester> semesters = new ArrayList<>();
+   repository.findAll().forEach(semesters::add);
+   
+   List< EntityModel< Semester>> entitySemesters = semesters
+               .stream()
+               .map( s -> assembler.toModel(s))
+               .collect(Collectors.toList());
+   
+   return ResponseEntity.ok().body(CollectionModel.of(entitySemesters, 
+         linkTo(methodOn(SemesterController.class).getAllSemesters()).withSelfRel()));
+}
+                  </code>
+               </pre>
+            </section>
+            
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">New: getAllSemesters</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" >File: <b>SemesterController.java</b></p>
+               <pre>
+                  <code lang="java" style="font-size: 14px;" data-line-numbers="2" data-trim>
+@GetMapping
+public ResponseEntity< CollectionModel< EntityModel< Semester>>> getAllSemesters() {
+   
+   List< Semester> semesters = new ArrayList<>();
+   repository.findAll().forEach(semesters::add);
+   
+   List< EntityModel< Semester>> entitySemesters = semesters
+               .stream()
+               .map( s -> assembler.toModel(s))
+               .collect(Collectors.toList());
+   
+   return ResponseEntity.ok().body(CollectionModel.of(entitySemesters, 
+         linkTo(methodOn(SemesterController.class).getAllSemesters()).withSelfRel()));
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">New: getAllSemesters</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" >File: <b>SemesterController.java</b></p>
+               <pre>
+                  <code lang="java" style="font-size: 14px;" data-line-numbers="4-5" data-trim>
+@GetMapping
+public ResponseEntity< CollectionModel< EntityModel< Semester>>> getAllSemesters() {
+   
+   List< Semester> semesters = new ArrayList<>();
+   repository.findAll().forEach(semesters::add);
+   
+   List< EntityModel< Semester>> entitySemesters = semesters
+               .stream()
+               .map( s -> assembler.toModel(s))
+               .collect(Collectors.toList());
+   
+   return ResponseEntity.ok().body(CollectionModel.of(entitySemesters, 
+         linkTo(methodOn(SemesterController.class).getAllSemesters()).withSelfRel()));
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">New: getAllSemesters</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" >File: <b>SemesterController.java</b></p>
+               <pre>
+                  <code lang="java" style="font-size: 14px;" data-line-numbers="7-10" data-trim>
+@GetMapping
+public ResponseEntity< CollectionModel< EntityModel< Semester>>> getAllSemesters() {
+   
+   List< Semester> semesters = new ArrayList<>();
+   repository.findAll().forEach(semesters::add);
+   
+   List< EntityModel< Semester>> entitySemesters = semesters
+               .stream()
+               .map( s -> assembler.toModel(s))
+               .collect(Collectors.toList());
+   
+   return ResponseEntity.ok().body(CollectionModel.of(entitySemesters, 
+         linkTo(methodOn(SemesterController.class).getAllSemesters()).withSelfRel()));
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">New: getAllSemesters</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px" >File: <b>SemesterController.java</b></p>
+               <pre>
+                  <code lang="java" style="font-size: 14px;" data-line-numbers="12-15" data-trim>
+@GetMapping
+public ResponseEntity< CollectionModel< EntityModel< Semester>>> getAllSemesters() {
+   
+   List< Semester> semesters = new ArrayList<>();
+   repository.findAll().forEach(semesters::add);
+   
+   List< EntityModel< Semester>> entitySemesters = semesters
+               .stream()
+               .map( s -> assembler.toModel(s))
+               .collect(Collectors.toList());
+   
+   return ResponseEntity.ok().body(
+         CollectionModel.of(
+            entitySemesters, 
+            linkTo(methodOn(SemesterController.class).getAllSemesters()).withSelfRel()));
+}
+                  </code>
+               </pre>
+            </section>
+
+
+         </section>
+
+        <!-- --------------------------------------------------------
+            -- Spring Security
+            ------------------------------------------------------------- -->
+         <section>
+            <section style="text-align: left;">    
+               <p style="font-style: italic; margin-bottom: 0px">Securing our web application</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Demo: ws-03-rest-store-part3-client.tar.gz</b></p>
+               <span style="font-size: 28px">
+                  <ul>
+                     <li>Back to the Client Shopping List Web Application (from last lecture).</li>
+                     <li>Based on <b>Spring Boot</b> and <b>Spring WebMVC</b>.</li>
+                     <li>We'll use JSP and JSTL (instead of Thymeleaf)</li>
+                     <li>Know we are adding <b>Spring Security</b></li>
+                     <li><span style="font-style:italic;">Code: ws-03-rest-store-part3-client.tar.gz (see course overview)</span><br>
+                        (Note! MUST be ran againt REST Web Service from part 1: ws-03-rest-store-part1.tar.gz)</li>
+                  </ul>
+               </span>
+            </section>
+            
+            <section style="text-align: left;">    
+               <p style="font-style: italic; margin-bottom: 0px">Securing our web application</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px">Framework <b>Spring Security</b></p>
+               <span style="font-size: 26px">
+                  <ul>
+                     <li><b>Authentication</b> & <b>Authorization</b> functionalities.</li>
+                     <li><b>Login & Logout</b> functionalities</li>
+                     <li>Servlet API integration & Optional integration with Spring Web MVC</li>
+                     <li>Allow/Block access to URLs for logged in users based on Role</li>
+                     <li>Protection against attacks like session fixation, click-jacking, cross site request forgery (CSRF), etc.</li>
+                     <li>Supports various 3rd party integrations to enhance security features.</li>
+                     <li><span style="font-style:italic;">Code: ws-03-rest-store-part3-client.tar.gz (see course overview)</span></li>
+                  </ul>
+               </span>
+            </section>
+
+            <section  style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Maven dependencies with Spring Boot</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px">Framework <b>Spring Security</b></p>
+               <pre>
+                  <code lang="java"  style="text-align:left" data-line-numbers data-trim>
+<dependency>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+                  </code>
+               </pre>
+            </section>
+
+            <section  style="text-align: center;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Design Pattern: Filter</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px">Framework <b>Spring Security</b></p>
+               <img src="images/spring-security-filter-01.png" alt="Spring Security Filter 1" style="border: none; box-shadow: none;">
+            </section>
+
+            <section  style="text-align: center;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Design Pattern: Filter</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px">Framework <b>Spring Security</b></p>
+               <img src="images/spring-security-filter-02.png" alt="Spring Security Filter 2" style="border: none; box-shadow: none;">
+            </section>
+
+            <section  style="text-align: center;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Demo: Without Any Configuration</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px">Framework <b>Spring Security</b></p>
+            </section>
+
+         </section>
+
+         <!-- --------------------------------------------------------
+            -- Spring Security
+            ------------------------------------------------------------- -->
+         <section>
+
+            <section  style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Implementing Security</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px">Framework <b>Spring Security</b></p>
+               <pre>
+                  <code lang="java"  style="text-align:left" data-line-numbers data-trim>
+@Configuration
+@EnableWebSecurity
+public class SemesterSecurityConfig {
+
+   @Bean 
+   public PasswordEncoder passwordEncoder() { 
+         return new BCryptPasswordEncoder(); 
+   }
+   
+   @Bean
+   public InMemoryUserDetailsManager userDetailsService() {
+      ...
+         
+      return new InMemoryUserDetailsManager(...);
+   }
+
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section  style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Implementing Security</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px">Framework <b>Spring Security</b></p>
+               <pre>
+                  <code lang="java"  style="text-align:left" data-line-numbers data-trim>
+@Bean
+public InMemoryUserDetailsManager userDetailsService() {
+   UserDetails user = User.withUsername("user")
+            .password(passwordEncoder().encode("pass"))
+            .roles("USER")
+            .build();
+      UserDetails admin = User.withUsername("admin")
+            .password(passwordEncoder().encode("secure"))
+            .roles("ADMIN")
+            .build();
+         
+      return new InMemoryUserDetailsManager(user, admin);
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section  style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Demo: With <b>Some</b> Configuration</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px">Framework <b>Spring Security</b></p>
+            </section>
+
+            <section  style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Implementing Security</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px">Framework <b>Spring Security</b></p>
+               <pre>
+                  <code lang="java"  style="text-align:left" data-line-numbers data-trim>
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+   http.authorizeRequests()
+      .antMatchers("/admin/**")
+      .hasRole("ADMIN")
+      .antMatchers("/login*")
+      .permitAll()
+      .anyRequest()
+      .authenticated()
+      .and()
+      .formLogin()
+      .defaultSuccessUrl("/viewsemesters", true)
+      .and()
+      .logout();
+   
+   return http.build();
+}
+                  </code>
+               </pre>
+            </section>
+
+            <section  style="text-align: left;" data-auto-animate>
+               <p style="font-style: italic; margin-bottom: 0px">Demo: With <b>More</b> Configuration</p>
+               <p style="color: #cb4b16; font-size: 40px; margin-top: 0px">Framework <b>Spring Security</b></p>
+            </section>
+
+         </section>
+         <!-- --------------------------------------------------------
+            -- Next
+            ------------------------------------------------------------- -->
+         <section>
+            <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
+            <p style="color: #cb4b16; font-style: italic; margin-bottom: 0px">Congratulation: Web Frameworks is completed</p>
+            <p style="font-size: 26px; margin-top: 0px" >Well ... only the mandatory exercise and exam left ;-)</p>
+            <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
+         </section>
+
+    </div>
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/markdown/markdown.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+        hash: true,
+        transition: 'fade',
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+    });
+</script>
+</body>
+</html>

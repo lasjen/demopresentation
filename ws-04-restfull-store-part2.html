@@ -22,7 +22,7 @@
 
         <section data-background="white">
             <img src="images/hvl-logo.png" alt="HVL logo" style="height: 120px; border: none; box-shadow: none;"><br><br>
-            <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Building a RESTFull Store WebService - Part 2</b></p>
+            <p style="color: #cb4b16; font-size: 40px; margin-top: 0px"><b>Building a RESTFull Store WebService - Part 2<br>(Client: RestTemplate)</b></p>
             <p style="font-style: italic">Created by <a href="http://www.jcon.no/blog">Lasse Jenssen</a></p>
             <p style="font-size: 18px"><a href="index.html#/2">Home</a></p>
         </section>
@@ -403,7 +403,7 @@ public class SemesterController {
                <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Extending SemesterService</p>
                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>File: SemesterService.java</b></p>
                <pre>
-               <code lang="java" data-trim data-line-numbers="1-8" style="line-height: 1.4; font-size: 14px;">
+               <code lang="java" data-trim data-line-numbers="1-8" style="line-height: 1.4; font-size: 16px;">
 @Service
 @PropertySource("classpath:application.properties")
 public class SemesterService {
@@ -434,7 +434,7 @@ public class SemesterService {
                <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Extending SemesterService</p>
                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" >RestTemplate.<b>getForObject()</b></p>
                <pre>
-               <code lang="java" data-trim data-line-numbers="13-19" style="line-height: 1.4; font-size: 14px;">
+               <code lang="java" data-trim data-line-numbers="13-19" style="line-height: 1.4; font-size: 16px;">
 @Service
 @PropertySource("classpath:application.properties")
 public class SemesterService {
@@ -465,7 +465,7 @@ public class SemesterService {
                <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Adding a service class for Courses</p>
                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>File: CourseService.java</b></p>
                <pre>
-               <code lang="java" data-trim data-line-numbers="1-6" style="line-height: 1.4; font-size: 14px;">
+               <code lang="java" data-trim data-line-numbers="1-6" style="line-height: 1.4; font-size: 16px;">
 @Service
 @PropertySource("classpath:application.properties")
 public class CourseService {
@@ -491,7 +491,7 @@ public class CourseService {
                <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Adding a service class for Courses</p>
                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" >RestTemplate.<b>getForEntity()</b></p>
                <pre>
-               <code lang="java" data-trim data-line-numbers="8-16" style="line-height: 1.4; font-size: 14px;">
+               <code lang="java" data-trim data-line-numbers="8-16" style="line-height: 1.4; font-size: 16px;">
 @Service
 @PropertySource("classpath:application.properties")
 public class CourseService {
@@ -622,17 +622,17 @@ public String viewSemester(Model model, @RequestParam("id") String id) {
                <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Continuing with <b>RestTemplate</b></p>
                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>The postForObject() API</b></p>
                <pre>
-                  <code lang="java" data-trim style="line-height: 1.4; font-size: 14px;">
+                  <code lang="java" data-trim style="line-height: 1.4; font-size: 16px;">
 T postForObject(URI url, Object request, Class< T> responseType) 
                   </code>
                </pre>
                <pre>
-                  <code lang="java" data-trim style="line-height: 1.4; font-size: 14px;">
+                  <code lang="java" data-trim style="line-height: 1.4; font-size: 16px;">
 T postForObject(String url, Object request, Class< T> responseType, Map< String,?> uriVariables)
                   </code>
                </pre>
                <pre>
-                  <code lang="java" data-trim style="line-height: 1.4; font-size: 14px;">
+                  <code lang="java" data-trim style="line-height: 1.4; font-size: 16px;">
 T postForObject(String url, Object request, Class< T> responseType, Object... uriVariables) 
                   </code>
                </pre>
@@ -642,7 +642,7 @@ T postForObject(String url, Object request, Class< T> responseType, Object... ur
                <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Refactoring <b>SemesterService.java</b></p>
                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>The postForObject() API</b></p>
                <pre>
-                  <code lang="java" data-trim data-line-numbers="1-9" style="line-height: 1.4; font-size: 14px;">
+                  <code lang="java" data-trim data-line-numbers="1-9" style="line-height: 1.4; font-size: 16px;">
 @Service
 @PropertySource("classpath:application.properties")
 public class SemesterService {
@@ -675,7 +675,7 @@ public class SemesterService {
                <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Refactoring <b>SemesterService.java</b></p>
                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>The postForObject() API</b></p>
                <pre>
-                  <code lang="java" data-trim data-line-numbers="13-23" style="line-height: 1.4; font-size: 14px;">
+                  <code lang="java" data-trim data-line-numbers="13-23" style="line-height: 1.4; font-size: 16px;">
 @Service
 @PropertySource("classpath:application.properties")
 public class SemesterService {
@@ -708,7 +708,7 @@ public class SemesterService {
                <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Refactoring <b>SemesterController.java</b></p>
                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>/addsemester (GET and POST)></b></p>
                <pre>
-                  <code lang="java" data-trim data-line-numbers="1-4" style="line-height: 1.4; font-size: 14px;">
+                  <code lang="java" data-trim data-line-numbers="1-4" style="line-height: 1.4; font-size: 16px;">
 @GetMapping("/addsemester")
 public String createSemester() {
    return "addsemester";
@@ -738,7 +738,7 @@ public RedirectView createSemesterSave(@RequestParam String studyYear, @RequestP
                <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Refactoring <b>SemesterController.java</b></p>
                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>/addsemester (GET and POST)></b></p>
                <pre>
-                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4; font-size: 14px;">
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4; font-size: 16px;">
 <form action="/addsemester" method="POST">
    <table border=0><tbody>
          <tr>
@@ -762,7 +762,7 @@ public RedirectView createSemesterSave(@RequestParam String studyYear, @RequestP
                <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Refactoring <b>SemesterController.java</b></p>
                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>/addsemester (GET and POST)></b></p>
                <pre>
-                  <code lang="java" data-trim data-line-numbers="6-22" style="line-height: 1.4; font-size: 14px;">
+                  <code lang="java" data-trim data-line-numbers="6-22" style="line-height: 1.4; font-size: 16px;">
 @GetMapping("/addsemester")
 public String createSemester() {
    return "addsemester";
@@ -793,7 +793,7 @@ public RedirectView createSemesterSave(@RequestParam String studyYear,
                <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Checking flashAttributes</p>
                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" >Refactoring <b>semesters.jsp</b></p>
                <pre>
-                  <code lang="java" data-trim data-line-numbers="6-22" style="line-height: 1.4; font-size: 14px;">
+                  <code lang="java" data-trim data-line-numbers="6-22" style="line-height: 1.4; font-size: 16px;">
 <c:if test="${addSemesterSuccess}">
    <div>Successfully added Item with ID: ${newSemesterId}</div>
 </c:if>
@@ -810,7 +810,7 @@ public RedirectView createSemesterSave(@RequestParam String studyYear,
                <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Continuing with <b>RestTemplate - The put() API</b></p>
                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Refactoring: SemesterService.java</b></p>
                <pre>
-                  <code lang="java" data-trim data-line-numbers="8" style="line-height: 1.4; font-size: 14px;">
+                  <code lang="java" data-trim data-line-numbers="8" style="line-height: 1.4; font-size: 16px;">
 public Semester update(Semester semester) throws URISyntaxException {
    URI uri = new URI(BASE_URL + "/" + semester.getId());
    
@@ -833,7 +833,7 @@ public Semester update(Semester semester) throws URISyntaxException {
                <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Continuing with <b>RestTemplate - The exchange() API</b></p>
                <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Refactoring: SemesterService.java</b></p>
                <pre>
-                  <code lang="java" data-trim data-line-numbers="1,5-6,9,11" style="line-height: 1.4; font-size: 14px;">
+                  <code lang="java" data-trim data-line-numbers="1,5-6,9,11" style="line-height: 1.4; font-size: 16px;">
 public ResponseEntity< Semester> updateV2(Semester semester) throws URISyntaxException {
    URI uri = new URI(BASE_URL + "/" + semester.getId());
    
@@ -849,23 +849,94 @@ public ResponseEntity< Semester> updateV2(Semester semester) throws URISyntaxExc
                   </code>
                   </pre>
             </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Continuing with <b>RestTemplate - The delete() API</b></p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Refactoring: SemesterService.java</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers style="line-height: 1.4; font-size: 16px;">
+public void delete(Semester semester) throws URISyntaxException {
+   URI uri = new URI(BASE_URL + "/" + semester.getId());
+   
+   template.delete(uri);
+}
+
+public void delete(Long id) throws URISyntaxException {
+   URI uri = new URI(BASE_URL + "/" + id);
+   
+   template.delete(uri);
+}
+                  </code>
+                  </pre>
+                  <span style="font-size: 24px; font-style:italic">
+                     <p><b>Disadvantage:</b> delete() returns "void"</p>
+                 </span>
+            </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Continuing with <b>RestTemplate - The exchange() API</b></p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Refactoring: SemesterService.java</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers="5-6" style="line-height: 1.4; font-size: 16px;">
+public ResponseEntity< Semester> deleteV2(Semester semester) throws URISyntaxException {
+   URI uri = new URI(BASE_URL + "/" + semester.getId());
+   
+   HttpEntity< Semester> request = new HttpEntity<>(semester);
+   ResponseEntity< Semester> response = 
+                           template.exchange(uri, HttpMethod.DELETE, request, Semester.class);
+   
+   if (response.getStatusCode().equals(HttpStatus.OK)) {
+      return ResponseEntity.ok().body(semester);
+   }
+   return ResponseEntity.notFound().build();
+}
+                  </code>
+                  </pre>
+                  <span style="font-size: 24px; font-style:italic">
+                     <p><b>Disadvantage:</b> delete() returns "void"</p>
+                 </span>
+            </section>
+
          </section>
 
           <!-- --------------------------------------------------------
-            -- The RestTemplate.postForLocation (Locations)
+            -- Next
             ------------------------------------------------------------- -->
          <section>
             <section style="text-align: left;" data-auto-animate>
-               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Starting to become restful (but not quite there yet)</b></p>
-               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>postForLocation</b></p>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Adding a new PostMapping with location</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>Revisiting our RestController</b></p>
                <pre>
-                  <code lang="java" data-trim data-line-numbers="1,5-6,9,11" style="line-height: 1.4; font-size: 14px;">
-HttpEntity< Semester> request = new HttpEntity<>(new Semester("2024","A"));
-URI location = restTemplate.postForLocation(fooResourceUrl, request);
+                  <code lang="java" data-trim data-line-numbers="1-2,7,11" style="line-height: 1.4; font-size: 16px;">
+@PostMapping
+public ResponseEntity< Semester> createSemesterLocation(@RequestBody Semester semester) {
+   URI location = null;
+   Semester s = null;
+   try {
+      s = repository.save(semester); 
+      location = new URI("http://localhost:8299/semesters/"+s.getId());
+   } catch (Exception e) {
+      return ResponseEntity.badRequest().build();
+   } 
+   return ResponseEntity.created(location).body(s);
+}
                   </code>
                   </pre>
             </section>
+
+            <section style="text-align: left;" data-auto-animate>
+               <p style="font-size: 26px; font-style: italic; margin-bottom: 0px">Starting to become restful (but not quite there yet)</p>
+               <p style="color: #cb4b16; font-size: 36px; margin-top: 0px" ><b>postForLocation</b></p>
+               <pre>
+                  <code lang="java" data-trim data-line-numbers="1-2,7,11" style="line-height: 1.4; font-size: 16px;">
+   HttpEntity< Semester> request = new HttpEntity<>(new Semester("2024","A"));
+   URI location = restTemplate.postForLocation(fooResourceUrl, request);
+                  </code>
+                  </pre>
+            </section>
+
          </section>
+         
          <!-- --------------------------------------------------------
             -- Next
             ------------------------------------------------------------- -->
